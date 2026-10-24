@@ -2,7 +2,9 @@
 
 MVP 0.1 de un tablero virtual ligero para El Naufragio, inspirado en la sencillez de Owlbear Rodeo 1.0.
 
-**[Requisitos completos y plan de trabajo](docs/REQUISITOS.md)** — fuente de referencia para arquitectura, alcance del MVP, decisiones confirmadas y tareas futuras.
+**[Requisitos completos y plan de trabajo](docs/REQUISITOS.md)**
+
+**[Referencias funcionales de Owlbear Rodeo](docs/REFERENCIAS-OWLBEAR.md)** — equivalencias con Owlbear 1.0/2.0, fuentes oficiales y criterios para conservar una experiencia sencilla. — fuente de referencia para arquitectura, alcance del MVP, decisiones confirmadas y tareas futuras.
 
 ## Funciones actuales
 
