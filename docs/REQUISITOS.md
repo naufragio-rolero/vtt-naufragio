@@ -5,9 +5,9 @@
 > Estado: decisiones acordadas y backlog, no especificación de implementación cerrada.
 > Las prioridades son una propuesta de planificación; los requisitos identificados como pendientes no deben implementarse hasta definirse.
 
-## 1. Visión y límites**Referencia de producto:** [Owlbear Rodeo 1.0/2.0 — funcionalidades que queremos reproducir y simplificar](REFERENCIAS-OWLBEAR.md). La experiencia de Owlbear 1.0 inspira el uso de un mapa como centro de la mesa; las herramientas de 2.0 son referencias selectivas, no una obligación de replicar su complejidad.
+## 1. Visión y límites
 
-
+**Referencia de producto:** [Owlbear Rodeo 1.0/2.0 — funcionalidades que queremos reproducir y simplificar](REFERENCIAS-OWLBEAR.md). La experiencia de Owlbear 1.0 inspira el uso de un mapa como centro de la mesa; las herramientas de 2.0 son referencias selectivas, no una obligación de replicar su complejidad.
 
 Naufragio VTT es una mesa virtual ligera, accesible desde navegador, inspirada en la experiencia sencilla de Owlbear Rodeo 1.0. Debe servir para Naufragio d20, MicroRyF: Moderna, Heaven's Gate y cualquier otro juego, sin quedar acoplada a sus reglas.
 
