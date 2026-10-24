@@ -25,7 +25,7 @@ Principios:
 | DEC-01 | Una **partida** es una colección de mapas; exactamente uno está activo durante el juego y los demás permanecen en pausa. |
 | DEC-02 | Cada mapa conserva su estado independiente: fondo, cuadrícula, tokens, posiciones, visibilidad, niebla, objetos y demás elementos disponibles. |
 | DEC-03 | Solo el máster o dueño de la sala puede cambiar el mapa activo; el cambio se comunica a todos los jugadores conectados. |
-| DEC-04 | Los mapas en pausa no se modifican ni ejecutan automatizaciones mientras están inactivos; al volver a activarse recuperan su estado. |
+| DEC-04 | Los mapas en pausa no reciben movimientos ni automatizaciones de jugadores; conservan su estado al reactivarse. El máster sí puede prepararlos o editarlos en privado. |
 | DEC-05 | El navegador del máster guarda y controla el **estado oficial de la partida**. Los demás navegadores mantienen únicamente cachés y preferencias autorizadas. |
 | DEC-06 | El servidor futuro autentica, autoriza y retransmite eventos en tiempo real; **no persiste el contenido de las partidas**. Puede guardar cuentas, permisos y metadatos imprescindibles. |
 | DEC-07 | El máster debe estar conectado para que la partida funcione. Ante una desconexión, la sala queda en espera hasta reconectar y recuperar su estado oficial. |
