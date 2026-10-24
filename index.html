@@ -18,15 +18,42 @@
           <span class="eyebrow">EL NAUFRAGIO</span>
           <strong>Naufragio <span>VTT</span></strong>
         </div>
-        <span class="version-pill">MVP 0.1</span>
+        <span class="version-pill">MVP 0.1.1</span>
       </div>
       <div class="sidebar-scroll">
+        <section class="panel-section map-section">
+          <div class="section-heading"><h2>Mapa de fondo</h2><span class="tiny-label">LOCAL</span></div>
+          <label class="upload-button" for="mapUpload">↑ Subir imagen de mapa</label>
+          <input class="visually-hidden" id="mapUpload" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
+          <p id="mapEmpty" class="help-text map-empty">Sin mapa cargado. Sube una imagen desde tu dispositivo para colocarla bajo la cuadrícula.</p>
+          <div id="mapControls" hidden>
+            <div class="map-file-details"><span id="mapFilename">Mapa</span><span id="mapResolution"></span></div>
+            <div class="map-fields">
+              <label class="field-label" for="mapColumns">Anchura (casillas)</label>
+              <input class="text-field number-field" id="mapColumns" type="number" min="1" max="200" step="0.25" value="20">
+              <div class="map-offset-row">
+                <div><label class="field-label" for="mapOffsetX">Posición X</label><input class="text-field number-field" id="mapOffsetX" type="number" min="-1000" max="1000" step="0.25" value="-10"></div>
+                <div><label class="field-label" for="mapOffsetY">Posición Y</label><input class="text-field number-field" id="mapOffsetY" type="number" min="-1000" max="1000" step="0.25" value="-8"></div>
+              </div>
+            </div>
+            <button class="toggle-button map-move-button" id="mapMoveToggle" type="button" aria-pressed="false">✥ Mover imagen sobre la rejilla</button>
+            <div class="map-action-row">
+              <button class="secondary-button" id="fitMap" type="button">⌗ Encajar vista</button>
+              <button class="secondary-button muted-button" id="removeMap" type="button">Quitar imagen</button>
+            </div>
+            <p class="help-text map-help">Ajusta las casillas o arrastra la imagen en el modo de alineación. Mantendrá su proporción.</p>
+          </div>
+        </section>
         <section class="panel-section">
           <div class="section-heading"><h2>La mesa</h2><span class="tiny-label">LOCAL</span></div>
           <p class="help-text">Tu propio tablero de pruebas. Los cambios se guardan en este navegador.</p>
           <div class="control-row">
             <label class="control-name" for="gridSize">Casilla <output id="gridSizeValue">64 px</output></label>
             <input id="gridSize" type="range" min="32" max="96" step="8" value="64">
+          </div>
+          <div class="control-row grid-opacity-row">
+            <label class="control-name" for="gridOpacity">Intensidad de rejilla <output id="gridOpacityValue">55 %</output></label>
+            <input id="gridOpacity" type="range" min="10" max="100" step="5" value="55">
           </div>
           <div class="toggle-group">
             <button class="toggle-button active" id="gridToggle" type="button" aria-pressed="true"><span class="toggle-icon">▦</span> Rejilla</button>
@@ -78,7 +105,7 @@
       </header>
       <div class="workspace" id="workspace">
         <canvas id="boardCanvas" tabindex="0" aria-label="Tablero virtual con rejilla y tokens. Arrastra los tokens para moverlos."></canvas>
-        <div class="board-hint" aria-hidden="true"><span class="hint-spark">✥</span> Arrastra los tokens para moverlos <span class="hint-separator">·</span> Arrastra el fondo para desplazarte</div>
+        <div class="board-hint" id="boardHint" aria-hidden="true"><span class="hint-spark">✥</span> Arrastra los tokens para moverlos <span class="hint-separator">·</span> Arrastra el fondo para desplazarte</div>
         <div class="board-footer"><span id="coordinates">X 0 · Y 0</span><span>Rueda para zoom · Flechas para mover un token</span></div>
       </div>
     </main>
