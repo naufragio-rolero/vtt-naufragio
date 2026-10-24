@@ -1,0 +1,191 @@
+# Requisitos del proyecto — Naufragio VTT
+
+> Documento vivo de producto y arquitectura. Consolidación inicial: 24 de octubre de 2026.
+> Repositorio: naufragio-rolero/vtt-naufragio.
+> Estado: decisiones acordadas y backlog, no especificación de implementación cerrada.
+> Las prioridades son una propuesta de planificación; los requisitos identificados como pendientes no deben implementarse hasta definirse.
+
+## 1. Visión y límites
+
+Naufragio VTT es una mesa virtual ligera, accesible desde navegador, inspirada en la experiencia sencilla de Owlbear Rodeo 1.0. Debe servir para Naufragio d20, MicroRyF: Moderna, Heaven's Gate y cualquier otro juego, sin quedar acoplada a sus reglas.
+
+Principios:
+
+- Priorizar mapa, fichas, movimiento, comunicación y herramientas visuales de dirección.
+- Poder usar imágenes y recursos propios, con interfaz sencilla y adaptable a escritorio y dispositivos táctiles.
+- Separar catálogos reutilizables, partidas y copias colocadas en cada mapa.
+- El máster dirige y controla la sala; los jugadores solo disponen de permisos explícitos.
+- No desarrollar hojas de personaje ni un motor de reglas: **no hay atributos, habilidades, puntos de vida ni estadísticas de antagonistas**.
+- No confundir el prototipo estático de GitHub Pages con la futura aplicación autenticada y multijugador.
+
+## 2. Decisiones de producto confirmadas
+
+| ID | Decisión |
+| --- | --- |
+| DEC-01 | Una **partida** es una colección de mapas; exactamente uno está activo durante el juego y los demás permanecen en pausa. |
+| DEC-02 | Cada mapa conserva su estado independiente: fondo, cuadrícula, tokens, posiciones, visibilidad, niebla, objetos y demás elementos disponibles. |
+| DEC-03 | Solo el máster o dueño de la sala puede cambiar el mapa activo; el cambio se comunica a todos los jugadores conectados. |
+| DEC-04 | Los mapas en pausa no se modifican ni ejecutan automatizaciones mientras están inactivos; al volver a activarse recuperan su estado. |
+| DEC-05 | El navegador del máster guarda y controla el **estado oficial de la partida**. Los demás navegadores mantienen únicamente cachés y preferencias autorizadas. |
+| DEC-06 | El servidor futuro autentica, autoriza y retransmite eventos en tiempo real; **no persiste el contenido de las partidas**. Puede guardar cuentas, permisos y metadatos imprescindibles. |
+| DEC-07 | El máster debe estar conectado para que la partida funcione. Ante una desconexión, la sala queda en espera hasta reconectar y recuperar su estado oficial. |
+| DEC-08 | Cuentas creadas manualmente por administradores; sin registro público. Usuario y contraseña reales, con papeles separados de administrador, máster y jugador. |
+| DEC-09 | Catálogos de recursos reutilizables para tokens, antagonistas, mapas y participantes/jugadores. Los mapas de partida contienen **instancias independientes** de los recursos. |
+| DEC-10 | Cambiar o borrar una instancia colocada no modifica el recurso original ni las otras copias. Los archivos de imagen podrán deduplicarse internamente. |
+| DEC-11 | Los antagonistas son recursos visuales simples, reutilizables y controlados por el máster, no fichas con atributos. |
+| DEC-12 | El requisito denominado **«versión sólo para hombres»** se difiere expresamente al final del proyecto y queda sin especificación hasta recibir definición del cliente. |
+
+## 3. Modelo conceptual
+
+### 3.1 Identidad y autorización
+
+- **Cuenta:** identidad de acceso con credenciales gestionadas por la administración. Reside en el servicio de autenticación.
+- **Participante/jugador:** nombre visible, avatar opcional y relación con su cuenta. Puede controlar uno o varios tokens autorizados.
+- **Máster:** participante propietario de la sala y autoridad final sobre acciones, mapas, visibilidad y configuración.
+
+No se debe confundir la identificación por apodo de la versión 0.1 con autenticación.
+
+### 3.2 Partida y mapas
+
+- **Partida:** identificador, nombre, máster, participantes autorizados, colección ordenada de mapas y referencia al único mapa activo.
+- **Mapa de catálogo:** escenario reutilizable. Puede disponer de imagen original y configuración base.
+- **Mapa de partida:** copia o instancia del escenario incorporada a la partida. Almacena su estado propio y puede editarse sin alterar el mapa del catálogo.
+- **Estados de mapa:** activo o en pausa. Un mapa nuevo puede prepararse en privado antes de activarlo.
+- Los jugadores solo visualizan el mapa activo y únicamente la información que el máster permita conocer. No deben recibir por adelantado datos secretos de mapas en pausa.
+- En la primera versión no se trasladan automáticamente tokens entre mapas: se colocan o copian explícitamente.
+
+### 3.3 Catálogos e instancias
+
+- **Catálogo de tokens:** biblioteca de imágenes y plantillas genéricas.
+- **Catálogo de antagonistas:** especialización visual del catálogo de tokens para enemigos, criaturas u oponentes.
+- **Catálogo de jugadores:** participantes conocidos y, cuando proceda, su vínculo con los tokens que pueden mover. No supone almacenar atributos del personaje.
+- **Catálogo de mapas:** fondos o escenarios reutilizables.
+- **Instancia de token:** referencia a un recurso de catálogo, posición, dimensiones, rotación futura si se aprueba, nombre/etiqueta, color, visibilidad y propietario/autorización.
+- **Instancia de mapa:** referencia al recurso original y estado independiente de los elementos colocados. Un mismo fondo puede utilizarse varias veces sin replicar innecesariamente sus bytes.
+
+Ejemplo: un «Guardia de Ylat» del catálogo puede colocarse tres veces en unas catacumbas; cada copia se mueve, edita o elimina de manera independiente. El original sigue disponible.
+
+## 4. Requisitos funcionales
+
+**Leyenda:** P0 = imprescindible para el MVP multijugador; P1 = siguiente fase de herramientas; P2 = fase posterior de ambientación; PD = pendiente de definición.
+
+### Acceso y colaboración
+
+| ID | Prioridad | Requisito |
+| --- | --- | --- |
+| AUT-01 | P0 | Solo usuarios con cuentas creadas por la administración pueden acceder a la aplicación privada. |
+| AUT-02 | P0 | Roles de administrador, máster y jugador con permisos definidos en el servidor. |
+| AUT-03 | P0 | Crear salas, invitar a usuarios autorizados y revocar acceso. URL de sala sin depender de que su nombre sea secreto. |
+| COL-01 | P0 | Varios participantes conectados simultáneamente al mismo tablero con cambios visibles en tiempo real. |
+| COL-02 | P0 | Autorizar cada acción sobre tokens y escenas; el máster puede manipular todos los elementos y asignar control a jugadores. |
+| COL-03 | P0 | Incorporarse o reconectarse solicitando al máster el estado permitido del mapa activo. |
+| COL-04 | P0 | El máster puede activar otro mapa y todos los jugadores conectados cambian a él. |
+| COL-05 | P0 | Si el máster desconecta, mostrar sala en espera; no elegir unilateralmente a otro navegador como autoridad. |
+
+### Mapas y recursos
+
+| ID | Prioridad | Requisito |
+| --- | --- | --- |
+| MAP-01 | P0 | Crear una partida con uno o más mapas y un solo mapa activo. |
+| MAP-02 | P0 | Añadir una imagen propia como fondo y calibrarla respecto a una cuadrícula. |
+| MAP-03 | P0 | Desplazar, escalar y alinear fondo y rejilla; elegir tamaño de casilla y activar o desactivar el ajuste. |
+| MAP-04 | P0 | Mantener el estado de cada mapa al ponerlo en pausa y volver a activarlo. |
+| MAP-05 | P0 | Preparar mapas y elementos ocultos sin exponerlos a jugadores. |
+| CAT-01 | P0 | Crear, consultar y reutilizar tokens y mapas de catálogo. |
+| CAT-02 | P0 | Crear antagonistas sencillos desde una imagen, nombre y propiedades visuales. |
+| CAT-03 | P0 | Colocar múltiples copias independientes de un mismo recurso en cualquier mapa. |
+| CAT-04 | P0 | Relacionar tokens con participantes/jugadores autorizados. |
+| TOK-01 | P0 | Subir imágenes para tokens y utilizarlas en el tablero. |
+| TOK-02 | P0 | Mover, duplicar, cambiar tamaño, editar nombre/color y eliminar instancias de tokens. |
+| TOK-03 | P0 | Respetar los permisos de movimiento y edición establecidos por el máster. |
+| TOK-04 | P1 | Ampliar propiedades visuales de tokens según las necesidades detectadas en pruebas, sin estadísticas de juego. |
+
+### Persistencia y recuperación
+
+| ID | Prioridad | Requisito |
+| --- | --- | --- |
+| DAT-01 | P0 | Guardar automáticamente el estado oficial de todas las partidas y mapas en IndexedDB del navegador del máster. |
+| DAT-02 | P0 | Mantener en los navegadores de jugadores una caché local con el subconjunto de datos autorizado. |
+| DAT-03 | P0 | No almacenar mapas, fichas, posiciones, niebla ni otros estados de partida de forma persistente en el backend. |
+| DAT-04 | P0 | Exportar e importar una partida completa, incluidos sus mapas y recursos, para copia de seguridad y recuperación. |
+| DAT-05 | P0 | Restaurar la partida y el mapa activo después de cerrar y volver a abrir el navegador del máster. |
+| DAT-06 | P0 | Resolver reconexiones y cambios concurrentes bajo la autoridad del estado que mantiene el máster; los datos de un jugador no prevalecen automáticamente sobre el máster. |
+
+### Herramientas de partida
+
+| ID | Prioridad | Requisito |
+| --- | --- | --- |
+| JUE-01 | P1 | Chat de texto para los participantes conectados. |
+| JUE-02 | P1 | Tiradas de dados desde la interfaz y registro cronológico de resultados. |
+| JUE-03 | P1 | Niebla de guerra manual, controlada por el máster, con ocultación efectiva para los jugadores. |
+| JUE-04 | P1 | Etiquetas, anotaciones y mobiliario/objetos colocables sobre los mapas. |
+| JUE-05 | P1 | Control del tamaño de letra; elementos exactos sobre los que se aplicará, pendientes de detalle. |
+
+### Ambientación e ideas posteriores
+
+| ID | Prioridad | Requisito |
+| --- | --- | --- |
+| AMB-01 | P2 | Música dinámica asociada a zonas o situaciones del mapa, usando enlaces o reproductores autorizados de Spotify y/o YouTube. |
+| AMB-02 | P2 | Controles de reproducción adecuados para cada jugador y el máster, respetando restricciones de navegador y servicio. |
+| AMB-03 | P2 | Iluminación dinámica: antorchas, fuentes de luz, radios y, si procede, sombras/obstáculos. |
+| DIF-01 | PD, al final | «Versión sólo para hombres»: requisito mencionado por el cliente, no prioritario y todavía sin definición funcional. No tomar decisiones de implementación hasta concretarlo. |
+
+## 5. Hoja de ruta
+
+| Versión | Objetivo | Condición de salida |
+| --- | --- | --- |
+| **0.1 — Prototipo local** | Nombre local, rejilla, tokens genéricos, zoom, movimiento y guardado simple en localStorage. | Ya implementado en GitHub Pages; **no** es un sistema autenticado ni multijugador. |
+| **0.2 — Conexión y salas** | Cuentas reales, permisos, sala compartida, máster autoritativo, sincronización WebSocket y reconexión. | Máster y varios jugadores pueden manipular el mismo tablero sin acceso anónimo. |
+| **0.3 — MVP jugable** | Partida como colección de mapas, fondo/calibración, catálogos e instancias, tokens personalizados, IndexedDB y exportación/importación. | Una partida completa puede prepararse, jugarse, pausarse entre mapas y restaurarse. |
+| **0.4 — Herramientas de dirección** | Niebla manual, chat, dados e historial, etiquetas/mobiliario y tipografía ajustable. | Permite sesiones más completas sin integrar reglas. |
+| **0.5 — Ambientación** | Música contextual por zonas e iluminación dinámica. | Se estudiará por separado su viabilidad, experiencia, coste y condiciones de terceros. |
+| **Fase final sin fecha** | Requisito DIF-01, una vez que el cliente lo concrete. | Pendiente. |
+
+Las versiones son hitos de trabajo orientativos, no fechas prometidas.
+
+## 6. Criterios de aceptación del MVP (v0.3)
+
+1. El máster puede iniciar sesión con credenciales reales y abrir una partida privada.
+2. Al menos cuatro jugadores de prueba acceden desde navegadores distintos y solo con autorización.
+3. La partida contiene varios mapas independientes y solo uno está activo.
+4. El máster puede subir un fondo, ajustar la cuadrícula, crear o importar tokens y colocar varias copias de un antagonista.
+5. El movimiento de tokens autorizados se ve en el resto de navegadores conectados sin recargar.
+6. Activar otro mapa hace cambiar a todos los jugadores; el anterior mantiene sus posiciones y elementos.
+7. El jugador no recibe información de mapas en pausa ni de capas ocultas sin autorización.
+8. El máster puede cerrar y reabrir su navegador y recuperar la colección de mapas, sus estados y el mapa activo.
+9. Se puede exportar e importar una copia completa de seguridad de la partida.
+10. Al perder conexión el máster, la sala entra en espera y no asigna autoridad a un cliente arbitrario.
+
+El objetivo inicial de capacidad es una mesa pequeña (aproximadamente 5–8 participantes), sujeto a pruebas reales de rendimiento.
+
+## 7. Seguridad, límites y despliegue
+
+- GitHub Pages aloja el prototipo/frontend estático; **no proporciona autenticación segura, almacenamiento servidor ni WebSockets por sí solo**.
+- Para el multijugador se necesita un servicio backend separado, ligero y desplegable en la infraestructura propia de El Naufragio, con HTTPS/WSS, control de origen, sesiones y límites de recursos.
+- Contraseñas con hash adaptativo seguro (por ejemplo Argon2id), nunca en código frontend ni texto claro; cuentas provisionadas manualmente.
+- Proteger todas las rutas de recursos, cargas de archivos y acciones en tiempo real según usuario, sala y rol; autorización de cada operación en el backend.
+- Aceptar únicamente formatos de imagen explícitamente permitidos y validados; límites de tamaño, dimensiones y cuota. Archivos fuera del directorio ejecutable o público sin control.
+- No enviar al cliente imágenes, escenas o metadatos ocultos que sus permisos no autoricen, aunque la interfaz pueda ocultarlos visualmente.
+- Aislar el nuevo servicio de Heaven's Gate y el resto de aplicaciones alojadas en la Raspberry Pi; limitar CPU/memoria/conexiones y probar su comportamiento antes de abrirlo.
+- El estado de la partida no se almacena permanentemente en el servidor. Ello reduce la carga y exige una estrategia explícita de respaldo local, pérdida de dispositivo y exportación.
+- Los catálogos y las imágenes deben mantenerse en almacenamiento del navegador del máster; los jugadores no deben acumular secretos en sus cachés.
+- Mantener una interfaz táctil y de escritorio; renderizado de tableros preferentemente en el navegador de cada participante.
+
+## 8. Cuestiones aún no cerradas
+
+Estas decisiones no deben confundirse con requisitos ya acordados:
+
+- Alcance exacto del ajuste tipográfico: etiquetas de mapa, nombres de tokens, chat, interfaz o todos ellos.
+- Formatos de imagen, tamaños máximos y procedimiento de alineación con cuadrículas ya dibujadas.
+- Tratamiento de personajes que cambian de mapa (copia manual inicialmente; automatización posterior por valorar).
+- Política de actualización de recursos originales después de crear instancias (por defecto, las instancias no cambian).
+- Formato concreto del paquete de exportación y plan de recuperación si se borra IndexedDB.
+- Alcance del catálogo de jugadores frente a las cuentas de autenticación: fichas visuales, permisos y perfiles, sin estadísticas.
+- Notación de dados, visibilidad del registro, retención de mensajes y alcance del chat.
+- Funcionamiento exacto de zonas musicales, reproducción simultánea, permisos y límites de Spotify/YouTube.
+- Nivel de precisión, obstáculos, cálculos y optimización de la iluminación dinámica.
+- Significado y condiciones del requisito DIF-01, aplazado por petición del cliente.
+
+## 9. Regla de mantenimiento
+
+Cualquier implementación deberá contrastarse con este documento antes de introducir reglas, dependencias, almacenamiento servidor o funciones no previstas. Si una decisión cambia, actualizar aquí su estado y reflejarla en las notas de desarrollo. El código existente no prueba que una función futura esté terminada.
