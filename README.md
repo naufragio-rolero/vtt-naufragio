@@ -2,6 +2,8 @@
 
 MVP 0.1 de un tablero virtual ligero para El Naufragio, inspirado en la sencillez de Owlbear Rodeo 1.0.
 
+**[Requisitos completos y plan de trabajo](docs/REQUISITOS.md)** — fuente de referencia para arquitectura, alcance del MVP, decisiones confirmadas y tareas futuras.
+
 ## Funciones actuales
 
 - Identificación **local** por nombre (sin cuentas ni contraseñas).
@@ -24,7 +26,7 @@ Abrir el fichero `index.html` en un navegador moderno. Para servirlo como web es
 3. Seleccionar la rama `main` y la carpeta `/(root)`.
 4. Guardar. La URL prevista es https://naufragio-rolero.github.io/vtt-naufragio/.
 
-**Visibilidad:** en GitHub Free para organizaciones, Pages requiere un repositorio público. Si el repositorio sigue siendo privado, habrá que comprobar si el plan permite Pages o cambiar su visibilidad deliberadamente. El sitio publicado es público incluso cuando su código pueda ser privado.
+**Estado actual:** el repositorio es público. El código y la web publicada son accesibles públicamente; el prototipo no tiene control de acceso.
 
 El proyecto no necesita un workflow personalizado de GitHub Actions.
 
@@ -36,10 +38,6 @@ Las partidas, tokens y preferencias se guardan únicamente en el almacenamiento 
 
 ## Próximas fases
 
-1. Backend de usuarios y roles, contraseñas almacenadas mediante hash seguro.
-2. Salas persistentes y autorización de acceso en servidor.
-3. Sincronización en tiempo real mediante WebSockets con validación de acciones.
-4. Mapas propios, escenas, niebla de guerra y permisos del director.
-5. Pruebas de aislamiento y seguridad antes de desplegar el backend en la Raspberry Pi.
+Consultar el [documento de requisitos](docs/REQUISITOS.md). La arquitectura acordada considera el navegador del máster como fuente oficial del estado de la partida, cachés autorizadas en los navegadores de jugadores y un backend futuro para autenticación y sincronización, **sin persistir partidas en el servidor**.
 
 No se incluyen claves, cuentas de demostración falsas ni secretos en el frontend.
