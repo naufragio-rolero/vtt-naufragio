@@ -30,6 +30,7 @@
       tokens: STARTER_TOKENS.map((token) => ({ ...token })),
       cellSize: 64,
       gridOpacity: 0.55,
+      theme: "light",
       map: null,
       showGrid: true,
       snap: true,
@@ -57,6 +58,7 @@
       }
       base.cellSize = clamp(finiteOr(stored.cellSize, 64), 32, 96);
       base.gridOpacity = clamp(finiteOr(stored.gridOpacity, 0.55), 0.1, 1);
+      base.theme = stored.theme === "dark" ? "dark" : "light";
       if (stored.map && typeof stored.map === "object") {
         const map = stored.map;
         const widthPx = clamp(finiteOr(map.widthPx, 0), 0, 8000);
@@ -66,6 +68,7 @@
             name: typeof map.name === "string" ? map.name.slice(0, 100) : "Mapa",
             widthPx, heightPx,
             widthCells: clamp(finiteOr(map.widthCells, 20), 1, 200),
+            heightCells: clamp(finiteOr(map.heightCells, clamp(finiteOr(map.widthCells, 20), 1, 200) * heightPx / widthPx), 1, 200),
             xCells: clamp(finiteOr(map.xCells, -10), -1000, 1000),
             yCells: clamp(finiteOr(map.yCells, -10), -1000, 1000)
           };
@@ -87,7 +90,7 @@
   let drag = null;
   let toastTimeout = null;
   let mapImage = null;
-  let mapMoveMode = false;
+  let mapEditMode = null;
   let mapLoadGeneration = 0;
 
   const canvas = document.getElementById("boardCanvas");
@@ -110,9 +113,12 @@
     mapFilename: document.getElementById("mapFilename"),
     mapResolution: document.getElementById("mapResolution"),
     mapColumns: document.getElementById("mapColumns"),
+    mapRows: document.getElementById("mapRows"),
     mapOffsetX: document.getElementById("mapOffsetX"),
     mapOffsetY: document.getElementById("mapOffsetY"),
     mapMoveToggle: document.getElementById("mapMoveToggle"),
+    mapResizeToggle: document.getElementById("mapResizeToggle"),
+    themeSelect: document.getElementById("themeSelect"),
     boardHint: document.getElementById("boardHint"),
     gridToggle: document.getElementById("gridToggle"),
     snapToggle: document.getElementById("snapToggle"),
@@ -213,24 +219,30 @@
   }
 
   function mapHeightCells() {
-    if (!state.map) return 0;
-    return state.map.widthCells * state.map.heightPx / state.map.widthPx;
+    return state.map ? state.map.heightCells : 0;
   }
 
   function refreshMapControls() {
     const map = state.map;
     refs.mapEmpty.hidden = Boolean(map);
     refs.mapControls.hidden = !map;
-    refs.mapMoveToggle.classList.toggle("active", mapMoveMode);
-    refs.mapMoveToggle.setAttribute("aria-pressed", String(mapMoveMode));
-    canvas.classList.toggle("map-align", mapMoveMode);
-    refs.boardHint.textContent = mapMoveMode
-      ? "✥ Alineación: arrastra la imagen sobre la rejilla. Desactiva el modo para mover la mesa."
-      : "✥ Arrastra los tokens para moverlos · Arrastra el fondo para desplazarte";
+    refs.mapMoveToggle.classList.toggle("active", mapEditMode === "move");
+    refs.mapMoveToggle.setAttribute("aria-pressed", String(mapEditMode === "move"));
+    refs.mapResizeToggle.classList.toggle("active", mapEditMode === "resize");
+    refs.mapResizeToggle.setAttribute("aria-pressed", String(mapEditMode === "resize"));
+    canvas.classList.toggle("map-align", mapEditMode === "move");
+    canvas.classList.toggle("map-resize", mapEditMode === "resize");
+    canvas.style.cursor = "";
+    refs.boardHint.textContent = mapEditMode === "move"
+      ? "✥ Mover mapa: arrastra la imagen para alinearla con la rejilla."
+      : mapEditMode === "resize"
+        ? "⤢ Estirar mapa: arrastra los tiradores de esquinas o bordes para cambiar su tamaño."
+        : "✥ Arrastra los tokens para moverlos · Arrastra el fondo para desplazarte";
     if (!map) return;
     refs.mapFilename.textContent = map.name;
     refs.mapResolution.textContent = map.widthPx + " × " + map.heightPx + " píxeles";
     refs.mapColumns.value = String(Math.round(map.widthCells * 100) / 100);
+    refs.mapRows.value = String(Math.round(map.heightCells * 100) / 100);
     refs.mapOffsetX.value = String(Math.round(map.xCells * 100) / 100);
     refs.mapOffsetY.value = String(Math.round(map.yCells * 100) / 100);
   }
@@ -277,11 +289,12 @@
         widthPx: image.naturalWidth,
         heightPx: image.naturalHeight,
         widthCells,
+        heightCells: clamp(heightCells, 1, 200),
         xCells: -widthCells / 2,
         yCells: -heightCells / 2
       };
       mapImage = image;
-      mapMoveMode = false;
+      mapEditMode = null;
       refreshMapControls();
       fitMapIntoViewport();
       save();
@@ -317,30 +330,90 @@
     }
   }
 
+  function mapScreenRect() {
+    if (!state.map || !mapImage) return null;
+    const point = worldToScreen(state.map.xCells * state.cellSize, state.map.yCells * state.cellSize);
+    return {
+      x: point.x, y: point.y,
+      width: state.map.widthCells * state.cellSize * state.zoom,
+      height: mapHeightCells() * state.cellSize * state.zoom
+    };
+  }
+
+  function mapResizeHandles() {
+    const rect = mapScreenRect();
+    if (!rect) return [];
+    const { x, y, width, height } = rect;
+    return [
+      { key: "nw", x, y }, { key: "n", x: x + width / 2, y }, { key: "ne", x: x + width, y },
+      { key: "w", x, y: y + height / 2 }, { key: "e", x: x + width, y: y + height / 2 },
+      { key: "sw", x, y: y + height }, { key: "s", x: x + width / 2, y: y + height },
+      { key: "se", x: x + width, y: y + height }
+    ];
+  }
+
+  function findResizeHandle(point) {
+    if (mapEditMode !== "resize") return null;
+    let nearest = null;
+    let distance = 18;
+    for (const handle of mapResizeHandles()) {
+      const next = Math.hypot(point.x - handle.x, point.y - handle.y);
+      if (next < distance) {
+        nearest = handle;
+        distance = next;
+      }
+    }
+    return nearest;
+  }
+
   function drawMap() {
-    if (!state.map || !mapImage) return;
-    const map = state.map;
-    const topLeft = worldToScreen(map.xCells * state.cellSize, map.yCells * state.cellSize);
-    const width = map.widthCells * state.cellSize * state.zoom;
-    const height = mapHeightCells() * state.cellSize * state.zoom;
-    context.drawImage(mapImage, topLeft.x, topLeft.y, width, height);
-    if (mapMoveMode) {
+    const rect = mapScreenRect();
+    if (!rect) return;
+    context.drawImage(mapImage, rect.x, rect.y, rect.width, rect.height);
+    if (mapEditMode) {
       context.save();
       context.setLineDash([9, 5]);
       context.lineWidth = 2;
-      context.strokeStyle = "#a5ffde";
-      context.strokeRect(topLeft.x, topLeft.y, width, height);
+      context.strokeStyle = state.theme === "light" ? "#0b7769" : "#a5ffde";
+      context.strokeRect(rect.x, rect.y, rect.width, rect.height);
+      context.setLineDash([]);
+      if (mapEditMode === "resize") {
+        for (const handle of mapResizeHandles()) {
+          context.beginPath();
+          context.arc(handle.x, handle.y, 7, 0, Math.PI * 2);
+          context.fillStyle = state.theme === "light" ? "#ffffff" : "#122b37";
+          context.fill();
+          context.lineWidth = 2.5;
+          context.stroke();
+        }
+      }
       context.restore();
     }
   }
 
   function pointIsOnMap(point) {
-    if (!state.map || !mapImage) return false;
-    const topLeft = worldToScreen(state.map.xCells * state.cellSize, state.map.yCells * state.cellSize);
-    const width = state.map.widthCells * state.cellSize * state.zoom;
-    const height = mapHeightCells() * state.cellSize * state.zoom;
-    return point.x >= topLeft.x && point.x <= topLeft.x + width
-      && point.y >= topLeft.y && point.y <= topLeft.y + height;
+    const rect = mapScreenRect();
+    return Boolean(rect && point.x >= rect.x && point.x <= rect.x + rect.width
+      && point.y >= rect.y && point.y <= rect.y + rect.height);
+  }
+
+  function resizeMapFromDrag(drag, dx, dy) {
+    if (!state.map) return;
+    const scale = state.cellSize * state.zoom;
+    const horizontal = dx / scale;
+    const vertical = dy / scale;
+    const west = drag.handle.includes("w");
+    const east = drag.handle.includes("e");
+    const north = drag.handle.includes("n");
+    const south = drag.handle.includes("s");
+    let width = drag.width + (east ? horizontal : west ? -horizontal : 0);
+    let height = drag.height + (south ? vertical : north ? -vertical : 0);
+    width = Math.round(clamp(width, 1, 200) * 100) / 100;
+    height = Math.round(clamp(height, 1, 200) * 100) / 100;
+    state.map.widthCells = width;
+    state.map.heightCells = height;
+    state.map.xCells = clamp(west ? drag.x + drag.width - width : drag.x, -1000, 1000);
+    state.map.yCells = clamp(north ? drag.y + drag.height - height : drag.y, -1000, 1000);
   }
 
   function updateMapSetting(property, rawValue) {
@@ -350,7 +423,7 @@
       refreshMapControls();
       return;
     }
-    state.map[property] = property === "widthCells"
+    state.map[property] = property === "widthCells" || property === "heightCells"
       ? clamp(value, 1, 200) : clamp(value, -1000, 1000);
     refreshMapControls();
     save();
@@ -365,7 +438,7 @@
       if (generation !== mapLoadGeneration) return;
       state.map = null;
       mapImage = null;
-      mapMoveMode = false;
+      mapEditMode = null;
       refreshMapControls();
       save();
       draw();
@@ -413,9 +486,12 @@
     const firstY = Math.floor(-origin.y / spacing);
     const lastY = Math.ceil((height - origin.y) / spacing);
 
+    const gridInk = state.theme === "light" ? "49,73,97" : "165,203,218";
+    const strongGrid = state.theme === "light" ? 0.55 : 0.62;
+    const fineGrid = state.theme === "light" ? 0.27 : 0.30;
     for (let i = firstX; i <= lastX; i++) {
       const x = Math.round(origin.x + i * spacing) + 0.5;
-      context.strokeStyle = i % 5 === 0 ? "rgba(165,203,218," + (0.62 * state.gridOpacity) + ")" : "rgba(165,203,218," + (0.30 * state.gridOpacity) + ")";
+      context.strokeStyle = "rgba(" + gridInk + "," + ((i % 5 === 0 ? strongGrid : fineGrid) * state.gridOpacity) + ")";
       context.lineWidth = 1;
       context.beginPath();
       context.moveTo(x, 0);
@@ -424,7 +500,7 @@
     }
     for (let i = firstY; i <= lastY; i++) {
       const y = Math.round(origin.y + i * spacing) + 0.5;
-      context.strokeStyle = i % 5 === 0 ? "rgba(165,203,218," + (0.62 * state.gridOpacity) + ")" : "rgba(165,203,218," + (0.30 * state.gridOpacity) + ")";
+      context.strokeStyle = "rgba(" + gridInk + "," + ((i % 5 === 0 ? strongGrid : fineGrid) * state.gridOpacity) + ")";
       context.lineWidth = 1;
       context.beginPath();
       context.moveTo(0, y);
@@ -496,11 +572,11 @@
     const { width, height } = getDimensions();
     if (!width || !height) return;
     context.clearRect(0, 0, width, height);
-    context.fillStyle = "#0a1422";
+    context.fillStyle = state.theme === "light" ? "#e7edf3" : "#0a1422";
     context.fillRect(0, 0, width, height);
     const haze = context.createRadialGradient(width * 0.52, height * 0.45, 0, width * 0.52, height * 0.45, Math.max(width, height) * .85);
-    haze.addColorStop(0, "rgba(27,50,68,.35)");
-    haze.addColorStop(1, "rgba(4,12,23,0)");
+    haze.addColorStop(0, state.theme === "light" ? "rgba(255,255,255,.65)" : "rgba(27,50,68,.35)");
+    haze.addColorStop(1, state.theme === "light" ? "rgba(213,225,233,0)" : "rgba(4,12,23,0)");
     context.fillStyle = haze;
     context.fillRect(0, 0, width, height);
 
@@ -591,7 +667,15 @@
     }
   }
 
+  function applyTheme() {
+    document.documentElement.dataset.theme = state.theme;
+    refs.themeSelect.value = state.theme;
+    const browserColor = document.querySelector('meta[name="theme-color"]');
+    if (browserColor) browserColor.content = state.theme === "light" ? "#f5f7fa" : "#0b1420";
+  }
+
   function refreshControls() {
+    applyTheme();
     refs.gridSize.value = String(state.cellSize);
     refs.gridSizeValue.textContent = state.cellSize + " px";
     refs.gridOpacity.value = String(Math.round(state.gridOpacity * 100));
@@ -612,8 +696,16 @@
     if (event.button !== 0 && event.pointerType === "mouse") return;
     const point = pointerPosition(event);
     const token = findTokenAt(point);
+    const handle = findResizeHandle(point);
     canvas.focus({ preventScroll: true });
-    if (mapMoveMode && pointIsOnMap(point)) {
+    if (handle && state.map) {
+      selectToken(null);
+      drag = {
+        pointerId: event.pointerId, type: "map-resize", point, handle: handle.key,
+        x: state.map.xCells, y: state.map.yCells,
+        width: state.map.widthCells, height: state.map.heightCells
+      };
+    } else if (mapEditMode === "move" && pointIsOnMap(point)) {
       selectToken(null);
       drag = { pointerId: event.pointerId, type: "map", point, x: state.map.xCells, y: state.map.yCells };
     } else if (token) {
@@ -631,7 +723,13 @@
     const point = pointerPosition(event);
     const world = screenToWorld(point.x, point.y);
     refs.coordinates.textContent = "X " + Math.floor(world.x / state.cellSize) + " · Y " + Math.floor(world.y / state.cellSize);
-    if (!drag || drag.pointerId !== event.pointerId) return;
+    if (!drag) {
+      const handle = findResizeHandle(point);
+      const cursors = { nw: "nwse-resize", se: "nwse-resize", ne: "nesw-resize", sw: "nesw-resize", n: "ns-resize", s: "ns-resize", w: "ew-resize", e: "ew-resize" };
+      canvas.style.cursor = handle ? cursors[handle.key] : "";
+      return;
+    }
+    if (drag.pointerId !== event.pointerId) return;
     const dx = point.x - drag.point.x;
     const dy = point.y - drag.point.y;
     if (drag.type === "pan") {
@@ -640,6 +738,8 @@
     } else if (drag.type === "map" && state.map) {
       state.map.xCells = clamp(Math.round((drag.x + dx / (state.cellSize * state.zoom)) * 100) / 100, -1000, 1000);
       state.map.yCells = clamp(Math.round((drag.y + dy / (state.cellSize * state.zoom)) * 100) / 100, -1000, 1000);
+    } else if (drag.type === "map-resize") {
+      resizeMapFromDrag(drag, dx, dy);
     } else if (drag.type === "token") {
       const token = state.tokens.find((item) => item.id === drag.tokenId);
       if (!token) return;
@@ -658,11 +758,12 @@
         token.y = state.snap ? Math.round(token.y) : Math.round(token.y * 100) / 100;
       }
       refreshTokenList();
-    } else if (drag.type === "map") {
+    } else if (drag.type === "map" || drag.type === "map-resize") {
       refreshMapControls();
     }
     drag = null;
     canvas.classList.remove("dragging");
+    canvas.style.cursor = "";
     if (canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
     save();
     draw();
@@ -764,13 +865,25 @@
       refs.mapUpload.value = "";
     }
   });
-  for (const [id, property] of [["mapColumns", "widthCells"], ["mapOffsetX", "xCells"], ["mapOffsetY", "yCells"]]) {
+  for (const [id, property] of [["mapColumns", "widthCells"], ["mapRows", "heightCells"], ["mapOffsetX", "xCells"], ["mapOffsetY", "yCells"]]) {
     refs[id].addEventListener("change", (event) => updateMapSetting(property, event.target.value));
   }
   refs.mapMoveToggle.addEventListener("click", () => {
     if (!state.map || !mapImage) return;
-    mapMoveMode = !mapMoveMode;
+    mapEditMode = mapEditMode === "move" ? null : "move";
     refreshMapControls();
+    draw();
+  });
+  refs.mapResizeToggle.addEventListener("click", () => {
+    if (!state.map || !mapImage) return;
+    mapEditMode = mapEditMode === "resize" ? null : "resize";
+    refreshMapControls();
+    draw();
+  });
+  refs.themeSelect.addEventListener("change", (event) => {
+    state.theme = event.target.value === "dark" ? "dark" : "light";
+    applyTheme();
+    save();
     draw();
   });
   document.getElementById("fitMap").addEventListener("click", fitMapIntoViewport);

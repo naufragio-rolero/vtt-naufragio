@@ -91,6 +91,7 @@ Ejemplo: un «Guardia de Ylat» del catálogo puede colocarse tres veces en unas
 | MAP-01 | P0 | Crear una partida con uno o más mapas y un solo mapa activo. |
 | MAP-02 | P0 | Añadir una imagen propia como fondo y calibrarla respecto a una cuadrícula. |
 | MAP-03 | P0 | Desplazar, escalar y alinear fondo y rejilla; elegir tamaño de casilla y activar o desactivar el ajuste. |
+| MAP-06 | P0 | Ajustar manualmente la imagen arrastrando bordes y esquinas, modificando ancho y alto de forma independiente para calibrar mapas con rejillas imperfectas. |
 | MAP-04 | P0 | Mantener el estado de cada mapa al ponerlo en pausa y volver a activarlo. |
 | MAP-05 | P0 | Preparar mapas y elementos ocultos sin exponerlos a jugadores. |
 | CAT-01 | P0 | Crear, consultar y reutilizar tokens y mapas de catálogo. |
@@ -101,6 +102,12 @@ Ejemplo: un «Guardia de Ylat» del catálogo puede colocarse tres veces en unas
 | TOK-02 | P0 | Mover, duplicar, cambiar tamaño, editar nombre/color y eliminar instancias de tokens. |
 | TOK-03 | P0 | Respetar los permisos de movimiento y edición establecidos por el máster. |
 | TOK-04 | P1 | Ampliar propiedades visuales de tokens según las necesidades detectadas en pruebas, sin estadísticas de juego. |
+
+### Apariencia
+
+| ID | Prioridad | Requisito |
+| --- | --- | --- |
+| VIS-01 | P0 | Ofrecer interfaz clara y oscura mediante selector accesible; usar el tema claro inicialmente y conservar la preferencia en el navegador de cada participante. |
 
 ### Persistencia y recuperación
 

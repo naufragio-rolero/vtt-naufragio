@@ -1,6 +1,6 @@
 # Naufragio VTT
 
-Prototipo 0.1.1 de un tablero virtual ligero para El Naufragio, inspirado en la sencillez de Owlbear Rodeo 1.0.
+Prototipo 0.1.2 de un tablero virtual ligero para El Naufragio, inspirado en la sencillez de Owlbear Rodeo 1.0.
 
 **[Requisitos completos y plan de trabajo](docs/REQUISITOS.md)** — arquitectura, alcance del MVP y decisiones confirmadas.
 
@@ -15,16 +15,19 @@ Prototipo 0.1.1 de un tablero virtual ligero para El Naufragio, inspirado en la 
 - Desplazar el tablero, hacer zoom y centrar la vista.
 - Mover el token seleccionado con las flechas del teclado.
 - Guardado automático de tokens y ajustes mediante localStorage, y del mapa importado mediante IndexedDB.
-- Importación de imágenes PNG/JPEG/WebP como fondo con anchura en casillas, desplazamiento X/Y y ajuste visual a la rejilla.
+- Importación de imágenes PNG/JPEG/WebP como fondo, con posición y dimensiones independientes en casillas.
+- Edición manual de los mapas arrastrando los ocho tiradores de bordes y esquinas, también en pantallas táctiles.
+- Selector de **tema claro u oscuro**. El claro se muestra por defecto; la elección se guarda en este navegador.
 - Interfaz adaptable a escritorio y móvil, sin dependencias externas.
 
 ## Importar y alinear un mapa
 
 1. Desde **Mapa de fondo**, selecciona una imagen de tu dispositivo (hasta 12 MB y 20 megapíxeles, con 8000 píxeles como máximo por lado).
-2. Ajusta **Anchura (casillas)** al número de columnas que ocupa la imagen. La altura mantiene su proporción.
-3. Utiliza **Posición X/Y** o activa **Mover imagen sobre la rejilla** y arrástrala para hacer coincidir su cuadrícula con la del tablero.
-4. Pulsa **Encajar vista** para ver el mapa completo. Los tokens permanecen sobre la imagen.
-5. Recarga la página para comprobar que el mapa y su calibración siguen ahí.
+2. Ajusta **Anchura / Altura (casillas)** según la rejilla que tenga la imagen; la proporción original se aplica inicialmente.
+3. Usa **Mover imagen** para desplazarla. Activa **Estirar imagen** para ver los ocho tiradores y arrastra esquinas o bordes hasta hacer coincidir el fondo con la rejilla (la imagen puede deformarse intencionadamente).
+4. Ajusta **Posición X/Y** para calibrar con precisión o pulsa **Encajar vista** para ver todo el mapa. Los tokens quedan por encima.
+5. Desde **La mesa → Apariencia**, elige entre tema claro y oscuro.
+6. Recarga la página para comprobar que se conservan fondo, tamaño, posición, tema y tokens.
 
 Esta iteración admite **un mapa local**. La colección de mapas y las partidas compartidas llegarán después.
 

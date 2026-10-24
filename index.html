@@ -1,13 +1,13 @@
 <!doctype html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0b1420">
+  <meta name="theme-color" content="#f5f7fa">
   <meta name="description" content="Naufragio VTT: un tablero virtual ligero para juegos de rol.">
   <title>Naufragio VTT · Mesa de prueba</title>
-  <link rel="stylesheet" href="./styles.css?v=0.1.1">
-  <script src="./app.js?v=0.1.1" defer></script>
+  <link rel="stylesheet" href="./styles.css?v=0.1.2">
+  <script src="./app.js?v=0.1.2" defer></script>
 </head>
 <body>
   <div class="app-shell">
@@ -18,7 +18,7 @@
           <span class="eyebrow">EL NAUFRAGIO</span>
           <strong>Naufragio <span>VTT</span></strong>
         </div>
-        <span class="version-pill">MVP 0.1.1</span>
+        <span class="version-pill">MVP 0.1.2</span>
       </div>
       <div class="sidebar-scroll">
         <section class="panel-section map-section">
@@ -29,19 +29,24 @@
           <div id="mapControls" hidden>
             <div class="map-file-details"><span id="mapFilename">Mapa</span><span id="mapResolution"></span></div>
             <div class="map-fields">
-              <label class="field-label" for="mapColumns">Anchura (casillas)</label>
-              <input class="text-field number-field" id="mapColumns" type="number" min="1" max="200" step="0.25" value="20">
+              <div class="map-size-row">
+                <div><label class="field-label" for="mapColumns">Anchura (casillas)</label><input class="text-field number-field" id="mapColumns" type="number" min="1" max="200" step="0.25" value="20"></div>
+                <div><label class="field-label" for="mapRows">Altura (casillas)</label><input class="text-field number-field" id="mapRows" type="number" min="1" max="200" step="0.25" value="15"></div>
+              </div>
               <div class="map-offset-row">
                 <div><label class="field-label" for="mapOffsetX">Posición X</label><input class="text-field number-field" id="mapOffsetX" type="number" min="-1000" max="1000" step="0.25" value="-10"></div>
                 <div><label class="field-label" for="mapOffsetY">Posición Y</label><input class="text-field number-field" id="mapOffsetY" type="number" min="-1000" max="1000" step="0.25" value="-8"></div>
               </div>
             </div>
-            <button class="toggle-button map-move-button" id="mapMoveToggle" type="button" aria-pressed="false">✥ Mover imagen sobre la rejilla</button>
+            <div class="map-mode-group" role="group" aria-label="Herramientas del mapa">
+              <button class="toggle-button map-move-button" id="mapMoveToggle" type="button" aria-pressed="false">✥ Mover imagen</button>
+              <button class="toggle-button map-resize-button" id="mapResizeToggle" type="button" aria-pressed="false">⤢ Estirar imagen</button>
+            </div>
             <div class="map-action-row">
               <button class="secondary-button" id="fitMap" type="button">⌗ Encajar vista</button>
               <button class="secondary-button muted-button" id="removeMap" type="button">Quitar imagen</button>
             </div>
-            <p class="help-text map-help">Ajusta las casillas o arrastra la imagen en el modo de alineación. Mantendrá su proporción.</p>
+            <p class="help-text map-help">Usa «Estirar imagen» y arrastra los tiradores de esquinas o bordes. Puedes cambiar anchura y altura por separado.</p>
           </div>
         </section>
         <section class="panel-section">
@@ -58,6 +63,13 @@
           <div class="toggle-group">
             <button class="toggle-button active" id="gridToggle" type="button" aria-pressed="true"><span class="toggle-icon">▦</span> Rejilla</button>
             <button class="toggle-button active" id="snapToggle" type="button" aria-pressed="true"><span class="toggle-icon">⌗</span> Ajustar</button>
+          </div>
+          <div class="theme-control">
+            <label class="control-name" for="themeSelect">Apariencia</label>
+            <select class="theme-select" id="themeSelect" aria-label="Tema visual">
+              <option value="light">☀ Tema claro</option>
+              <option value="dark">☾ Tema oscuro</option>
+            </select>
           </div>
         </section>
 
