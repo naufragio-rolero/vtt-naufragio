@@ -120,3 +120,29 @@ canvas.dragging { cursor: grabbing; }
   .board-footer span:last-child { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: .01ms !important; } }
+
+
+/* Iteración 0.1.1: importación y alineación de mapas locales. */
+.upload-button { display: flex; justify-content: center; align-items: center; width: 100%; gap: 8px; padding: 11px; border: 1px solid #5d9c99; border-radius: 9px; background: #1a3a3d; color: #b2f9e7; text-align: center; font-size: 12px; font-weight: 750; cursor: pointer; }
+.upload-button:hover { background: #285057; }
+.visually-hidden { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.map-empty { margin: 13px 0 0; }
+.map-file-details { display: flex; flex-direction: column; gap: 2px; margin: 15px 0 17px; padding: 10px 11px; background: #152a36; border: 1px solid #2e4e58; border-radius: 8px; }
+#mapFilename { overflow-wrap: anywhere; color: #e0f5f0; font-weight: 700; font-size: 12px; }
+#mapResolution { font-size: 10px; color: #89a4ad; }
+.map-fields { margin-bottom: 12px; }
+.number-field { font-variant-numeric: tabular-nums; }
+.map-offset-row { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 12px; }
+.map-offset-row > div { min-width: 0; }
+.map-move-button { width: 100%; margin: 2px 0 11px; }
+.map-action-row { display: flex; gap: 8px; }
+.secondary-button { flex: 1; min-width: 0; padding: 10px 7px; border: 1px solid #36546a; border-radius: 8px; color: #cce1ed; background: #1c3042; font-size: 11px; font-weight: 700; }
+.secondary-button:hover { background: #2b4356; }
+.secondary-button.muted-button { border-color: #54404a; color: #dcb6bf; background: #2a202a; }
+.secondary-button.muted-button:hover { background: #3a2834; }
+.map-help { margin: 12px 0 0; }
+.grid-opacity-row { margin-top: 14px; }
+#mapMoveToggle.active { border-color: #9bc9a5; background: #294a43; color: #d7f9da; }
+
+canvas.map-align { cursor: move; }
+canvas.map-align.dragging { cursor: grabbing; }
