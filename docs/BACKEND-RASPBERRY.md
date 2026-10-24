@@ -1,12 +1,12 @@
-# Backend multijugador — Plan de implementación en Raspberry Pi
+# Backend multijugador — Despliegue portable y referencia Raspberry Pi
 
 > Proyecto: **Naufragio VTT** · Repositorio: `naufragio-rolero/vtt-naufragio`
 >
-> Fecha: 24 de octubre de 2026 · Estado: **plan preparado; Raspberry pendiente de inventario por SSH**.
+> Fecha: 24 de octubre de 2026 · Estado: **plan actualizado; backend aún sin implementar y Raspberry pendiente de inventario por SSH**.
 >
 > Destinatario: Codex trabajando sobre un clon del repositorio en Windows y conectado a la Raspberry por SSH.
 >
-> **Esta guía es de preparación, no una orden de desplegar automáticamente.** Primero hay que inspeccionar los servicios reales y confirmar las decisiones que dependan del entorno.
+> **Esta guía es de preparación, no una orden de desplegar automáticamente.** La Raspberry es nuestra instalación piloto, **no una dependencia del VTT**. Antes de desplegar en cualquier máquina, hay que inspeccionar sus servicios y confirmar las decisiones dependientes del entorno.
 
 ## 1. Punto de partida y objetivo
 
@@ -14,65 +14,100 @@ Naufragio VTT ya tiene un frontend estático 0.1.2 en GitHub Pages: identificaci
 
 Fuentes de verdad que Codex debe leer antes de tocar código:
 
-1. [Requisitos funcionales y decisiones](REQUISITOS.md), especialmente DEC-01 a DEC-12, AUT, COL, MAP y DAT.
+1. [Requisitos funcionales y decisiones](REQUISITOS.md), especialmente DEC-01 a DEC-16, AUT, CFG, COL, MAP y DAT.
 2. [Plan de mapas](PLAN-MAPAS.md), para respetar el formato y persistencia actuales.
 3. [Referencias de Owlbear Rodeo](REFERENCIAS-OWLBEAR.md), manteniendo una experiencia sencilla.
 4. [README del repositorio](../README.md) y el propio `index.html`/`app.js` para entender el prototipo.
 
-**Objetivo del primer hito real:** un máster inicia sesión, crea una sala y obtiene un código; al menos dos jugadores autenticados entran desde navegadores diferentes y todos ven el movimiento de un mismo token en tiempo real. Después se verificará con cuatro jugadores, según el criterio de aceptación global.
+**Objetivo del primer hito real:** una persona con perfil de dirección inicia sesión, crea una partida y obtiene un código; puede invitar a alguien nuevo para que cree una cuenta ordinaria. Al menos dos participantes autenticados entran desde navegadores diferentes, con permisos limitados, y todos ven el movimiento autorizado de un mismo token. Después se verificará con cuatro participantes, según el criterio de aceptación global.
 
-La Raspberry actuará como servidor de autenticación y retransmisión, mientras GitHub Pages podrá seguir alojando el frontend durante las pruebas.
+**Despliegue piloto:** Raspberry para autenticación y retransmisión; GitHub Pages para el frontend. **Despliegues alternativos:** cualquier servidor web estático para la interfaz y cualquier host compatible para el backend, incluso en el mismo dominio mediante proxy.
 
 ## 2. Decisiones de producto que no deben renegociarse por accidente
 
 | Tema | Decisión |
 | --- | --- |
-| Identificación | Cuentas y contraseñas **creadas por la administración**; sin registro público ni credenciales ficticias publicadas. |
-| Acceso | Pantalla «Crear partida» o «Unirse a partida». El código de la sala **no sustituye** el inicio de sesión. |
-| Roles | Administrador, máster/propietario y jugador; cada acción se autoriza. |
+| Identificación | Sin registro público: la administración provisiona cuentas y perfiles de dirección; cada máster autorizado puede generar invitaciones de alta de un solo uso para **cuentas ordinarias**. |
+| Acceso | Pantalla «Crear partida» **solo para dirección** y «Unirse a partida» para participantes autorizados. La invitación de alta de cuenta y el código de partida son cosas diferentes; ninguno sustituye una sesión autenticada. |
+| Roles | IDs internos estables (`admin`, `director`, `user`), con **nombres visibles configurables**; cambiar una etiqueta no cambia permisos. |
 | Partida | Colección de mapas con **exactamente uno activo**; el resto está en pausa. |
 | Autoridad | El **navegador del máster** es la fuente oficial del contenido y posiciones. |
 | Servidor | Autentica, valida pertenencia, coordina sesiones y retransmite mensajes. **No persiste mapas, imágenes, niebla, tokens ni estados de partida.** |
 | Metadatos | Puede guardar cuentas, permisos y metadatos mínimos de salas necesarios para el acceso. |
 | Desconexión del máster | La sala queda **en espera**; no se elige otro máster ni se aceptan movimientos oficiales mientras no reconecte. |
 | Caches de jugadores | Solo información autorizada del mapa activo; nunca enviar material de mapas pausados ni capas secretas. |
-| Alcance visual | No construir hojas de personaje, atributos, reglas de combate ni herramientas avanzadas antes del MVP compartido. |
+| Permisos de usuario | **Denegación por defecto:** no crea partidas, no sube mapas ni imágenes de tokens y no edita recursos globales. Solo entra en salas autorizadas, mueve tokens asignados y tira dados si el director lo permite cuando esa herramienta esté disponible. |
+| Permisos de dirección | Crear partidas, invitar a cuentas ordinarias, administrar invitados y permisos, subir mapas y tokens, activar mapas, exportar e importar contenido. |
+| Frontend portable | Se aloja en GitHub Pages o en otro servidor web estático. Configuración pública del sitio y pantalla de ajustes para endpoints de autenticación, tiempo real y nombres de roles. |
+| Exportación MVP | En la versión jugable 0.3 se exportan/importan **partidas completas, mapas individuales y tokens**, con sus recursos. |
+| Alcance visual | No construir hojas de personaje, atributos ni reglas de combate antes del MVP compartido. |
 | Primer escenario | Pocos usuarios simultáneos; optimizar simplicidad y seguridad antes que escalado prematuro. |
 
-**Importante:** un código de invitación identifica la sala, pero no es una contraseña ni otorga permisos por sí mismo. Generarlo criptográficamente (por ejemplo, 12 caracteres aleatorios sin caracteres ambiguos), evitar colisiones, permitir renovarlo y limitar intentos de entrada. Un alias legible opcional no sustituye al código seguro.
+**Importante:** hay **dos clases de invitación**. Una invitación de **alta de cuenta** permite registrarse una sola vez como usuario, caduca y no concede permisos elevados; un **código de partida** identifica una sala para cuentas ya autenticadas. Son independientes, aleatorios, revocables y no sustituyen una autorización. Generar códigos impredecibles (por ejemplo, 12 caracteres aleatorios sin caracteres ambiguos), evitar colisiones y limitar intentos.
 
 ## 3. Arquitectura objetivo
 
 ~~~text
-Windows (Git + Codex) ── SSH ──► Raspberry Pi
-          │                          │
-          └──── commits / PR ──► GitHub
-                                  │
-                            GitHub Pages
-                             (frontend)
-                                  │ HTTPS + WSS
-                                  ▼
-                       Proxy TLS existente
-                                  │ 127.0.0.1:3400
-                                  ▼
-                     Node.js LTS + Socket.IO
-                       ├─ usuarios / sesiones
-                       ├─ salas / códigos / permisos
-                       ├─ retransmisión de eventos
-                       └─ SQLite (solo identidad y
-                          metadatos mínimos)
-                                  ▲
-                         máster autoritativo
-                       (estado en IndexedDB)
+Windows (Git + Codex) ──► GitHub ──► Frontend estático
+                    (Pages / Nginx / Apache / otro host)
+                                      │
+                               site.config.json
+                                      │ HTTPS + WSS
+                                      ▼
+                         Proxy TLS o mismo origen
+                                      │
+                             Backend portable
+                            Node.js + Socket.IO
+                        ├─ cuentas / invitaciones
+                        ├─ roles / salas / permisos
+                        ├─ retransmisión de eventos
+                        └─ SQLite (solo identidad
+                           y metadatos imprescindibles)
+                                      ▲
+                             máster autoritativo
+                         (estado en su IndexedDB)
+
+Piloto Raspberry: Codex desde Windows ── SSH ──► Pi
 ~~~
 
-- El servidor Node debe escuchar **solo en `127.0.0.1`**; el puerto **3400 es una propuesta**, no un puerto ya reservado.
-- El proxy será Nginx o Caddy **solo si el inventario confirma que está instalado**. No introducir un segundo proxy sin necesidad.
-- Publicar la API en un subdominio HTTPS **pendiente de decidir y configurar**. No inventar DNS, IP pública ni credenciales.
+- En el despliegue Raspberry, Node debe escuchar **solo en `127.0.0.1`**; el puerto **3400 es una propuesta**, no un puerto ya reservado. En otros hosts, usar enlace interno equivalente.
+- Para Raspberry, aprovechar Nginx o Caddy **solo si el inventario confirma que está instalado**. En otros alojamientos usar el proxy compatible existente. No introducir un segundo proxy sin necesidad.
+- Publicar la API en un origen HTTPS **configurable por despliegue** (subdominio o misma sede mediante proxy), pendiente de decidir para la Raspberry. No inventar DNS, IP pública ni credenciales.
 - Preferir `systemd` para operar un servicio sencillo e independiente; usar Docker únicamente si la Raspberry ya sigue ese patrón y compensa.
-- Directorio propuesto de despliegue: `/mnt/ssd/services/naufragio-vtt`. **No existe confirmado** y debe validarse el espacio, permisos y organización actual antes de crearlo.
+- Directorio propuesto **solo para Raspberry**: `/mnt/ssd/services/naufragio-vtt`. **No existe confirmado** y debe validarse antes de crearlo; el backend no debe contener esa ruta hardcodeada.
 - El código fuente del backend irá en `backend/` dentro de **este mismo repositorio**, separado del frontend estático.
-- No tocar la web Heaven's Gate, localizada en `/mnt/ssd/html/hg`, ni reiniciar/cambiar sus servicios sin análisis y autorización.
+- En la Raspberry, no tocar Heaven's Gate (`/mnt/ssd/html/hg`) ni reiniciar/cambiar sus servicios sin análisis y autorización. En otros hosts aplicar aislamiento análogo.
+
+### Frontend portable y pantalla «Configuración del sitio»
+
+Requisito **P0**: la misma carpeta de frontend debe funcionar en GitHub Pages o en un servidor web estático convencional, en raíz o subruta, sin depender de la Raspberry. Los endpoints nunca deben quedar fijados en `app.js` ni inferirse de forma rígida desde GitHub Pages.
+
+- Cargar un fichero público y **relativo a la ruta base** del despliegue, por ejemplo `site.config.json`, con URL base de API/autenticación, URL de tiempo real (o la misma API), ruta Socket.IO, nombre del sitio y etiquetas visibles de roles.
+- Incluir una pantalla **«Configuración del sitio»** que muestre el estado de conexión, permita validar una configuración de prueba y preparar cambios. El administrador puede comprobar conectividad y descargar el JSON configurado.
+- **Límite del alojamiento estático:** una pantalla HTML no puede guardar un cambio global en los archivos de GitHub Pages. Para publicar ajustes comunes, se debe actualizar/republicar `site.config.json` mediante el proceso de despliegue. Si un backend ofrece administración autenticada, podrá disponer de una API propia para guardar configuración global allí; no confundirla con escribir en Pages.
+- Un ajuste local del navegador es útil para desarrollo, **no concede privilegios ni modifica la configuración de los demás visitantes**. No aceptar cambios de endpoint por parámetros de URL ni redirecciones ocultas: mostrar siempre el origen efectivo de autenticación antes de introducir credenciales y advertir de cualquier cambio.
+- No insertar secretos, tokens, contraseñas, claves de firma o credenciales en ese JSON: cualquier visitante puede leerlo.
+- Validar HTTPS/WSS en producción y permitir HTTP local solo en desarrollo; comprobar formato de endpoints, conectividad y respuestas con mensajes de error claros.
+- Configurar el backend con una lista explícita de orígenes frontend autorizados; no fijar únicamente `https://naufragio-rolero.github.io`. Para WebSocket, comprobar el origen además de CORS. La autenticación y autorización siguen siendo obligatorias aunque el origen esté permitido.
+- Los nombres visibles `Usuario`, `Máster` y `Administrador` son **etiquetas iniciales**, no IDs de autorización. Usar internamente capacidades/roles estables (`user`, `director`, `admin`).
+
+Ejemplo **público y sin secretos**:
+
+~~~json
+{
+  "siteName": "Naufragio VTT",
+  "apiBaseUrl": "https://api.ejemplo.invalid",
+  "realtimeBaseUrl": "https://api.ejemplo.invalid",
+  "socketPath": "/socket.io",
+  "roleLabels": {
+    "user": "Usuario",
+    "director": "Máster",
+    "admin": "Administrador"
+  }
+}
+~~~
+
+El dominio `ejemplo.invalid` es un marcador, **no** una dirección desplegada. Se decide el formato definitivo del archivo tras comprobar cómo se sirve el frontend en una subruta y cómo funciona la autenticación entre orígenes.
 
 ### Qué persiste en cada lugar
 
@@ -80,11 +115,11 @@ Windows (Git + Codex) ── SSH ──► Raspberry Pi
 | --- | --- | --- |
 | Navegador del máster | Partida, mapas activos y pausados, recursos, tokens y estado oficial en IndexedDB. | Secretos de acceso permanentes expuestos en JS o almacenamiento local. |
 | Navegador de jugador | Preferencias, caché autorizada y recursos recibidos del mapa activo. | Mapas pausados, secretos de dirección y datos fuera de su permiso. |
-| Raspberry / SQLite | Usuarios, hashes de contraseña, roles, propietarios, pertenencias y metadatos mínimos de salas. | Contenido persistente de mapas, imágenes, niebla, tokens, posiciones o historial privado de partida. |
-| Memoria temporal de Raspberry | Conexiones, presencia, colas acotadas y fragmentos de transmisión necesarios para retransmitir. | Copias indefinidas o volcados a disco del estado de partida. |
-| GitHub público | Código, pruebas, documentación y ejemplos sin datos reales. | Contraseñas, claves, tokens, `.env` real, certificados privados, base SQLite real o inventarios con datos sensibles. |
+| Backend / SQLite (Raspberry u otro host) | Usuarios, hashes de contraseña, roles, invitaciones de alta de un solo uso, propietarios, pertenencias y metadatos mínimos de salas. | Contenido persistente de mapas, imágenes, niebla, tokens, posiciones o historial privado de partida. |
+| Memoria temporal del backend | Conexiones, presencia, colas acotadas y fragmentos de transmisión necesarios para retransmitir. | Copias indefinidas o volcados a disco del estado de partida. |
+| GitHub público y cualquier hosting estático | Código, pruebas, documentación y configuración **pública** de endpoints/nombres. | Contraseñas, claves, tokens, `.env` real, certificados privados, base SQLite real o inventarios con datos sensibles. |
 
-**Consecuencia deliberada:** si el máster pierde su almacenamiento local, el servidor no podrá recuperar el contenido de la partida. La futura exportación/importación de respaldos es imprescindible; no prometer recuperación que todavía no existe.
+**Consecuencia deliberada:** si el máster pierde su almacenamiento local, el servidor no podrá recuperar el contenido de la partida. La **exportación/importación de partidas, mapas y tokens forma parte del MVP 0.3** y es imprescindible para cambiar de navegador y recuperar contenido; no prometer recuperación que todavía no existe.
 
 ## 4. Preparación desde Windows
 
@@ -106,7 +141,7 @@ git switch -c feat/backend-multijugador
 
 ## 5. Fase 0 — Inventario de Raspberry (solo lectura)
 
-Codex debe ejecutar por SSH y registrar un **resumen saneado** de resultados (sin credenciales ni información privada):
+Para la **instalación piloto Raspberry**, Codex debe ejecutar por SSH y registrar un **resumen saneado** de resultados (sin credenciales ni información privada). En otros hosts se realizará un inventario equivalente adaptado al sistema, nunca se reutilizarán órdenes Linux sin revisarlas:
 
 ~~~bash
 cat /etc/os-release
@@ -140,6 +175,7 @@ No ejecutar cambios con impacto sin resolver primero:
 3. Estrategia de integración con el proxy y condiciones de recarga sin interrumpir Heaven's Gate.
 4. Confirmación de cómo se gestionarán usuarios administradores y secretos iniciales.
 5. Compatibilidad del runtime Node LTS seleccionado con el sistema operativo de la Pi.
+6. Origen público del frontend, ubicación de `site.config.json` y lista de orígenes permitidos de la API.
 
 ## 6. Fase 1 — Backend local y pruebas automáticas
 
@@ -160,26 +196,49 @@ backend/
   tests/
 ~~~
 
-El lenguaje concreto (JS o TS) se decidirá al iniciar el backend; preferir pocas dependencias y una arquitectura comprensible. El frontend no debe depender del backend para seguir funcionando como demo local mientras se migra.
+El lenguaje concreto (JS o TS) se decidirá al iniciar el backend; preferir pocas dependencias y una arquitectura comprensible. El frontend no debe depender del backend para seguir funcionando como demo local mientras se migra. Las rutas y la configuración de backend deben ser portables y no referirse a Raspberry por defecto.
 
 Implementación mínima:
 
 - Node.js en rama **LTS mantenida**, con versiones fijadas mediante lockfile.
-- API HTTP para salud del servicio, autenticación, creación, listado autorizado y unión a salas.
+- API HTTP para salud del servicio, autenticación, invitaciones de alta, creación, listado autorizado y unión a salas.
 - Socket.IO para unión a canales de sala, presencia, peticiones de movimiento, confirmaciones y difusión.
 - Validación estricta de mensajes y límites de tamaño/frecuencia.
 - Gestión centralizada de errores, sin revelar trazas o secretos al cliente.
 - Tests sin requerir la Raspberry para la mayoría de casos.
-- Configuración sensible en variables de entorno; `.env.example` solo contendrá nombres y marcadores.
+- Configuración sensible del backend en variables de entorno; `.env.example` solo contendrá nombres y marcadores. Añadir un `site.config.example.json` **público** y el esquema/validador correspondiente para el frontend.
 - `.gitignore` debe excluir `.env`, claves, DB reales, logs y archivos temporales.
 
-## 7. Fase 2 — Cuentas y seguridad
+## 7. Fase 2 — Cuentas, invitaciones y permisos
 
-- **Sin alta pública.** El administrador crea usuarios; el máster no crea cuentas arbitrarias por accidente.
+- **Sin alta pública.** La administración crea perfiles de dirección y cuentas; un máster autorizado puede emitir **invitaciones individuales de un solo uso** para que nuevos jugadores creen sus cuentas ordinarias. El máster no crea cuentas con permisos de dirección o administración por esa vía.
+- El formulario de alta solo puede activarse tras comprobar una invitación válida, no usada, no revocada y no caducada. El enlace/token de alta debe distinguirse del código de sala y no aparecer en logs ni compartirse automáticamente.
+- El máster puede invitar a un usuario **ya registrado** a su partida o emitir una invitación combinada: alta de cuenta ordinaria seguida de pertenencia a esa partida. La cuenta no recibe automáticamente derechos sobre otras partidas.
+- Separar IDs internos estables (`admin`, `director`, `user`) de **etiquetas visibles configurables**. Cambiar «Máster» por «Director de juego» no altera las capacidades del rol.
+- Denegar por defecto todas las operaciones no expresamente concedidas al usuario: crear partida, invitar a perfiles elevados, subir imágenes, crear mapas/tokens de catálogo, cambiar el mapa activo y editar contenido ajeno.
+- Permitir al usuario únicamente entrar en salas autorizadas, mover **tokens asignados** y **tirar dados cuando el director active el permiso en esa partida**. Preparar este control desde 0.2; el interfaz de dados y su historial continúan en la fase 0.4 mientras no se acuerde anticiparlos.
+- La subida/importación de imágenes de mapas, tokens y antagonistas corresponde exclusivamente al director/máster autorizado. La exportación/importación completa del estado de partida también queda restringida a dirección por defecto.
+
+### Matriz mínima de permisos
+
+| Acción | Administrador técnico | Director/máster de la partida | Usuario ordinario |
+| --- | --- | --- | --- |
+| Configurar servicio y nombres globales de roles | Sí | No | No |
+| Provisionar directores/administradores | Sí | No | No |
+| Emitir invitación de alta de usuario ordinario | Sí | Sí | No |
+| Crear partidas | Si dispone también de capacidad de dirección | Sí | **No** |
+| Unirse a partida | Con autorización | Sí, si es propietario | Solo invitado/autorizado |
+| Subir mapas, imágenes y tokens | Según permiso de dirección | **Sí** | **No** |
+| Activar mapas y asignar tokens | Según permiso de dirección | **Sí** | **No** |
+| Mover tokens | Según asignación | Todos los de su partida | Solo los asignados |
+| Tirar dados, si la herramienta existe | Según autorización | Sí | **No**, salvo permiso concedido por director |
+| Exportar/importar partida, mapa o recurso | Según autorización | **Sí** | **No**, por defecto |
+
+El administrador técnico **no es automáticamente** propietario de las partidas: administración global y dirección de sala son capacidades diferentes.
 - Contraseñas almacenadas solo con **hash lento y sal**, preferentemente Argon2id, nunca texto plano ni cifrado reversible.
 - Sesiones/token de vida breve, revocación y expiración. Para la primera versión puede exigirse volver a iniciar sesión tras recargar.
 - **No guardar tokens de sesión duraderos en localStorage ni insertar credenciales en URLs.**
-- El frontend GitHub Pages y la API tienen orígenes distintos: restringir CORS a los orígenes permitidos y comprobar también el encabezado Origin de las conexiones WebSocket. **CORS no es autenticación.**
+- Según el despliegue, frontend y API pueden compartir origen o no: restringir CORS a la lista explícita de orígenes configurados y comprobar también el encabezado Origin de las conexiones WebSocket. **CORS no es autenticación.**
 - Autenticar cada conexión Socket.IO y **autorizar cada evento** por usuario, sala, papel y propiedad del token.
 - Limitar intentos de login y códigos fallidos; errores uniformes para no facilitar enumeración de usuarios/salas.
 - Protección frente a suplantación de máster, falsificación de identificadores de token, repetición de eventos, cargas enormes y emisión a salas ajenas.
@@ -192,13 +251,14 @@ Referencias de implementación: [Socket.IO — Rooms](https://socket.io/docs/v4/
 
 Flujos:
 
-1. Usuario autenticado abre «Crear partida» (si tiene permiso de máster) o «Unirse a partida».
-2. El máster crea la partida, recibe un identificador interno estable y un **código de invitación aleatorio y único**.
-3. Un jugador ya autenticado introduce el código. El backend verifica la sala y sus permisos; el máster puede retirar el acceso.
-4. Se muestran participantes conectados y estado de la sala.
-5. El máster es el **único** que activa mapas; los jugadores no reciben datos de otros mapas.
-6. Cuando el máster está ausente, los jugadores ven «En espera del máster» y no pueden emitir cambios oficiales.
-7. En la reconexión, el máster confirma su autoridad y envía a cada jugador **solo el estado permitido** del mapa activo.
+1. Una persona con capacidad de dirección ve «Crear partida» y «Unirse a partida»; el usuario ordinario **solo ve «Unirse a partida»**.
+2. El director crea la partida, recibe un identificador interno estable y un **código de sala aleatorio y único**.
+3. Si el invitado aún no tiene cuenta, el director emite una **invitación de alta de cuenta ordinaria** (de un solo uso); tras registrarse puede acceder a la partida invitada.
+4. Si ya tiene cuenta, recibe directamente la invitación/código de partida. El backend valida sesión, pertenencia y permisos; el director puede retirar el acceso.
+5. Se muestran participantes conectados, estado de sala y tokens asignados a cada usuario. La invitación a partida puede llevar un conjunto explícito de permisos asignados por el director (por ejemplo, dados), pero **nunca se habilitan por defecto por recibir la invitación**.
+6. Solo el director puede subir imágenes, activar mapas, conceder/revocar el permiso de dados y asignar control de tokens; los usuarios no reciben datos de otros mapas.
+7. Cuando el director está ausente, los usuarios ven «En espera del máster» y no pueden emitir cambios oficiales.
+8. En la reconexión, el director confirma su autoridad y envía a cada participante **solo el estado permitido** del mapa activo.
 
 Los códigos deben poder caducar o regenerarse. La persistencia mínima de metadatos de sala en SQLite está permitida; el contenido de la partida sigue exclusivamente en navegadores.
 
@@ -219,7 +279,7 @@ Requisitos técnicos:
 - No aceptar que el último cliente que escriba gane automáticamente al máster.
 - Los tokens deben conservar el comportamiento local actual cuando no haya sala conectada.
 - Medir latencia y rendimiento con dos navegadores primero y cuatro jugadores después.
-- No confiar únicamente en que los botones estén ocultos: el permiso debe verificarse en backend y máster.
+- No confiar únicamente en que los botones estén ocultos: el permiso debe verificarse en backend y máster. El usuario no puede falsificar una subida, una tirada no autorizada ni un movimiento de un token ajeno.
 
 ## 10. Fase 5 — Mapas e imágenes entre navegadores
 
@@ -227,27 +287,37 @@ El mapa actual vive en IndexedDB del navegador que lo importó; **los otros nave
 
 Secuencia prevista:
 
-1. El máster anuncia el mapa activo y un manifiesto autorizado de recursos.
+1. Solo el director/máster puede importar/subir imágenes y anuncia el mapa activo junto con un manifiesto autorizado de recursos.
 2. Cada jugador comprueba qué imágenes del mapa activo tiene en caché.
 3. El máster transmite las que falten a través del canal definido; la Raspberry **solo retransmite temporalmente**, sin guardarlas en disco.
 4. Transferencia en fragmentos, con límites de tamaño, controles de tipo, identificadores de recurso, integridad y reintentos acotados.
 5. Solo tras completar la recepción se muestra el fondo; el estado del tablero sigue siendo autoritativo del máster.
 6. Nunca difundir imágenes secretas o mapas pausados a usuarios sin permiso.
 
-En el primer hito de prueba puede usarse una cuadrícula con tokens genéricos, sin imágenes. **No declarar completo el MVP jugable** hasta verificar después el envío del mapa real.
+En el primer hito de prueba puede usarse una cuadrícula con tokens genéricos, sin imágenes. **No declarar completo el MVP jugable** hasta verificar el envío del mapa real y la exportación/importación autónoma de partidas, mapas y tokens.
+
+### Exportaciones/importaciones obligatorias en MVP 0.3
+
+1. **Partida completa:** un paquete descargable y autocontenido con colección de mapas, mapa activo, catálogos, instancias, permisos relevantes y todos los recursos gráficos necesarios para reabrir la partida en otro navegador.
+2. **Mapa individual:** fondo, dimensiones, calibración, cuadrícula, tokens y demás elementos de ese mapa con sus recursos; se puede importar como un mapa nuevo en otra partida.
+3. **Token individual / recurso de catálogo:** imagen y propiedades visuales, con identidad de recurso independiente de sus instancias; importar no altera otras copias ya colocadas.
+4. Versionar el manifiesto de exportación, validar esquema, integridad, rutas y tamaños; bloquear archivos maliciosos y referencias fuera del paquete. Definir conducta ante colisiones (crear copia por defecto; sobrescribir solo con confirmación explícita).
+5. Descargar/exportar y abrir/importar **desde el navegador del director**, sin necesitar que la Raspberry almacene archivos. Excluir contraseñas, tokens de sesión, invitaciones y secretos del paquete.
+6. Probar recorrido completo: exportar en navegador A, abrir en navegador B, importar, verificar imágenes, posiciones, mapas activos/pausados y referencias de tokens. El formato exacto (ZIP + JSON u otro) se decidirá antes de implementar.
+7. Aunque todavía no exista multijugador, estos formatos deben permitir respaldo y recuperación del estado local y evolucionar sin pérdida con versiones del esquema.
 
 ## 11. Fase 6 — Despliegue aislado y operación
 
-Después de aprobar el inventario:
+Después de aprobar el inventario **del host elegido**, aplicar las siguientes instrucciones a la Raspberry piloto o adaptarlas al servidor correspondiente. La lógica del backend nunca debe depender de `systemd`, rutas del SSD o nombres de host específicos:
 
 1. Preparar directorio y usuario de servicio de permisos mínimos; instalar Node LTS compatible sin sustituir versiones usadas por otros proyectos.
 2. Instalar dependencias reproducibles del `backend/` y ejecutar tests.
-3. Configurar `systemd`: arranque automático, `Restart=on-failure`, usuario no privilegiado, entorno separado y restricciones de acceso a disco.
+3. En Raspberry/Linux con este patrón, configurar `systemd`: arranque automático, `Restart=on-failure`, usuario no privilegiado, entorno separado y restricciones de acceso a disco; en otros hosts usar un supervisor equivalente.
 4. Probar `GET /health` localmente por loopback, **antes** de publicar la API.
-5. Integrar el proxy actual con HTTPS/WSS hacia el puerto interno y un subdominio; validar primero su configuración.
+5. Integrar el proxy del despliegue con HTTPS/WSS hacia el puerto interno o mediante mismo origen; validar primero su configuración. Publicar `site.config.json` con el endpoint real y añadir el origen exacto del frontend a la lista permitida del backend.
 6. Habilitar restricciones de origen, límites de conexión, protección de login y registros sin datos sensibles.
 7. Confirmar que Heaven's Gate y el resto de servicios siguen respondiendo antes y después.
-8. Probar desde Windows y desde un teléfono con otra red, sin usar credenciales reales en capturas, logs o commits.
+8. Probar desde Windows y desde un teléfono con otra red, sin usar credenciales reales en capturas, logs o commits. Repetir el smoke test alojando el frontend tanto en Pages como en un servidor web estático convencional.
 9. Dejar documentadas operaciones de arranque, parada, reinicio, actualización y rollback sin tocar servicios ajenos.
 
 **No ejecutar** aperturas de puertos, modificaciones DNS, cambios de proxy compartido ni despliegue público sin una revisión expresa de la configuración observada y de su impacto.
@@ -256,13 +326,19 @@ Después de aprobar el inventario:
 
 ### Hito técnico 0.2 — Sala y conexión
 
-- [ ] Una cuenta provisionada puede iniciar sesión; una no provisionada no puede registrarse ni acceder.
-- [ ] Un máster crea una sala y obtiene un código único.
+- [ ] Una cuenta provisionada puede iniciar sesión; no existe formulario de autorregistro libre.
+- [ ] Un máster emite una invitación de alta de **un solo uso** y caducidad limitada; el invitado crea una cuenta ordinaria, sin capacidad de elevar su rol.
+- [ ] Una invitación de alta no es un código de partida; ambos flujos son independientes y revocables.
+- [ ] Un director/máster crea una sala y obtiene un código único; el usuario ordinario **no puede crear** partidas ni emitir invitaciones de cuenta.
 - [ ] Dos jugadores autorizados se unen por código desde navegadores distintos.
 - [ ] Un código inexistente/caducado o una sesión inválida no permite entrar.
 - [ ] Se muestra presencia y estado conectado/en espera.
 - [ ] Dos clientes ven la posición confirmada de un token sin recargar.
-- [ ] El máster puede rechazar un movimiento no autorizado.
+- [ ] El máster puede rechazar un movimiento de token no asignado; el usuario no puede subir mapas, tokens ni cambiar escenas.
+- [ ] El permiso de dados está **apagado por defecto** y solo el director puede concederlo/revocarlo en esa sala; cuando haya tiradas, se rechazan también en el backend.
+- [ ] Renombrar las etiquetas visibles de roles no cambia los permisos reales.
+- [ ] La pantalla «Configuración del sitio» valida la URL de API/tiempo real, muestra conexión y permite generar una configuración de despliegue sin guardar secretos.
+- [ ] El frontend funciona en GitHub Pages y servido desde otro servidor web, con URL de backend configurada y rutas relativas correctas.
 - [ ] Al desconectar el máster, la sala se pausa; al reconectar se recupera desde su navegador.
 - [ ] No se expone ningún puerto backend directamente a Internet.
 - [ ] No se escriben mapas ni tokens como datos persistentes en la Raspberry.
@@ -274,7 +350,10 @@ Después de aprobar el inventario:
 - [ ] Los jugadores no reciben recursos secretos o de mapas inactivos.
 - [ ] Se envían y almacenan en caché imágenes autorizadas sin persistirlas en servidor.
 - [ ] El estado del máster sobrevive al cierre y apertura de su navegador.
-- [ ] Exportación/importación de respaldo de partida (según DAT-04).
+- [ ] Exportación/importación de **partida completa** con todos sus recursos y mapas (DAT-04).
+- [ ] Exportación/importación de **un mapa individual** con fondo, calibración y tokens (DAT-07).
+- [ ] Exportación/importación de **un token o recurso de catálogo** con imagen y propiedades (DAT-08).
+- [ ] Los tres paquetes pasan validación y se restauran correctamente en otro navegador; no contienen secretos.
 - [ ] Se mantienen tokens, rejilla, calibración y temas existentes.
 - [ ] Se verifica que los demás servicios de Raspberry siguen operativos.
 
@@ -283,12 +362,12 @@ Después de aprobar el inventario:
 | Fase | Entregable |
 | --- | --- |
 | 0 — Inventario | `docs/INVENTARIO-BACKEND-RASPBERRY.md`; decisiones pendientes, sin secretos. |
-| 1 — Base | `backend/` con instrucciones de desarrollo, tests y `.env.example`. |
-| 2 — Acceso | Autenticación administrativa, tests de rechazo y permisos. |
-| 3 — Salas | Crear/unirse, código seguro, presencia y reconexión. |
+| 1 — Base | `backend/` con instrucciones, tests y `.env.example`; configuración pública del frontend, validación de endpoints y pantalla de ajustes. |
+| 2 — Acceso | Autenticación, invitaciones de alta de usuario ordinario, roles con etiquetas configurables, pruebas de denegación por defecto y permisos por partida. |
+| 3 — Salas | Crear/unirse solo según rol, código de partida separado de invitación de alta, presencia y reconexión. |
 | 4 — Eventos | Demostración reproducible de tokens sincronizados y rechazo de movimientos ilegales. |
-| 5 — Recursos | Protocolo de imágenes con pruebas de autorización, fragmentación y caché. |
-| 6 — Operación | `docs/DESPLIEGUE-BACKEND.md` con configuración observada, rollback, comprobaciones y decisiones confirmadas. |
+| 5 — Recursos | Subida solo por director, transmisión autorizada, fragmentación, caché y **exportación/importación autónoma de partida, mapa y token**. |
+| 6 — Operación | `docs/DESPLIEGUE-BACKEND.md` con guía portable y anexo específico Raspberry: configuración observada, rollback, comprobaciones y decisiones confirmadas. |
 
 Cada fase debe actualizar este documento, los requisitos cuando corresponda y el README. No afirmar que una fase está terminada solo porque compila: debe pasar sus pruebas de aceptación.
 
@@ -298,10 +377,10 @@ Cada fase debe actualizar este documento, los requisitos cuando corresponda y el
 >
 > Tu primera tarea es exclusivamente la **Fase 0 — Inventario de Raspberry** de este documento. Comprueba sistema operativo, versiones de Node/npm, proxy existente, `systemd`, Docker si existe, puertos, espacio SSD y compatibilidad con los servicios actuales. No instales nada, no abras puertos, no cambies DNS, no alteres Heaven's Gate (`/mnt/ssd/html/hg`) ni reinicies servicios compartidos.
 >
-> Escribe `docs/INVENTARIO-BACKEND-RASPBERRY.md` con los resultados saneados, las decisiones pendientes y una propuesta concreta y segura de implementación del backend. No vuelques secretos, IPs sensibles, claves, archivos `.env` ni configuraciones completas a Git. Valida que el informe es coherente con el diseño de máster autoritativo y sin persistencia del contenido de partidas en servidor. Prepara el commit en una rama de trabajo y **avisa de los puntos que requieren decisión antes de comenzar instalaciones o despliegue**.
+> Escribe `docs/INVENTARIO-BACKEND-RASPBERRY.md` con los resultados saneados, las decisiones pendientes y una propuesta concreta y segura de implementación del backend. No vuelques secretos, IPs sensibles, claves, archivos `.env` ni configuraciones completas a Git. Valida que el informe es coherente con el diseño de máster autoritativo, sin persistencia del contenido de partidas en servidor, **frontend desplegable en Pages o cualquier servidor web, invitaciones de alta emitidas por dirección, roles visuales configurables, permisos mínimos de usuario y exportación/importación de partida, mapa y token en el MVP**. Prepara el commit en una rama de trabajo y **avisa de los puntos que requieren decisión antes de comenzar instalaciones o despliegue**.
 >
-> Después de aprobar el inventario avanzaremos secuencialmente por las fases de este documento, implementando código versionado, tests y documentación reproducible. Mantén GitHub Pages funcionando durante la transición.
+> Después de aprobar el inventario avanzaremos secuencialmente por las fases de este documento, implementando código versionado, tests y documentación reproducible. Mantén GitHub Pages funcionando durante la transición y no acoples el backend a Raspberry ni al dominio de Pages.
 
 ---
 
-**Criterio rector:** conseguir un multijugador fiable y ligero al estilo Owlbear Rodeo, sin rehacer innecesariamente el tablero local ni convertir la Raspberry en un almacén de nuestras partidas.
+**Criterio rector:** conseguir un multijugador fiable y ligero al estilo Owlbear Rodeo, con frontend portable, acceso por invitación y exportaciones completas; sin rehacer innecesariamente el tablero local ni convertir ningún backend en un almacén de nuestras partidas.
