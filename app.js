@@ -2,6 +2,12 @@
 
 (() => {
   const STORAGE_KEY = "naufragio-vtt-mvp-v1";
+  const ASSET_DB = "naufragio-vtt-local-assets";
+  const ASSET_STORE = "media";
+  const MAP_BLOB_KEY = "active-map-image";
+  const MAX_MAP_BYTES = 12 * 1024 * 1024;
+  const MAX_MAP_PIXELS = 20000000;
+  const MIN_ZOOM = 0.12;
   const PALETTE = ["#85dcd2", "#e7c47e", "#dd8e88", "#a6a1e9", "#a8c984", "#90b7e7"];
   const STARTER_TOKENS = [
     { id: "starter-1", code: "T1", name: "Token 1", color: PALETTE[0], x: -2, y: -1 },
@@ -23,6 +29,8 @@
       playerName: "",
       tokens: STARTER_TOKENS.map((token) => ({ ...token })),
       cellSize: 64,
+      gridOpacity: 0.55,
+      map: null,
       showGrid: true,
       snap: true,
       zoom: 1,
@@ -48,9 +56,24 @@
         }));
       }
       base.cellSize = clamp(finiteOr(stored.cellSize, 64), 32, 96);
+      base.gridOpacity = clamp(finiteOr(stored.gridOpacity, 0.55), 0.1, 1);
+      if (stored.map && typeof stored.map === "object") {
+        const map = stored.map;
+        const widthPx = clamp(finiteOr(map.widthPx, 0), 0, 8000);
+        const heightPx = clamp(finiteOr(map.heightPx, 0), 0, 8000);
+        if (widthPx > 0 && heightPx > 0) {
+          base.map = {
+            name: typeof map.name === "string" ? map.name.slice(0, 100) : "Mapa",
+            widthPx, heightPx,
+            widthCells: clamp(finiteOr(map.widthCells, 20), 1, 200),
+            xCells: clamp(finiteOr(map.xCells, -10), -1000, 1000),
+            yCells: clamp(finiteOr(map.yCells, -10), -1000, 1000)
+          };
+        }
+      }
       base.showGrid = stored.showGrid !== false;
       base.snap = stored.snap !== false;
-      base.zoom = clamp(finiteOr(stored.zoom, 1), 0.5, 2.5);
+      base.zoom = clamp(finiteOr(stored.zoom, 1), MIN_ZOOM, 2.5);
       base.cameraX = clamp(finiteOr(stored.cameraX, 0), -20000, 20000);
       base.cameraY = clamp(finiteOr(stored.cameraY, 0), -20000, 20000);
     } catch {
@@ -63,6 +86,9 @@
   let selectedId = null;
   let drag = null;
   let toastTimeout = null;
+  let mapImage = null;
+  let mapMoveMode = false;
+  let mapLoadGeneration = 0;
 
   const canvas = document.getElementById("boardCanvas");
   const context = canvas.getContext("2d");
@@ -76,6 +102,18 @@
     deleteToken: document.getElementById("deleteToken"),
     gridSize: document.getElementById("gridSize"),
     gridSizeValue: document.getElementById("gridSizeValue"),
+    gridOpacity: document.getElementById("gridOpacity"),
+    gridOpacityValue: document.getElementById("gridOpacityValue"),
+    mapUpload: document.getElementById("mapUpload"),
+    mapEmpty: document.getElementById("mapEmpty"),
+    mapControls: document.getElementById("mapControls"),
+    mapFilename: document.getElementById("mapFilename"),
+    mapResolution: document.getElementById("mapResolution"),
+    mapColumns: document.getElementById("mapColumns"),
+    mapOffsetX: document.getElementById("mapOffsetX"),
+    mapOffsetY: document.getElementById("mapOffsetY"),
+    mapMoveToggle: document.getElementById("mapMoveToggle"),
+    boardHint: document.getElementById("boardHint"),
     gridToggle: document.getElementById("gridToggle"),
     snapToggle: document.getElementById("snapToggle"),
     zoomValue: document.getElementById("zoomValue"),
@@ -103,6 +141,238 @@
     refs.toast.classList.add("visible");
     clearTimeout(toastTimeout);
     toastTimeout = setTimeout(() => refs.toast.classList.remove("visible"), 2600);
+  }
+
+
+  function assetRequest(action, value) {
+    return new Promise((resolve, reject) => {
+      if (!("indexedDB" in window)) {
+        reject(new Error("Este navegador no dispone de IndexedDB."));
+        return;
+      }
+      const opening = indexedDB.open(ASSET_DB, 1);
+      opening.onupgradeneeded = () => {
+        if (!opening.result.objectStoreNames.contains(ASSET_STORE)) {
+          opening.result.createObjectStore(ASSET_STORE);
+        }
+      };
+      opening.onerror = () => reject(opening.error || new Error("No se puede abrir el almacén."));
+      opening.onsuccess = () => {
+        const db = opening.result;
+        let transaction;
+        try {
+          transaction = db.transaction(ASSET_STORE, action === "get" ? "readonly" : "readwrite");
+        } catch (error) {
+          db.close();
+          reject(error);
+          return;
+        }
+        const store = transaction.objectStore(ASSET_STORE);
+        let request;
+        if (action === "get") request = store.get(MAP_BLOB_KEY);
+        else if (action === "put") request = store.put(value, MAP_BLOB_KEY);
+        else request = store.delete(MAP_BLOB_KEY);
+        transaction.oncomplete = () => {
+          const result = action === "get" ? request.result : undefined;
+          db.close();
+          resolve(result);
+        };
+        transaction.onerror = () => {
+          const error = transaction.error || new Error("No se pudieron guardar los datos.");
+          db.close();
+          reject(error);
+        };
+        transaction.onabort = () => {
+          db.close();
+          reject(new Error("Operación de almacenamiento interrumpida."));
+        };
+      };
+    });
+  }
+
+  function decodeMapImage(blob) {
+    return new Promise((resolve, reject) => {
+      const objectUrl = URL.createObjectURL(blob);
+      const image = new Image();
+      image.onload = () => {
+        URL.revokeObjectURL(objectUrl);
+        resolve(image);
+      };
+      image.onerror = () => {
+        URL.revokeObjectURL(objectUrl);
+        reject(new Error("El archivo no contiene una imagen compatible."));
+      };
+      image.src = objectUrl;
+    });
+  }
+
+  function imageIsWithinLimits(image) {
+    return image.naturalWidth > 0 && image.naturalHeight > 0
+      && image.naturalWidth <= 8000 && image.naturalHeight <= 8000
+      && image.naturalWidth * image.naturalHeight <= MAX_MAP_PIXELS;
+  }
+
+  function mapHeightCells() {
+    if (!state.map) return 0;
+    return state.map.widthCells * state.map.heightPx / state.map.widthPx;
+  }
+
+  function refreshMapControls() {
+    const map = state.map;
+    refs.mapEmpty.hidden = Boolean(map);
+    refs.mapControls.hidden = !map;
+    refs.mapMoveToggle.classList.toggle("active", mapMoveMode);
+    refs.mapMoveToggle.setAttribute("aria-pressed", String(mapMoveMode));
+    canvas.classList.toggle("map-align", mapMoveMode);
+    refs.boardHint.textContent = mapMoveMode
+      ? "✥ Alineación: arrastra la imagen sobre la rejilla. Desactiva el modo para mover la mesa."
+      : "✥ Arrastra los tokens para moverlos · Arrastra el fondo para desplazarte";
+    if (!map) return;
+    refs.mapFilename.textContent = map.name;
+    refs.mapResolution.textContent = map.widthPx + " × " + map.heightPx + " píxeles";
+    refs.mapColumns.value = String(Math.round(map.widthCells * 100) / 100);
+    refs.mapOffsetX.value = String(Math.round(map.xCells * 100) / 100);
+    refs.mapOffsetY.value = String(Math.round(map.yCells * 100) / 100);
+  }
+
+  function fitMapIntoViewport() {
+    if (!state.map || !mapImage) return;
+    const { width, height } = getDimensions();
+    const map = state.map;
+    const worldWidth = map.widthCells * state.cellSize;
+    const worldHeight = mapHeightCells() * state.cellSize;
+    const margin = width < 600 ? 28 : 100;
+    state.zoom = clamp(Math.min((width - margin) / worldWidth, (height - margin) / worldHeight), MIN_ZOOM, 2.5);
+    state.cameraX = -(map.xCells * state.cellSize + worldWidth / 2) * state.zoom;
+    state.cameraY = -(map.yCells * state.cellSize + worldHeight / 2) * state.zoom;
+    save();
+    draw();
+  }
+
+  async function importMap(file) {
+    if (!file) return;
+    const validType = ["image/jpeg", "image/png", "image/webp"].includes(file.type)
+      || (file.type === "" && /\.(jpe?g|png|webp)$/i.test(file.name));
+    if (!validType) {
+      showToast("Solo admitimos PNG, JPEG o WebP.");
+      return;
+    }
+    if (file.size > MAX_MAP_BYTES) {
+      showToast("El mapa supera el límite de 12 MB.");
+      return;
+    }
+    const generation = ++mapLoadGeneration;
+    try {
+      const image = await decodeMapImage(file);
+      if (!imageIsWithinLimits(image)) {
+        showToast("Imagen demasiado grande: máximo 20 Mpx y 8000 px por lado.");
+        return;
+      }
+      await assetRequest("put", file);
+      if (generation !== mapLoadGeneration) return;
+      const widthCells = 20;
+      const heightCells = widthCells * image.naturalHeight / image.naturalWidth;
+      state.map = {
+        name: file.name.slice(0, 100) || "Mapa importado",
+        widthPx: image.naturalWidth,
+        heightPx: image.naturalHeight,
+        widthCells,
+        xCells: -widthCells / 2,
+        yCells: -heightCells / 2
+      };
+      mapImage = image;
+      mapMoveMode = false;
+      refreshMapControls();
+      fitMapIntoViewport();
+      save();
+      showToast("Mapa guardado en este navegador.");
+    } catch (error) {
+      showToast("No se pudo guardar el mapa. Comprueba el almacenamiento disponible.");
+    }
+  }
+
+  async function restoreMapImage() {
+    if (!state.map) return;
+    const generation = ++mapLoadGeneration;
+    try {
+      const blob = await assetRequest("get");
+      if (generation !== mapLoadGeneration) return;
+      if (!blob) {
+        state.map = null;
+        save();
+        refreshMapControls();
+        showToast("No se encontró la imagen guardada.");
+        return;
+      }
+      const image = await decodeMapImage(blob);
+      if (generation !== mapLoadGeneration) return;
+      if (!imageIsWithinLimits(image)) throw new Error("Dimensiones no permitidas.");
+      mapImage = image;
+      state.map.widthPx = image.naturalWidth;
+      state.map.heightPx = image.naturalHeight;
+      refreshMapControls();
+      draw();
+    } catch {
+      showToast("No se pudo recuperar el mapa local.");
+    }
+  }
+
+  function drawMap() {
+    if (!state.map || !mapImage) return;
+    const map = state.map;
+    const topLeft = worldToScreen(map.xCells * state.cellSize, map.yCells * state.cellSize);
+    const width = map.widthCells * state.cellSize * state.zoom;
+    const height = mapHeightCells() * state.cellSize * state.zoom;
+    context.drawImage(mapImage, topLeft.x, topLeft.y, width, height);
+    if (mapMoveMode) {
+      context.save();
+      context.setLineDash([9, 5]);
+      context.lineWidth = 2;
+      context.strokeStyle = "#a5ffde";
+      context.strokeRect(topLeft.x, topLeft.y, width, height);
+      context.restore();
+    }
+  }
+
+  function pointIsOnMap(point) {
+    if (!state.map || !mapImage) return false;
+    const topLeft = worldToScreen(state.map.xCells * state.cellSize, state.map.yCells * state.cellSize);
+    const width = state.map.widthCells * state.cellSize * state.zoom;
+    const height = mapHeightCells() * state.cellSize * state.zoom;
+    return point.x >= topLeft.x && point.x <= topLeft.x + width
+      && point.y >= topLeft.y && point.y <= topLeft.y + height;
+  }
+
+  function updateMapSetting(property, rawValue) {
+    if (!state.map) return;
+    const value = Number.parseFloat(rawValue);
+    if (!Number.isFinite(value)) {
+      refreshMapControls();
+      return;
+    }
+    state.map[property] = property === "widthCells"
+      ? clamp(value, 1, 200) : clamp(value, -1000, 1000);
+    refreshMapControls();
+    save();
+    draw();
+  }
+
+  async function removeMap() {
+    if (!state.map || !window.confirm("¿Retirar la imagen del mapa? Los tokens se conservarán.")) return;
+    const generation = ++mapLoadGeneration;
+    try {
+      await assetRequest("delete");
+      if (generation !== mapLoadGeneration) return;
+      state.map = null;
+      mapImage = null;
+      mapMoveMode = false;
+      refreshMapControls();
+      save();
+      draw();
+      showToast("Imagen retirada. Los tokens siguen en su sitio.");
+    } catch {
+      showToast("No se pudo eliminar la imagen guardada.");
+    }
   }
 
   function selectedToken() {
@@ -145,7 +415,7 @@
 
     for (let i = firstX; i <= lastX; i++) {
       const x = Math.round(origin.x + i * spacing) + 0.5;
-      context.strokeStyle = i % 5 === 0 ? "rgba(139,170,193,.20)" : "rgba(139,170,193,.09)";
+      context.strokeStyle = i % 5 === 0 ? "rgba(165,203,218," + (0.62 * state.gridOpacity) + ")" : "rgba(165,203,218," + (0.30 * state.gridOpacity) + ")";
       context.lineWidth = 1;
       context.beginPath();
       context.moveTo(x, 0);
@@ -154,7 +424,7 @@
     }
     for (let i = firstY; i <= lastY; i++) {
       const y = Math.round(origin.y + i * spacing) + 0.5;
-      context.strokeStyle = i % 5 === 0 ? "rgba(139,170,193,.20)" : "rgba(139,170,193,.09)";
+      context.strokeStyle = i % 5 === 0 ? "rgba(165,203,218," + (0.62 * state.gridOpacity) + ")" : "rgba(165,203,218," + (0.30 * state.gridOpacity) + ")";
       context.lineWidth = 1;
       context.beginPath();
       context.moveTo(0, y);
@@ -234,6 +504,7 @@
     context.fillStyle = haze;
     context.fillRect(0, 0, width, height);
 
+    drawMap();
     drawGrid(width, height);
     for (const token of state.tokens) if (token.id !== selectedId) drawToken(token);
     const selected = selectedToken();
@@ -323,6 +594,9 @@
   function refreshControls() {
     refs.gridSize.value = String(state.cellSize);
     refs.gridSizeValue.textContent = state.cellSize + " px";
+    refs.gridOpacity.value = String(Math.round(state.gridOpacity * 100));
+    refs.gridOpacityValue.textContent = Math.round(state.gridOpacity * 100) + " %";
+    refreshMapControls();
     for (const [button, on] of [[refs.gridToggle, state.showGrid], [refs.snapToggle, state.snap]]) {
       button.classList.toggle("active", on);
       button.setAttribute("aria-pressed", String(on));
@@ -339,7 +613,10 @@
     const point = pointerPosition(event);
     const token = findTokenAt(point);
     canvas.focus({ preventScroll: true });
-    if (token) {
+    if (mapMoveMode && pointIsOnMap(point)) {
+      selectToken(null);
+      drag = { pointerId: event.pointerId, type: "map", point, x: state.map.xCells, y: state.map.yCells };
+    } else if (token) {
       selectToken(token.id);
       drag = { pointerId: event.pointerId, type: "token", point, x: token.x, y: token.y, tokenId: token.id };
     } else {
@@ -360,7 +637,10 @@
     if (drag.type === "pan") {
       state.cameraX = drag.x + dx;
       state.cameraY = drag.y + dy;
-    } else {
+    } else if (drag.type === "map" && state.map) {
+      state.map.xCells = clamp(Math.round((drag.x + dx / (state.cellSize * state.zoom)) * 100) / 100, -1000, 1000);
+      state.map.yCells = clamp(Math.round((drag.y + dy / (state.cellSize * state.zoom)) * 100) / 100, -1000, 1000);
+    } else if (drag.type === "token") {
       const token = state.tokens.find((item) => item.id === drag.tokenId);
       if (!token) return;
       token.x = clamp(drag.x + dx / (state.cellSize * state.zoom), -1000, 1000);
@@ -378,6 +658,8 @@
         token.y = state.snap ? Math.round(token.y) : Math.round(token.y * 100) / 100;
       }
       refreshTokenList();
+    } else if (drag.type === "map") {
+      refreshMapControls();
     }
     drag = null;
     canvas.classList.remove("dragging");
@@ -390,7 +672,7 @@
     const { width, height } = getDimensions();
     const point = anchor || { x: width / 2, y: height / 2 };
     const world = screenToWorld(point.x, point.y);
-    state.zoom = clamp(next, 0.5, 2.5);
+    state.zoom = clamp(next, MIN_ZOOM, 2.5);
     state.cameraX = point.x - width / 2 - world.x * state.zoom;
     state.cameraY = point.y - height / 2 - world.y * state.zoom;
     save();
@@ -465,6 +747,34 @@
       document.getElementById("deleteToken").click();
     }
   });
+
+  refs.gridOpacity.addEventListener("input", (event) => {
+    state.gridOpacity = clamp(Number(event.target.value) / 100, 0.1, 1);
+    refs.gridOpacityValue.textContent = Math.round(state.gridOpacity * 100) + " %";
+    save();
+    draw();
+  });
+  refs.mapUpload.addEventListener("change", async (event) => {
+    const file = event.target.files && event.target.files[0];
+    refs.mapUpload.disabled = true;
+    try {
+      await importMap(file);
+    } finally {
+      refs.mapUpload.disabled = false;
+      refs.mapUpload.value = "";
+    }
+  });
+  for (const [id, property] of [["mapColumns", "widthCells"], ["mapOffsetX", "xCells"], ["mapOffsetY", "yCells"]]) {
+    refs[id].addEventListener("change", (event) => updateMapSetting(property, event.target.value));
+  }
+  refs.mapMoveToggle.addEventListener("click", () => {
+    if (!state.map || !mapImage) return;
+    mapMoveMode = !mapMoveMode;
+    refreshMapControls();
+    draw();
+  });
+  document.getElementById("fitMap").addEventListener("click", fitMapIntoViewport);
+  document.getElementById("removeMap").addEventListener("click", removeMap);
 
   refs.gridSize.addEventListener("input", (event) => {
     state.cellSize = Number(event.target.value);
@@ -547,4 +857,5 @@
   refreshControls();
   resizeCanvas();
   if (!state.playerName) openIdentity();
+  void restoreMapImage();
 })();
