@@ -6,6 +6,8 @@ Prototipo 0.1.2 de un tablero virtual ligero para El Naufragio, inspirado en la 
 
 **[Referencias funcionales de Owlbear Rodeo](docs/REFERENCIAS-OWLBEAR.md)** — equivalencias con Owlbear 1.0/2.0, fuentes oficiales y criterios para conservar una experiencia sencilla.
 
+**[Plan del backend multijugador en Raspberry](docs/BACKEND-RASPBERRY.md)** — instrucciones para clonar en Windows, conectar Codex por SSH, auditar la Raspberry y desplegar progresivamente autenticación, salas y sincronización. **Pendiente de implementar; no existe aún backend en producción.**
+
 ## Funciones actuales
 
 - Identificación **local** por nombre (sin cuentas ni contraseñas).
