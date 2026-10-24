@@ -1,6 +1,6 @@
 # Naufragio VTT
 
-MVP 0.1 de un tablero virtual ligero para El Naufragio, inspirado en la sencillez de Owlbear Rodeo 1.0.
+Prototipo 0.1.1 de un tablero virtual ligero para El Naufragio, inspirado en la sencillez de Owlbear Rodeo 1.0.
 
 **[Requisitos completos y plan de trabajo](docs/REQUISITOS.md)** — arquitectura, alcance del MVP y decisiones confirmadas.
 
@@ -14,8 +14,21 @@ MVP 0.1 de un tablero virtual ligero para El Naufragio, inspirado en la sencille
 - Arrastrar tokens con ratón o pantalla táctil; ajuste opcional a casillas.
 - Desplazar el tablero, hacer zoom y centrar la vista.
 - Mover el token seleccionado con las flechas del teclado.
-- Guardado automático en el navegador mediante localStorage.
+- Guardado automático de tokens y ajustes mediante localStorage, y del mapa importado mediante IndexedDB.
+- Importación de imágenes PNG/JPEG/WebP como fondo con anchura en casillas, desplazamiento X/Y y ajuste visual a la rejilla.
 - Interfaz adaptable a escritorio y móvil, sin dependencias externas.
+
+## Importar y alinear un mapa
+
+1. Desde **Mapa de fondo**, selecciona una imagen de tu dispositivo (hasta 12 MB y 20 megapíxeles, con 8000 píxeles como máximo por lado).
+2. Ajusta **Anchura (casillas)** al número de columnas que ocupa la imagen. La altura mantiene su proporción.
+3. Utiliza **Posición X/Y** o activa **Mover imagen sobre la rejilla** y arrástrala para hacer coincidir su cuadrícula con la del tablero.
+4. Pulsa **Encajar vista** para ver el mapa completo. Los tokens permanecen sobre la imagen.
+5. Recarga la página para comprobar que el mapa y su calibración siguen ahí.
+
+Esta iteración admite **un mapa local**. La colección de mapas y las partidas compartidas llegarán después.
+
+**[Documento de trabajo y pruebas: importación de mapas](docs/PLAN-MAPAS.md).**
 
 ## Probar en local
 
@@ -36,7 +49,7 @@ El proyecto no necesita un workflow personalizado de GitHub Actions.
 
 **No hay autenticación real, servidor ni multijugador.** El nombre elegido en pantalla solo identifica al usuario en *ese navegador* y no impide que nadie visite la web. GitHub Pages no ejecuta PHP ni WebSockets.
 
-Las partidas, tokens y preferencias se guardan únicamente en el almacenamiento local del navegador; no se comparten entre dispositivos, y pueden perderse al borrar los datos del sitio. Evitar usar información privada o material sensible.
+Los tokens y ajustes se guardan en localStorage; la imagen importada, en IndexedDB. Nada se comparte entre dispositivos y limpiar los datos del sitio puede hacer perder el mapa y su configuración. Evitar usar información privada o material sensible.
 
 ## Próximas fases
 
