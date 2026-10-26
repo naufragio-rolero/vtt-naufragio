@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { io } from 'socket.io-client';
 import { once } from 'node:events';
 import { fixture, origin } from './helpers.js';
+import { setup } from './auth-helpers.js';
 
 function client(t, url, options = {}) {
   const socket = io(url, { autoConnect: false, forceNew: true, reconnection: false, timeout: 2000,
@@ -43,7 +44,7 @@ test('game namespace fails closed even with a forged role or token', { timeout: 
   const failed = once(socket, 'connect_error', { signal: AbortSignal.timeout(3000) });
   socket.connect();
   const [error] = await failed;
-  assert.equal(error.data.code, 'AUTH_UNAVAILABLE');
+  assert.equal(error.data.code, 'UNAUTHENTICATED');
   assert.equal(socket.connected, false);
 });
 
@@ -98,4 +99,22 @@ test('parallel handshakes cannot exceed the connection cap', async t => {
     fetch(`${url}/socket.io/?EIO=4&transport=polling`, { headers: { Origin: origin } })));
   assert.equal(results.filter(response => response.status === 200).length, 1);
   assert.equal(app.io.engine.clientsCount, 1);
+});
+
+test('valid sessions still cannot enter game namespaces before room authorization exists', { timeout: 15000 }, async t => {
+  const { url, token, auth, app } = await setup(t);
+  for (const transport of ['polling', 'websocket']) {
+    const socket = client(t, url, { transports: [transport], auth: { token, role: 'admin', roomId: 'invented' } });
+    const failed = once(socket, 'connect_error', { signal: AbortSignal.timeout(3000) });
+    socket.connect();
+    const [error] = await failed;
+    assert.equal(error.data.code, 'ROOM_AUTHORIZATION_UNAVAILABLE');
+    assert.equal(socket.connected, false);
+  }
+  assert.equal(app.io.sockets.sockets.size, 0);
+  auth.logout(token);
+  const revoked = client(t, url, { transports: ['websocket'], auth: { token } });
+  const failed = once(revoked, 'connect_error', { signal: AbortSignal.timeout(3000) });
+  revoked.connect();
+  assert.equal((await failed)[0].data.code, 'UNAUTHENTICATED');
 });

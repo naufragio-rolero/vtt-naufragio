@@ -16,7 +16,7 @@ test('health, methods and error responses reveal no environment or stack', async
   assert.equal(response.headers.get('access-control-allow-origin'), origin);
   assert.equal(response.headers.get('cache-control'), 'no-store');
   assert.deepEqual(await response.json(), { status: 'ok', service: 'naufragio-vtt', protocolVersion: 1,
-    phase: 1, capabilities: { authentication: false, rooms: false, gameEvents: false } });
+    phase: 2, capabilities: { authentication: true, rooms: false, gameEvents: false } });
   const method = await fetch(`${url}/health`, { method: 'POST' });
   assert.equal(method.status, 405);
   assert.equal(method.headers.get('allow'), 'GET');
@@ -43,15 +43,16 @@ test('HTTP rejects unauthorized origins and supports explicit preflight', async 
   } })).status, 403);
 });
 
-test('accounts, invitations and rooms are explicit unavailable contracts', async t => {
+test('protected routes require identity and registration cannot bypass an invitation', async t => {
   const { url } = await fixture(t);
-  for (const path of ['/auth/login', '/auth/logout', '/auth/register', '/invitations', '/rooms', '/rooms/join']) {
+  for (const path of ['/auth/logout', '/invitations', '/rooms', '/rooms/join', '/users', '/resources']) {
     const response = await fetch(`${url}${path}`, { method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ role: 'admin', roomId: 'invented' }) });
-    assert.equal(response.status, 501, path);
-    assert.deepEqual(await response.json(), { error: { code: 'FEATURE_NOT_AVAILABLE' } });
+    assert.equal(response.status, 401, path);
+    assert.deepEqual(await response.json(), { error: { code: 'UNAUTHENTICATED' } });
   }
-  assert.equal((await fetch(`${url}/rooms`)).status, 501);
+  assert.equal((await fetch(`${url}/rooms`)).status, 401);
+  assert.equal((await fetch(`${url}/auth/register`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' })).status, 400);
 });
 
 test('body limits reject invalid JSON, excessive declared and chunked sizes', async t => {

@@ -2,7 +2,7 @@
 
 > Proyecto: **Naufragio VTT** · Repositorio: `naufragio-rolero/vtt-naufragio`
 >
-> Fecha del plan: 24 de octubre de 2026 · Actualización: 26 de octubre de 2026. Estado: **inventario por SSH documentado; base local de Fase 1 implementada y probada en Node 22/24, sin despliegue**. Véanse [inventario](INVENTARIO-BACKEND-RASPBERRY.md) e [informe de Fase 1](FASE1-BACKEND.md).
+> Fecha del plan: 24 de octubre de 2026 · Actualización: 26 de octubre de 2026. Estado: **inventario por SSH documentado; Fase 2 de acceso implementada localmente sobre la base de Fase 1, sin despliegue**. Véanse [inventario](INVENTARIO-BACKEND-RASPBERRY.md), [Fase 1](FASE1-BACKEND.md) y [Fase 2](FASE2-BACKEND.md).
 >
 > Destinatario: Codex trabajando sobre un clon del repositorio en Windows y conectado a la Raspberry por SSH.
 >
@@ -209,11 +209,11 @@ Implementación mínima:
 - Configuración sensible del backend en variables de entorno; `.env.example` solo contendrá nombres y marcadores. Añadir un `site.config.example.json` **público** y el esquema/validador correspondiente para el frontend.
 - `.gitignore` debe excluir `.env`, claves, DB reales, logs y archivos temporales.
 
-### Estado local — 26 de octubre de 2026
+### Estado al cerrar Fase 1 — 26 de octubre de 2026 (histórico)
 
 Implementados en [`backend/`](../backend/README.md): Node 22.23.4 como referencia, ESM compatible con Node 24+, HTTP, `/health`, Socket.IO, validación/límites, configuración por entorno, lockfile y 27 pruebas superadas en Node 22.23.4 y 24.18.0. La pantalla de ajustes y los artefactos de configuración pública se sirven aislados desde el backend local, sin modificar el tablero de GitHub Pages.
 
-En esta entrega, las superficies de autenticación/invitaciones/salas de la lista anterior son contratos reservados que responden 501, y Socket.IO deniega el namespace de juego hasta incorporar identidad. El namespace diagnóstico opcional solo comprueba transporte/mensajes y se prohíbe en producción. Las funciones de acceso, salas, presencia, movimiento y difusión descritas arriba se completarán secuencialmente en las fases 2–5. Ninguna prueba de aceptación multijugador se considera satisfecha por estos contratos. No hay persistencia ni instalación remota. [Resultados y límites de la validación](FASE1-BACKEND.md).
+En aquella entrega, las superficies de autenticación/invitaciones/salas de la lista anterior eran contratos reservados que respondían 501, y Socket.IO denegaba el namespace de juego hasta incorporar identidad. El namespace diagnóstico opcional solo comprueba transporte/mensajes y se prohíbe en producción. Las funciones de acceso, salas, presencia, movimiento y difusión se completan secuencialmente en las fases 2–5. Ninguna prueba de aceptación multijugador se considera satisfecha por estos contratos. En Fase 1 no había persistencia ni instalación remota. [Resultados y límites de la validación](FASE1-BACKEND.md).
 
 ## 7. Fase 2 — Cuentas, invitaciones y permisos
 
@@ -252,6 +252,12 @@ El administrador técnico **no es automáticamente** propietario de las partidas
 - No incluir datos de jugadores o secretos en logs de depuración.
 
 Referencias de implementación: [Socket.IO — Rooms](https://socket.io/docs/v4/rooms/), [Socket.IO — CORS y allowRequest](https://socket.io/docs/v4/handling-cors/), [Socket.IO — Reverse proxy](https://socket.io/docs/v4/reverse-proxy/) y [OWASP — Password Storage](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html).
+
+### Implementación local de Fase 2 — 26 de octubre de 2026
+
+La API incorpora cuentas en SQLite integrado en Node, scrypt con perfil OWASP compatible con Node 22 sin addons, bootstrap de administrador por terminal privada, login/logout, caducidad/revocación, administración de roles/cuentas, invitaciones ordinarias caducables y de un solo uso, etiquetas configurables y política central de permisos. Se comprueba de nuevo la autorización tras el cálculo de contraseña y dentro de las transacciones de consumo/provisión. [Contrato y operación local](../backend/README.md), [pruebas, límites y decisiones](FASE2-BACKEND.md).
+
+La Fase 2 prepara permisos de sala sin crear aún salas, asignaciones ni presencia. La invitación de alta no concede pertenencia a una partida. El namespace de juego comprueba la identidad y sigue denegando también a cuentas válidas hasta completar autorización de salas en Fase 3. La invitación combinada alta/pertenencia descrita arriba queda pendiente de ese modelo. No se modifica Pages, Apache ni la Raspberry.
 
 ## 8. Fase 3 — Crear y unirse a partidas
 

@@ -1,12 +1,14 @@
 {
   "name": "naufragio-vtt-backend",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "engines": { "node": ">=22.16.0" },
   "scripts": {
     "start": "node src/main.js",
     "start:env": "node --env-file=.env src/main.js",
+    "bootstrap:admin": "node scripts/bootstrap-admin.js",
+    "bootstrap:admin:env": "node --env-file=.env scripts/bootstrap-admin.js",
     "test": "node --test",
     "validate:site": "node scripts/validate-site.js"
   },

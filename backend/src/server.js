@@ -4,6 +4,9 @@ import { attachRealtime } from './realtime.js';
 import { createLimiter } from './limits.js';
 import { HttpError, sendError, sendJson } from './errors.js';
 import { validateSiteConfig } from '../public/site-config.js';
+import { openStorage } from './storage.js';
+import { createAuthService } from './auth/service.js';
+import { createAuthRouter } from './auth/routes.js';
 
 const assets = new Map([
   ['/settings/', ['settings.html', 'text/html']],
@@ -12,10 +15,6 @@ const assets = new Map([
   ['/settings/site-config.js', ['site-config.js', 'text/javascript']],
   ['/settings/site.config.example.json', ['site.config.example.json', 'application/json']],
   ['/settings/site.config.schema.json', ['site.config.schema.json', 'application/schema+json']]
-]);
-const reserved = new Map([
-  ['/auth/login', 'POST'], ['/auth/logout', 'POST'], ['/invitations', 'POST'],
-  ['/auth/register', 'POST'], ['/rooms', 'GET, POST'], ['/rooms/join', 'POST']
 ]);
 
 async function readJson(request, limit) {
@@ -37,17 +36,24 @@ async function readJson(request, limit) {
   } catch { throw new HttpError(400, 'INVALID_JSON'); }
 }
 
-export function createBackend(config, { reportError = () => {}, publicConfigFile = new URL('../public/site.config.json', import.meta.url) } = {}) {
-  const acceptRequest = createLimiter(config.httpRateLimit, config.rateWindowMs);
+export function createBackend(config, { reportError = () => {}, publicConfigFile = new URL('../public/site.config.json', import.meta.url), clock = Date.now } = {}) {
+  const store = openStorage(config.databasePath);
+  const auth = createAuthService(store, config, { clock });
+  const authRouter = createAuthRouter(auth, config, { clock });
+  const acceptRequest = createLimiter(config.httpRateLimit, config.rateWindowMs, { clock });
   const server = createServer({ maxHeaderSize: 8192, requestTimeout: 10000, headersTimeout: 10000, keepAliveTimeout: 5000 }, (request, response) => {
     response.setHeader('Cache-Control', 'no-store');
     response.setHeader('X-Content-Type-Options', 'nosniff');
     response.setHeader('Referrer-Policy', 'no-referrer');
     response.setHeader('Content-Security-Policy', "default-src 'none'; script-src 'self'; style-src 'self'; connect-src http: https:; base-uri 'none'; frame-ancestors 'none'; form-action 'none'");
     response.setHeader('Vary', 'Origin');
-    handle(request, response).catch(error => sendError(response, error, reportError));
+    handle(request, response).catch(error => {
+      if (error.status === 429 && !response.hasHeader('Retry-After')) response.setHeader('Retry-After', String(Math.ceil(config.authWindowMs / 1000)));
+      if (error.code === 'AUTH_BUSY') response.setHeader('Retry-After', '1');
+      sendError(response, error, reportError);
+    });
   });
-  const io = attachRealtime(server, config);
+  const io = attachRealtime(server, config, auth);
 
   async function handle(request, response) {
     const origin = request.headers.origin;
@@ -60,7 +66,7 @@ export function createBackend(config, { reportError = () => {}, publicConfigFile
     if (request.method === 'OPTIONS') {
       const headers = (request.headers['access-control-request-headers'] ?? '').toLowerCase().split(',').map(s => s.trim()).filter(Boolean);
       if (headers.some(header => !['content-type', 'authorization'].includes(header))) throw new HttpError(403, 'HEADERS_DENIED');
-      response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+      response.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, OPTIONS');
       response.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
       response.writeHead(204);
       response.end();
@@ -68,15 +74,16 @@ export function createBackend(config, { reportError = () => {}, publicConfigFile
     }
     const { pathname, search } = new URL(request.url, 'http://localhost');
     if (search) throw new HttpError(400, 'QUERY_NOT_ALLOWED');
-    const methods = pathname === '/health' || pathname === '/settings' || pathname === '/settings/site.config.json' || assets.has(pathname) ? 'GET' : reserved.get(pathname);
+    const route = authRouter.match(pathname);
+    const methods = pathname === '/health' || pathname === '/settings' || pathname === '/settings/site.config.json' || assets.has(pathname) ? 'GET' : route?.methods;
     if (!methods) throw new HttpError(404, 'NOT_FOUND');
     if (!methods.split(', ').includes(request.method)) {
       response.setHeader('Allow', methods);
       throw new HttpError(405, 'METHOD_NOT_ALLOWED');
     }
     if (pathname === '/health') {
-      sendJson(response, 200, { status: 'ok', service: 'naufragio-vtt', protocolVersion: 1, phase: 1,
-        capabilities: { authentication: false, rooms: false, gameEvents: false } });
+      sendJson(response, 200, { status: 'ok', service: 'naufragio-vtt', protocolVersion: 1, phase: 2,
+        capabilities: { authentication: true, rooms: false, gameEvents: false } });
       return;
     }
     if (pathname === '/settings') {
@@ -91,7 +98,8 @@ export function createBackend(config, { reportError = () => {}, publicConfigFile
         if (error.code !== 'ENOENT') throw error;
         data = await readFile(new URL('../public/site.config.example.json', import.meta.url), 'utf8');
       }
-      sendJson(response, 200, validateSiteConfig(JSON.parse(data), { development: config.mode !== 'production' }));
+      const value = validateSiteConfig(JSON.parse(data), { development: config.mode !== 'production' });
+      sendJson(response, 200, { ...value, roleLabels: auth.roleLabels() });
       return;
     }
     if (assets.has(pathname)) {
@@ -101,14 +109,14 @@ export function createBackend(config, { reportError = () => {}, publicConfigFile
       response.end(data);
       return;
     }
-    // API contracts only. No account creation, fake sessions or anonymous rooms.
-    if (request.method === 'POST') await readJson(request, config.maxBodyBytes);
-    throw new HttpError(501, 'FEATURE_NOT_AVAILABLE');
+    const result = await route.execute(request, readJson);
+    if (result.status === 204) { response.writeHead(204); response.end(); }
+    else sendJson(response, result.status, result.body);
   }
 
   let closing;
   return {
-    server, io,
+    server, io, auth, store,
     listen(port = config.port) {
       return new Promise((resolve, reject) => {
         const failed = error => reject(error);
@@ -121,7 +129,7 @@ export function createBackend(config, { reportError = () => {}, publicConfigFile
     },
     close() {
       closing ??= new Promise(resolve => {
-        io.close(() => resolve());
+        io.close(() => { store.close(); resolve(); });
         server.closeIdleConnections();
       });
       return closing;

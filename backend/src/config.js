@@ -1,4 +1,5 @@
 import { isIP } from 'node:net';
+import { fileURLToPath } from 'node:url';
 
 const localHosts = new Set(['localhost', '127.0.0.1', '[::1]']);
 
@@ -27,11 +28,14 @@ export function loadConfig(env = process.env) {
   const socketPath = env.SOCKET_PATH ?? '/socket.io';
   if (socketPath.length > 200 || !/^\/[a-zA-Z0-9_.-]+(?:\/[a-zA-Z0-9_.-]+)*$/.test(socketPath) ||
       socketPath.split('/').some(segment => segment === '.' || segment === '..') ||
-      /^\/(health|settings|auth|rooms|invitations)(\/|$)/.test(socketPath)) throw new Error('Invalid SOCKET_PATH');
+      /^\/(health|settings|auth|rooms|invitations|users|roles|resources)(\/|$)/.test(socketPath)) throw new Error('Invalid SOCKET_PATH');
   const diagnostics = env.ENABLE_DIAGNOSTICS ?? 'false';
   if (!['true', 'false'].includes(diagnostics) || (mode === 'production' && diagnostics === 'true')) {
     throw new Error('Invalid ENABLE_DIAGNOSTICS');
   }
+  const databasePath = env.DATABASE_PATH ?? (mode === 'test' ? ':memory:' : fileURLToPath(new URL('../data/naufragio.sqlite', import.meta.url)));
+  if (typeof databasePath !== 'string' || !databasePath.trim() || /[\u0000\r\n]/.test(databasePath) ||
+      (mode === 'production' && databasePath === ':memory:')) throw new Error('Invalid DATABASE_PATH');
   return Object.freeze({
     mode, host, port: integer('PORT', 3400, 1, 65535),
     allowedOrigins: Object.freeze([...new Set(allowedOrigins)]), socketPath,
@@ -42,6 +46,11 @@ export function loadConfig(env = process.env) {
     handshakeRateLimit: integer('HANDSHAKE_RATE_LIMIT', 20, 1, 1000),
     eventRateLimit: integer('EVENT_RATE_LIMIT', 30, 1, 1000),
     connectionLimit: integer('CONNECTION_LIMIT', 32, 1, 1000),
+    databasePath,
+    authRateLimit: integer('AUTH_RATE_LIMIT', 10, 1, 100),
+    authWindowMs: integer('AUTH_WINDOW_MS', 300000, 100, 3600000),
+    sessionTtlSeconds: integer('SESSION_TTL_SECONDS', 1800, 60, 3600),
+    invitationTtlSeconds: integer('INVITATION_TTL_SECONDS', 86400, 60, 604800),
     diagnostics: diagnostics === 'true'
   });
 }

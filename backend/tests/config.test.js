@@ -25,7 +25,9 @@ test('environment overrides are portable and production requires exact HTTPS ori
     { NODE_ENV: 'production', ALLOWED_ORIGINS: 'http://localhost:8080' },
     { MAX_BODY_BYTES: '0' }, { MAX_MESSAGE_BYTES: '99999999' }, { RATE_WINDOW_MS: '0' },
     { SOCKET_PATH: '/' }, { SOCKET_PATH: '/health' }, { SOCKET_PATH: '/socket/../rooms' },
-    { ENABLE_DIAGNOSTICS: 'yes' }
+    { ENABLE_DIAGNOSTICS: 'yes' },
+    { DATABASE_PATH: '' }, { NODE_ENV: 'production', ALLOWED_ORIGINS: 'https://example.invalid', DATABASE_PATH: ':memory:' },
+    { AUTH_RATE_LIMIT: '0' }, { SESSION_TTL_SECONDS: '0' }, { INVITATION_TTL_SECONDS: '0' }
   ]) assert.throws(() => loadConfig(env), JSON.stringify(env));
 });
 

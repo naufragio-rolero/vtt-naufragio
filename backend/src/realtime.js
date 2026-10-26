@@ -1,7 +1,7 @@
 import { Server } from 'socket.io';
 import { createLimiter } from './limits.js';
 
-export function attachRealtime(server, config) {
+export function attachRealtime(server, config, auth) {
   const allowed = origin => config.allowedOrigins.includes(origin);
   const handshake = createLimiter(config.handshakeRateLimit, config.rateWindowMs);
   const pending = new Map();
@@ -37,10 +37,13 @@ export function attachRealtime(server, config) {
     if (!allowed(request.headers.origin)) return next(new Error('ORIGIN_DENIED'));
     next();
   });
-  // No identity provider exists in Phase 1. Never trust client-supplied roles/auth.
+  // Identity alone never grants entry before server-side room authorization exists.
   io.use((socket, next) => {
-    const error = new Error('AUTH_UNAVAILABLE');
-    error.data = { code: 'AUTH_UNAVAILABLE' };
+    let code = 'ROOM_AUTHORIZATION_UNAVAILABLE';
+    try { auth.session(socket.handshake.auth?.token); }
+    catch { code = 'UNAUTHENTICATED'; }
+    const error = new Error(code);
+    error.data = { code };
     next(error);
   });
 
