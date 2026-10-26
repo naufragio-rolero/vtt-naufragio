@@ -6,7 +6,11 @@ Prototipo 0.1.2 de un tablero virtual ligero para El Naufragio, inspirado en la 
 
 **[Referencias funcionales de Owlbear Rodeo](docs/REFERENCIAS-OWLBEAR.md)** — equivalencias con Owlbear 1.0/2.0, fuentes oficiales y criterios para conservar una experiencia sencilla.
 
-**[Plan de backend multijugador y despliegue portable](docs/BACKEND-RASPBERRY.md)** — frontend configurable para GitHub Pages u otro servidor; invitaciones de alta, roles y permisos, salas, exportación/importación del MVP y piloto Raspberry con Codex por SSH. **Pendiente de implementar; no existe aún backend en producción.**
+**[Plan de backend multijugador y despliegue portable](docs/BACKEND-RASPBERRY.md)** — frontend configurable para GitHub Pages u otro servidor; invitaciones de alta, roles y permisos, salas, exportación/importación del MVP y piloto Raspberry con Codex por SSH. **Base local de Fase 1 implementada; no existe aún backend en producción.**
+
+## Backend local en desarrollo
+
+[Instrucciones de `backend/`](backend/README.md): Node.js 22, HTTP con `/health`, Socket.IO restringido y pantalla local de configuración pública. [Pruebas y alcance de Fase 1](docs/FASE1-BACKEND.md): 27 pruebas superadas en Node 22.23.4 y 24.18.0. Cuentas, salas y sincronización siguen pendientes de sus siguientes fases. El tablero publicado mantiene su funcionamiento local y no se conecta al backend.
 
 ## Funciones actuales
 
@@ -52,7 +56,7 @@ El proyecto no necesita un workflow personalizado de GitHub Actions.
 
 ## Límites deliberados del MVP
 
-**No hay autenticación real, servidor ni multijugador.** El nombre elegido en pantalla solo identifica al usuario en *ese navegador* y no impide que nadie visite la web. GitHub Pages no ejecuta PHP ni WebSockets.
+**El tablero publicado no tiene autenticación real, servidor conectado ni multijugador.** El nombre elegido en pantalla solo identifica al usuario en *ese navegador* y no impide que nadie visite la web. GitHub Pages no ejecuta PHP ni WebSockets. La base de backend de desarrollo se ejecuta por separado.
 
 Los tokens y ajustes se guardan en localStorage; la imagen importada, en IndexedDB. Nada se comparte entre dispositivos y limpiar los datos del sitio puede hacer perder el mapa y su configuración. Evitar usar información privada o material sensible.
 

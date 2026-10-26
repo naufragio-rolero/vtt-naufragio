@@ -2,7 +2,7 @@
 
 > Proyecto: **Naufragio VTT** · Repositorio: `naufragio-rolero/vtt-naufragio`
 >
-> Fecha: 24 de octubre de 2026 · Estado: **plan actualizado; backend aún sin implementar y Raspberry pendiente de inventario por SSH**.
+> Fecha del plan: 24 de octubre de 2026 · Actualización: 26 de octubre de 2026. Estado: **inventario por SSH documentado; base local de Fase 1 implementada y probada en Node 22/24, sin despliegue**. Véanse [inventario](INVENTARIO-BACKEND-RASPBERRY.md) e [informe de Fase 1](FASE1-BACKEND.md).
 >
 > Destinatario: Codex trabajando sobre un clon del repositorio en Windows y conectado a la Raspberry por SSH.
 >
@@ -208,6 +208,12 @@ Implementación mínima:
 - Tests sin requerir la Raspberry para la mayoría de casos.
 - Configuración sensible del backend en variables de entorno; `.env.example` solo contendrá nombres y marcadores. Añadir un `site.config.example.json` **público** y el esquema/validador correspondiente para el frontend.
 - `.gitignore` debe excluir `.env`, claves, DB reales, logs y archivos temporales.
+
+### Estado local — 26 de octubre de 2026
+
+Implementados en [`backend/`](../backend/README.md): Node 22.23.4 como referencia, ESM compatible con Node 24+, HTTP, `/health`, Socket.IO, validación/límites, configuración por entorno, lockfile y 27 pruebas superadas en Node 22.23.4 y 24.18.0. La pantalla de ajustes y los artefactos de configuración pública se sirven aislados desde el backend local, sin modificar el tablero de GitHub Pages.
+
+En esta entrega, las superficies de autenticación/invitaciones/salas de la lista anterior son contratos reservados que responden 501, y Socket.IO deniega el namespace de juego hasta incorporar identidad. El namespace diagnóstico opcional solo comprueba transporte/mensajes y se prohíbe en producción. Las funciones de acceso, salas, presencia, movimiento y difusión descritas arriba se completarán secuencialmente en las fases 2–5. Ninguna prueba de aceptación multijugador se considera satisfecha por estos contratos. No hay persistencia ni instalación remota. [Resultados y límites de la validación](FASE1-BACKEND.md).
 
 ## 7. Fase 2 — Cuentas, invitaciones y permisos
 

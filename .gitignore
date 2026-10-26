@@ -1,0 +1,20 @@
+node_modules/
+coverage/
+.env
+.env.*
+!.env.example
+*.log
+*.tmp
+*.temp
+*.sqlite
+*.sqlite-*
+*.db
+*.db-*
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+# Local connection instructions contain private infrastructure details.
+/docs/RASPBERRY_SSH.md

@@ -232,3 +232,5 @@ Estas decisiones no deben confundirse con requisitos ya acordados:
 ## 9. Regla de mantenimiento
 
 Cualquier implementación deberá contrastarse con este documento antes de introducir reglas, dependencias, almacenamiento servidor o funciones no previstas. Si una decisión cambia, actualizar aquí su estado y reflejarla en las notas de desarrollo. El código existente no prueba que una función futura esté terminada.
+
+Estado al 26 de octubre de 2026: existe una [base local de backend y pruebas de Fase 1](FASE1-BACKEND.md) para Node 22/24. Se prepararon configuración pública y pantalla aislada del backend; su integración con el tablero publicado sigue pendiente. Esto no completa AUT, COL, los hitos 0.2/0.3 ni cambia DEC-05/06: no hay persistencia de contenido de partidas en el servidor. Las siguientes fases incorporarán identidad, salas y eventos con el máster como autoridad.

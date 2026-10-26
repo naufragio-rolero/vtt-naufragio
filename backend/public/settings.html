@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Configuración del sitio · Naufragio VTT</title>
+  <link rel="stylesheet" href="./settings.css">
+  <script type="module" src="./settings.js"></script>
+</head>
+<body>
+  <main>
+    <h1>Configuración del sitio</h1>
+    <p>Prepara los ajustes públicos para un despliegue. Revisa siempre el destino antes de conectar.</p>
+    <p>Esta herramienta descarga un JSON para republicarlo; no guarda cambios globales ni credenciales.</p>
+    <label>Nombre del sitio <input id="siteName" maxlength="80"></label>
+    <label>URL de API <input id="apiBaseUrl" type="url"></label>
+    <label>URL de tiempo real <input id="realtimeBaseUrl" type="url"></label>
+    <label>Ruta Socket.IO <input id="socketPath"></label>
+    <fieldset><legend>Nombres visibles de roles</legend>
+      <label>Administrador <input id="admin" maxlength="40"></label>
+      <label>Dirección <input id="director" maxlength="40"></label>
+      <label>Usuario <input id="user" maxlength="40"></label>
+    </fieldset>
+    <label><input id="development" type="checkbox"> Permitir HTTP/WS en localhost para desarrollo</label>
+    <p id="destination">Destino pendiente de validar.</p>
+    <label><input id="confirm" type="checkbox"> He revisado el destino al que se enviará la comprobación.</label>
+    <div class="actions">
+      <button id="validate" type="button">Validar</button>
+      <button id="check" type="button">Comprobar API</button>
+      <button id="download" type="button">Descargar JSON</button>
+    </div>
+    <p id="status" role="status" aria-live="polite"></p>
+    <p>La comprobación consulta la salud HTTP. La autenticación y las salas pertenecen a las siguientes fases.</p>
+  </main>
+</body>
+</html>
