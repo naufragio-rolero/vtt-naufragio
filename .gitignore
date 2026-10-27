@@ -1,5 +1,7 @@
 node_modules/
 coverage/
+dist/
+.dist-stage-*/
 /backend/data/
 .env
 .env.*

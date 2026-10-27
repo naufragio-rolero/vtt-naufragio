@@ -13,7 +13,9 @@
     "validate:site": "node scripts/validate-site.js",
     "frontend": "node scripts/dev-frontend.js",
     "test:browser": "node scripts/browser-integration.js",
-    "sync:browser-client": "node scripts/sync-browser-client.js"
+    "sync:browser-client": "node scripts/sync-browser-client.js",
+    "build:frontend": "node scripts/build-frontend.js",
+    "serve:dist": "node scripts/serve-dist.js"
   },
   "dependencies": { "socket.io": "4.8.4" },
   "devDependencies": { "socket.io-client": "4.8.4" }

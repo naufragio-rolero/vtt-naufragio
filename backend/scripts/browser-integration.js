@@ -3,7 +3,10 @@ import assert from 'node:assert/strict';
 import { randomBytes } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { buildFrontend } from './build-frontend.js';
+import { createDistServer } from './serve-dist.js';
 import { createBackend } from '../src/server.js';
 import { loadConfig } from '../src/config.js';
 import { createFrontendServer } from './dev-frontend.js';
@@ -13,6 +16,13 @@ const { chromium, firefox } = await import(pathToFileURL(resolve(process.env.BRO
 const chromiumBrowser = await chromium.launch({ channel: 'msedge', headless: true });
 let firefoxBrowser;
 const report = [];
+let artifactRoot;
+if (process.env.BROWSER_USE_DIST === '1') {
+  artifactRoot = await mkdtemp(resolve(tmpdir(), 'naufragio-browser-dist-'));
+  await buildFrontend({ outputRoot: artifactRoot });
+}
+const frontendServer = options => artifactRoot
+  ? createDistServer({ ...options, directory: resolve(artifactRoot, 'dist') }) : createFrontendServer(options);
 let stage = 'launch';
 const secret = () => `synthetic-${randomBytes(24).toString('base64url')}`;
 async function listen(server) { await new Promise(resolve => server.listen(0, '127.0.0.1', resolve)); return `http://127.0.0.1:${server.address().port}`; }
@@ -49,7 +59,7 @@ async function moveCanvas(page, tokenId, dx, dy) {
 }
 async function localOnly(engine) {
   stage = `${engine.browserType().name()} local without backend`;
-  const server = createFrontendServer();
+  const server = await frontendServer();
   const url = await listen(server);
   const context = await engine.newContext({ viewport: { width: 1440, height: 1000 } });
   try {
@@ -78,7 +88,7 @@ async function localOnly(engine) {
 }
 async function scenario(directorBrowser, playerBrowser, basePath, prefix) {
   const deploymentConfig = {};
-  const frontend = createFrontendServer({ basePath, publicConfig: basePath === '/' ? undefined : deploymentConfig });
+  const frontend = await frontendServer({ basePath, publicConfig: basePath === '/' ? undefined : deploymentConfig });
   const site = await listen(frontend);
   const url = site + basePath;
   const app = createBackend(loadConfig({ NODE_ENV: 'test', ALLOWED_ORIGINS: site, AUTH_RATE_LIMIT: '100', HTTP_RATE_LIMIT: '10000',
@@ -265,7 +275,7 @@ try {
   await localOnly(firefoxBrowser);
   await scenario(chromiumBrowser, firefoxBrowser, '/', '');
   await scenario(firefoxBrowser, chromiumBrowser, '/vtt/', '/transport');
-  console.log(JSON.stringify({ result: 'pass', chromium: chromiumBrowser.version(), firefox: firefoxBrowser.version(), scenarios: report }, null, 2));
+  console.log(JSON.stringify({ result: 'pass', artifact: artifactRoot ? 'dist' : 'source', chromium: chromiumBrowser.version(), firefox: firefoxBrowser.version(), scenarios: report }, null, 2));
 } catch (error) {
   console.error(JSON.stringify({ result: 'fail', stage, code: error.code || error.name, message: error.message?.slice(0, 180) })); process.exitCode = 1;
-} finally { await firefoxBrowser?.close(); await chromiumBrowser.close(); }
+} finally { await firefoxBrowser?.close(); await chromiumBrowser.close(); if (artifactRoot) await rm(artifactRoot, { recursive: true, force: true }); }

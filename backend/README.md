@@ -1,5 +1,7 @@
 # Backend e integración local — Fase 5
 
+Validación posterior: [Windows y preparación del piloto privado](../docs/PILOTO-PRIVADO-RASPBERRY.md). `npm run build:frontend` genera `../dist/` solo con archivos del navegador y manifiesto; `npm run serve:dist` lo sirve en loopback. Para validar ese artefacto con los navegadores existentes, ejecutar `test:browser` con `BROWSER_USE_DIST=1`. El preflight `scripts/pilot-preflight.ps1` detiene el piloto si SSH deniega forwarding; no modifica políticas ni servicios.
+
 Backend portable en JavaScript ESM para Node **22.23.4**, comprobado también con Node **24.18.0**. Usa HTTP, SQLite y criptografía integrados en Node; Socket.IO 4.8.4 es la única dependencia de ejecución de npm. No requiere instalar addons ni compilar dependencias nativas. La rama de trabajo integra el Canvas con este backend; Pages aún conserva el prototipo publicado anterior. [Guía y aceptación real de Fase 5](../docs/FASE5-FRONTEND.md).
 
 ## Preparación e inicio

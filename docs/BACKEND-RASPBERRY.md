@@ -5,6 +5,8 @@
 > Fecha del plan: 24 de octubre de 2026 · Actualización: 27 de octubre de 2026. Estado: **Fase 5 de integración del frontend implementada y validada localmente, sin despliegue**. Véanse [inventario](INVENTARIO-BACKEND-RASPBERRY.md), [Fase 1](FASE1-BACKEND.md), [Fase 2](FASE2-BACKEND.md), [validación ARMv7 de Fase 2](VALIDACION-ARMV7.md), [Fase 3](FASE3-BACKEND.md), [Fase 4](FASE4-BACKEND.md) y [Fase 5](FASE5-FRONTEND.md).
 >
 > Destinatario: Codex trabajando sobre un clon del repositorio en Windows y conectado a la Raspberry por SSH.
+
+> **28 de octubre de 2026:** repetidas las 93 pruebas en Node 22/24 y la integración real Firefox/Edge; se añade construcción de `dist/` público. El piloto de tres clientes ARMv7 se detiene antes de transferir o arrancar procesos porque SSH deniega forwarding al puerto dedicado. [Informe, scripts y condiciones para continuar](PILOTO-PRIVADO-RASPBERRY.md). No hay despliegue ni cambios en servicios.
 >
 > **Esta guía es de preparación, no una orden de desplegar automáticamente.** La Raspberry es nuestra instalación piloto, **no una dependencia del VTT**. Antes de desplegar en cualquier máquina, hay que inspeccionar sus servicios y confirmar las decisiones dependientes del entorno.
 

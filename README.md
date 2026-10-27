@@ -10,6 +10,8 @@ Tablero virtual ligero para El Naufragio, inspirado en la sencillez de Owlbear R
 
 ## Probar el multijugador en Windows
 
+[Validación Windows, artefacto público y piloto privado](docs/PILOTO-PRIVADO-RASPBERRY.md): `npm run build:frontend` genera `dist/` con lista pública explícita; `npm run serve:dist` permite revisarlo localmente. El piloto ARMv7 está bloqueado por la política de forwarding SSH y no se ha iniciado.
+
 Seguir la [guía de Fase 5](docs/FASE5-FRONTEND.md): preparar el backend con Node 22/24 y el administrador inicial; ejecutar `npm run start:env` y, en otra terminal dentro de `backend/`, `npm run frontend`. Abrir `http://127.0.0.1:8080/`, configurar los destinos desde **Multijugador → Configuración del sitio** y acceder. El administrador provisiona dirección; el director crea la partida, invita cuentas registradas y asigna tokens. Alta de cuenta y código de sala son independientes.
 
 El Canvas conserva rejilla, zoom, desplazamiento y temas. Solo dirección mueve cualquier token de la sala; los jugadores necesitan asignación y permiso expreso. Se confirma un movimiento por arrastre terminado. El director guarda el estado oficial en IndexedDB y debe probarlo al reconectar. La mesa local y sus mapas se conservan al entrar/salir. Las salas usan un conjunto fijo de hasta 64 tokens genéricos, sin transmisión de imágenes.
