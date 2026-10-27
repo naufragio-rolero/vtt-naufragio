@@ -92,6 +92,11 @@
   let mapImage = null;
   let mapEditMode = null;
   let mapLoadGeneration = 0;
+  let sharedMode = false;
+  let localBackup = null;
+  let multiplayer = null;
+  const editable = () => !sharedMode;
+  const canMove = tokenId => !sharedMode || Boolean(multiplayer?.canMove(tokenId));
 
   const canvas = document.getElementById("boardCanvas");
   const context = canvas.getContext("2d");
@@ -135,6 +140,7 @@
   };
 
   function save() {
+    if (sharedMode) return; // A shared room must never replace the legacy local table.
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch {
@@ -262,6 +268,7 @@
   }
 
   async function importMap(file) {
+    if (!editable()) return;
     if (!file) return;
     const validType = ["image/jpeg", "image/png", "image/webp"].includes(file.type)
       || (file.type === "" && /\.(jpe?g|png|webp)$/i.test(file.name));
@@ -311,9 +318,6 @@
       const blob = await assetRequest("get");
       if (generation !== mapLoadGeneration) return;
       if (!blob) {
-        state.map = null;
-        save();
-        refreshMapControls();
         showToast("No se encontró la imagen guardada.");
         return;
       }
@@ -417,6 +421,7 @@
   }
 
   function updateMapSetting(property, rawValue) {
+    if (!editable()) return;
     if (!state.map) return;
     const value = Number.parseFloat(rawValue);
     if (!Number.isFinite(value)) {
@@ -431,6 +436,7 @@
   }
 
   async function removeMap() {
+    if (!editable()) return;
     if (!state.map || !window.confirm("¿Retirar la imagen del mapa? Los tokens se conservarán.")) return;
     const generation = ++mapLoadGeneration;
     try {
@@ -510,6 +516,10 @@
   }
 
   function drawToken(token) {
+    if (sharedMode && drag?.type === "token" && drag.tokenId === token.id && drag.preview) {
+      token = { ...token, ...drag.preview };
+      context.globalAlpha = 0.55;
+    } else context.globalAlpha = 1;
     const point = worldToScreen((token.x + 0.5) * state.cellSize, (token.y + 0.5) * state.cellSize);
     const radius = state.cellSize * state.zoom * 0.34;
     const selected = selectedId === token.id;
@@ -565,6 +575,7 @@
       context.fillStyle = "#ddfff4";
       context.fillText(label, point.x, labelY + 14, boxWidth - 14);
     }
+    context.globalAlpha = 1;
   }
 
   function draw() {
@@ -621,6 +632,7 @@
       const button = document.createElement("button");
       button.type = "button";
       button.className = "token-item" + (selectedId === token.id ? " selected" : "");
+      button.dataset.tokenId = token.id;
       button.setAttribute("aria-pressed", String(selectedId === token.id));
       const swatch = document.createElement("span");
       swatch.className = "token-swatch";
@@ -657,6 +669,7 @@
       button.setAttribute("aria-label", "Color " + color);
       button.setAttribute("aria-pressed", String(token.color === color));
       button.addEventListener("click", () => {
+        if (!editable()) return;
         token.color = color;
         refreshTokenList();
         refreshSelectionEditor();
@@ -685,8 +698,10 @@
       button.classList.toggle("active", on);
       button.setAttribute("aria-pressed", String(on));
     }
-    refs.profileName.textContent = state.playerName || "Sin identificar";
-    refs.profileAvatar.textContent = (state.playerName || "?").trim().charAt(0).toUpperCase();
+    const name = sharedMode ? multiplayer.identityName : state.playerName;
+    refs.profileName.textContent = name || "Sin identificar";
+    refs.profileAvatar.textContent = (name || "?").trim().charAt(0).toUpperCase();
+    document.querySelector(".profile-caption").textContent = sharedMode ? multiplayer.roleLabel : "Jugando como";
     refreshTokenList();
     refreshSelectionEditor();
     draw();
@@ -710,6 +725,7 @@
       drag = { pointerId: event.pointerId, type: "map", point, x: state.map.xCells, y: state.map.yCells };
     } else if (token) {
       selectToken(token.id);
+      if (!canMove(token.id)) { showToast("Sin permiso para mover este token, o sala en espera."); return; }
       drag = { pointerId: event.pointerId, type: "token", point, x: token.x, y: token.y, tokenId: token.id };
     } else {
       selectToken(null);
@@ -743,8 +759,10 @@
     } else if (drag.type === "token") {
       const token = state.tokens.find((item) => item.id === drag.tokenId);
       if (!token) return;
-      token.x = clamp(drag.x + dx / (state.cellSize * state.zoom), -1000, 1000);
-      token.y = clamp(drag.y + dy / (state.cellSize * state.zoom), -1000, 1000);
+      const point = { x: clamp(drag.x + dx / (state.cellSize * state.zoom), -1000, 1000),
+        y: clamp(drag.y + dy / (state.cellSize * state.zoom), -1000, 1000) };
+      if (sharedMode) drag.preview = point;
+      else Object.assign(token, point);
     }
     draw();
   }
@@ -753,6 +771,17 @@
     if (!drag || drag.pointerId !== event.pointerId) return;
     if (drag.type === "token") {
       const token = state.tokens.find((item) => item.id === drag.tokenId);
+      if (sharedMode) {
+        const proposed = drag.preview;
+        drag = null;
+        canvas.classList.remove("dragging");
+        if (canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
+        if (event.type !== "pointercancel" && event.type !== "lostpointercapture" && token && proposed && canMove(token.id)) {
+          void multiplayer.move(token.id, { x: state.snap ? Math.round(proposed.x) : Math.round(proposed.x * 100) / 100,
+            y: state.snap ? Math.round(proposed.y) : Math.round(proposed.y * 100) / 100 });
+        }
+        draw(); return;
+      }
       if (token) {
         token.x = state.snap ? Math.round(token.x) : Math.round(token.x * 100) / 100;
         token.y = state.snap ? Math.round(token.y) : Math.round(token.y * 100) / 100;
@@ -781,6 +810,7 @@
   }
 
   function makeToken() {
+    if (!editable()) { showToast("La sala utiliza únicamente sus tokens iniciales."); return; }
     if (state.tokens.length >= 100) {
       showToast("Límite de 100 tokens en la versión de prueba.");
       return;
@@ -838,6 +868,11 @@
     const movement = { ArrowUp: [0, -amount], ArrowDown: [0, amount], ArrowLeft: [-amount, 0], ArrowRight: [amount, 0] };
     if (movement[event.key]) {
       event.preventDefault();
+      if (sharedMode) {
+        if (!canMove(token.id)) showToast("Sin permiso para mover este token, o sala en espera.");
+        else if (!event.repeat) void multiplayer.move(token.id, { x: token.x + movement[event.key][0], y: token.y + movement[event.key][1] });
+        return;
+      }
       token.x = clamp(Math.round((token.x + movement[event.key][0]) * 100) / 100, -1000, 1000);
       token.y = clamp(Math.round((token.y + movement[event.key][1]) * 100) / 100, -1000, 1000);
       refreshTokenList();
@@ -869,12 +904,14 @@
     refs[id].addEventListener("change", (event) => updateMapSetting(property, event.target.value));
   }
   refs.mapMoveToggle.addEventListener("click", () => {
+    if (!editable()) return;
     if (!state.map || !mapImage) return;
     mapEditMode = mapEditMode === "move" ? null : "move";
     refreshMapControls();
     draw();
   });
   refs.mapResizeToggle.addEventListener("click", () => {
+    if (!editable()) return;
     if (!state.map || !mapImage) return;
     mapEditMode = mapEditMode === "resize" ? null : "resize";
     refreshMapControls();
@@ -906,6 +943,7 @@
     save();
   });
   refs.tokenName.addEventListener("input", () => {
+    if (!editable()) return;
     const token = selectedToken();
     if (!token) return;
     token.name = refs.tokenName.value.slice(0, 32);
@@ -914,6 +952,7 @@
     draw();
   });
   refs.deleteToken.addEventListener("click", () => {
+    if (!editable()) return;
     const token = selectedToken();
     if (!token || !window.confirm("¿Eliminar " + (token.name || token.code) + " del tablero?")) return;
     state.tokens = state.tokens.filter((item) => item.id !== token.id);
@@ -969,6 +1008,30 @@
 
   refreshControls();
   resizeCanvas();
-  if (!state.playerName) openIdentity();
   void restoreMapImage();
+  window.NaufragioBoard = Object.freeze({
+    localTokens: () => structuredClone((localBackup || state).tokens),
+    tokens: () => structuredClone(state.tokens),
+    notify: showToast,
+    enterShared(callbacks) {
+      if (!sharedMode) localBackup = structuredClone(state);
+      sharedMode = true; multiplayer = callbacks; mapLoadGeneration++; mapEditMode = null;
+      state.map = null; state.tokens = []; selectedId = null; drag = null;
+      document.body.dataset.mode = "shared"; refreshControls();
+    },
+    applyShared(tokens) {
+      if (!sharedMode) return;
+      state.tokens = structuredClone(tokens); drag = null;
+      canvas.classList.remove("dragging");
+      if (!state.tokens.some(token => token.id === selectedId)) selectedId = null;
+      refreshTokenList(); refreshSelectionEditor(); draw();
+    },
+    exitShared() {
+      if (!sharedMode) return;
+      sharedMode = false; multiplayer = null; Object.assign(state, localBackup); localBackup = null;
+      mapLoadGeneration++; selectedId = null; drag = null; document.body.dataset.mode = "local";
+      canvas.classList.remove("dragging"); refreshControls(); void restoreMapImage();
+    }
+  });
+  window.dispatchEvent(new Event("naufragio:board:ready"));
 })();

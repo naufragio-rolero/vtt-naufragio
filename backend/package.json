@@ -1,6 +1,6 @@
 {
   "name": "naufragio-vtt-backend",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "type": "module",
   "engines": { "node": ">=22.16.0" },
@@ -10,7 +10,10 @@
     "bootstrap:admin": "node scripts/bootstrap-admin.js",
     "bootstrap:admin:env": "node --env-file=.env scripts/bootstrap-admin.js",
     "test": "node --test",
-    "validate:site": "node scripts/validate-site.js"
+    "validate:site": "node scripts/validate-site.js",
+    "frontend": "node scripts/dev-frontend.js",
+    "test:browser": "node scripts/browser-integration.js",
+    "sync:browser-client": "node scripts/sync-browser-client.js"
   },
   "dependencies": { "socket.io": "4.8.4" },
   "devDependencies": { "socket.io-client": "4.8.4" }

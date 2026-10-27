@@ -2,6 +2,8 @@
 
 Fecha: 27 de octubre de 2026. Rama: `feat/backend-multijugador`. Base conservada: `4c33a42`. Backend 0.4.0; esta versión del paquete no representa la fase de herramientas 0.4 del producto.
 
+> Informe histórico de Fase 4. La integración visual y la validación de IndexedDB/Web Locks en Firefox y Edge se entregan después en [Fase 5](FASE5-FRONTEND.md); sus resultados no se atribuyen retroactivamente a esta fase.
+
 ## Alcance
 
 Implementación y pruebas exclusivamente locales en Windows, manteniendo Node 22 y 24. No se ha conectado a la Raspberry, instalado ni desplegado nada. Permanecen intactos los archivos del tablero publicado y Pages. No se añaden dependencias, imágenes, mapas, chat, dados, fichas de personaje ni herramientas visuales.

@@ -209,7 +209,32 @@ export function createTokenSync({ store, rooms, namespace, clock = Date.now, onS
     for (const record of state.records.values()) if (!record.result && record.input.tokenId === input.tokenId) reject(state, record, 'ASSIGNMENT_CHANGED');
     const result = { tokenId: input.tokenId, userIds: [...input.userIds], assignmentVersion: input.assignmentVersion + 1 };
     state.assignments.set(input.tokenId, { eventId: input.eventId, fingerprint, result });
+    refreshPermissions();
     return result;
+  }
+  function permissions(socket) {
+    const current = access(socket);
+    const state = runtime.get(socket.data.roomId);
+    const own = db.prepare('SELECT token_id FROM token_assignments WHERE room_id=? AND user_id=? ORDER BY token_id')
+      .all(socket.data.roomId, current.actor.id).map(row => row.token_id);
+    const result = { isOwner: current.isOwner, moveAssignedTokens: current.permissions.moveAssignedTokens, assignedTokenIds: own };
+    if (current.isOwner) result.assignments = db.prepare('SELECT token_id,user_id FROM token_assignments WHERE room_id=? ORDER BY token_id,user_id')
+      .all(socket.data.roomId).map(row => ({ tokenId: row.token_id, userId: row.user_id }));
+    if (current.isOwner) result.assignmentVersions = Object.fromEntries([...state?.assignments ?? []].map(([id, row]) => [id, row.result.assignmentVersion]));
+    return result;
+  }
+  function refreshPermissions() {
+    for (const socket of namespace.sockets.values()) {
+      if (!socket.connected) continue;
+      try {
+        const value = permissions(socket);
+        const encoded = JSON.stringify(value);
+        if (socket.data.lastTokenPermissions !== encoded) {
+          socket.data.lastTokenPermissions = encoded;
+          socket.emit('tokens:permissions', { version: 1, roomId: socket.data.roomId, permissions: value });
+        }
+      } catch { socket.disconnect(true); }
+    }
   }
   function syncRequest(socket, input) {
     common(socket, input, ['epoch', 'eventId']);
@@ -241,6 +266,7 @@ export function createTokenSync({ store, rooms, namespace, clock = Date.now, onS
     return { status: 'sent' };
   }
   const handlers = { 'authority:claim': claim, 'token:move:request': requestMove,
+    'tokens:permissions:get': (socket, input) => { common(socket, input, []); return { permissions: permissions(socket) }; },
     'token:move:accept': (socket, input) => decide(socket, input, true),
     'token:move:reject': (socket, input) => decide(socket, input, false),
     'token:assign': assign, 'tokens:sync:request': syncRequest, 'tokens:sync:provide': syncProvide };
@@ -255,6 +281,7 @@ export function createTokenSync({ store, rooms, namespace, clock = Date.now, onS
       const current = access(socket);
       const state = stateFor(socket.data.roomId);
       socket.emit('room:authority', status(state));
+      refreshPermissions();
       if (current.isOwner) {
         socket.data.authorityChallenge = randomUUID();
         const expected = checkpoint(state.roomId);
@@ -270,6 +297,7 @@ export function createTokenSync({ store, rooms, namespace, clock = Date.now, onS
       if (![...namespace.sockets.values()].some(other => other.connected && other.data.roomId === state.roomId)) runtime.delete(state.roomId);
     },
     refresh() {
+      refreshPermissions();
       for (const state of runtime.values()) {
         if (state.epoch) { try { ownerSocket(state); } catch { suspend(state); } }
         prune(state);

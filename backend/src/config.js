@@ -44,7 +44,7 @@ export function loadConfig(env = process.env) {
     rateWindowMs: integer('RATE_WINDOW_MS', 60000, 100, 3600000),
     httpRateLimit: integer('HTTP_RATE_LIMIT', 120, 1, 10000),
     handshakeRateLimit: integer('HANDSHAKE_RATE_LIMIT', 20, 1, 1000),
-    eventRateLimit: integer('EVENT_RATE_LIMIT', 30, 1, 1000),
+    eventRateLimit: integer('EVENT_RATE_LIMIT', 120, 1, 1000),
     connectionLimit: integer('CONNECTION_LIMIT', 32, 1, 1000),
     databasePath,
     authRateLimit: integer('AUTH_RATE_LIMIT', 10, 1, 100),

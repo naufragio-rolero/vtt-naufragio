@@ -8,6 +8,7 @@ test('configuration defaults bind to loopback and are immutable', () => {
   assert.equal(config.host, '127.0.0.1');
   assert.equal(config.diagnostics, false);
   assert.equal(config.port, 3400);
+  assert.equal(config.eventRateLimit, 120);
   assert.throws(() => config.allowedOrigins.push('https://evil.invalid'));
 });
 

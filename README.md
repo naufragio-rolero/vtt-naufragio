@@ -1,18 +1,22 @@
 # Naufragio VTT
 
-Prototipo 0.1.2 de un tablero virtual ligero para El Naufragio, inspirado en la sencillez de Owlbear Rodeo 1.0.
+Tablero virtual ligero para El Naufragio, inspirado en la sencillez de Owlbear Rodeo 1.0. Esta rama integra la mesa local con salas multijugador de tokens públicos; las imágenes compartidas y el MVP completo siguen pendientes.
 
 **[Requisitos completos y plan de trabajo](docs/REQUISITOS.md)** — arquitectura, alcance del MVP y decisiones confirmadas.
 
 **[Referencias funcionales de Owlbear Rodeo](docs/REFERENCIAS-OWLBEAR.md)** — equivalencias con Owlbear 1.0/2.0, fuentes oficiales y criterios para conservar una experiencia sencilla.
 
-**[Plan de backend multijugador y despliegue portable](docs/BACKEND-RASPBERRY.md)** — frontend configurable para GitHub Pages u otro servidor; invitaciones de alta, roles y permisos, salas, exportación/importación del MVP y piloto Raspberry con Codex por SSH. **Fase 4 de sincronización autoritativa de tokens implementada localmente; no existe aún backend en producción.**
+**[Plan de backend multijugador y despliegue portable](docs/BACKEND-RASPBERRY.md)** — frontend configurable para GitHub Pages u otro servidor. **Fase 5 de integración del frontend implementada y validada localmente en Firefox y Edge; no existe backend público ni se han publicado estos cambios en Pages.**
 
-## Backend local en desarrollo
+## Probar el multijugador en Windows
 
-[Instrucciones de `backend/`](backend/README.md): Node.js 22/24, SQLite para identidad y metadatos de acceso, sesiones revocables, invitaciones separadas de alta/partida y permisos en backend. [Pruebas y alcance de Fase 4](docs/FASE4-BACKEND.md): solicitudes y confirmaciones de movimientos, asignaciones, versiones y prueba de estado local del director al reconectar. Incluye un cliente de protocolo separado y una prueba con director/dos jugadores. El tablero publicado conserva su funcionamiento local y no se conecta al backend; imágenes y otras herramientas siguen pendientes. [Validación temporal ARMv7 de Fase 2](docs/VALIDACION-ARMV7.md), históricos de [Fase 1](docs/FASE1-BACKEND.md), [Fase 2](docs/FASE2-BACKEND.md) y [Fase 3](docs/FASE3-BACKEND.md).
+Seguir la [guía de Fase 5](docs/FASE5-FRONTEND.md): preparar el backend con Node 22/24 y el administrador inicial; ejecutar `npm run start:env` y, en otra terminal dentro de `backend/`, `npm run frontend`. Abrir `http://127.0.0.1:8080/`, configurar los destinos desde **Multijugador → Configuración del sitio** y acceder. El administrador provisiona dirección; el director crea la partida, invita cuentas registradas y asigna tokens. Alta de cuenta y código de sala son independientes.
 
-## Funciones actuales
+El Canvas conserva rejilla, zoom, desplazamiento y temas. Solo dirección mueve cualquier token de la sala; los jugadores necesitan asignación y permiso expreso. Se confirma un movimiento por arrastre terminado. El director guarda el estado oficial en IndexedDB y debe probarlo al reconectar. La mesa local y sus mapas se conservan al entrar/salir. Las salas usan un conjunto fijo de hasta 64 tokens genéricos, sin transmisión de imágenes.
+
+[Contrato backend](backend/README.md), [Fase 4 y protocolo](docs/FASE4-BACKEND.md), [validación ARMv7 de Fase 2](docs/VALIDACION-ARMV7.md) e históricos de [Fase 1](docs/FASE1-BACKEND.md), [Fase 2](docs/FASE2-BACKEND.md) y [Fase 3](docs/FASE3-BACKEND.md).
+
+## Funciones de la mesa local
 
 - Identificación **local** por nombre (sin cuentas ni contraseñas).
 - Rejilla ajustable y opción de mostrarla u ocultarla.
@@ -35,13 +39,13 @@ Prototipo 0.1.2 de un tablero virtual ligero para El Naufragio, inspirado en la 
 5. Desde **La mesa → Apariencia**, elige entre tema claro y oscuro.
 6. Recarga la página para comprobar que se conservan fondo, tamaño, posición, tema y tokens.
 
-Esta iteración admite **un mapa local**. La colección de mapas y las partidas compartidas llegarán después.
+Esta iteración admite **un mapa local**. Las salas compartidas sincronizan únicamente posiciones de tokens; no envían ese mapa a otros participantes.
 
 **[Documento de trabajo y pruebas: importación de mapas](docs/PLAN-MAPAS.md).**
 
 ## Probar en local
 
-Abrir el fichero `index.html` en un navegador moderno. Para servirlo como web estática se puede usar cualquier servidor de archivos local.
+El tablero básico se puede abrir como archivo local. Para módulos multijugador, WebCrypto e IndexedDB, servirlo por localhost o HTTPS; se proporciona `npm run frontend` desde `backend/`, con una lista explícita de archivos públicos. También funciona como sitio estático en raíz o subruta, con configuración relativa al despliegue.
 
 ## Publicar en GitHub Pages
 
@@ -56,12 +60,12 @@ El proyecto no necesita un workflow personalizado de GitHub Actions.
 
 ## Límites deliberados del MVP
 
-**El tablero publicado no tiene autenticación real, servidor conectado ni multijugador.** El nombre elegido en pantalla solo identifica al usuario en *ese navegador* y no impide que nadie visite la web. GitHub Pages no ejecuta PHP ni WebSockets. La base de backend de desarrollo se ejecuta por separado.
+**La web publicada aún conserva el prototipo local; esta entrega permanece en la rama de trabajo.** GitHub Pages solo aloja archivos estáticos. El backend de desarrollo se ejecuta por separado y el código de esta rama permite conectarlo expresamente desde la interfaz, sin publicar nada automáticamente.
 
-Los tokens y ajustes se guardan en localStorage; la imagen importada, en IndexedDB. Nada se comparte entre dispositivos y limpiar los datos del sitio puede hacer perder el mapa y su configuración. Evitar usar información privada o material sensible.
+La mesa local conserva tokens/ajustes en localStorage y su mapa en IndexedDB. Las salas tienen un diario separado en IndexedDB del director; el servidor solo conserva identidad, permisos y metadatos de continuidad, nunca posiciones ni imágenes. Limpiar los datos del navegador puede hacer perder la autoridad local de una sala: no hay transferencia entre dispositivos ni recuperación automática desde servidor.
 
 ## Próximas fases
 
-Consultar el [documento de requisitos](docs/REQUISITOS.md). La arquitectura acordada considera el navegador del máster como fuente oficial del estado de la partida, cachés autorizadas en los navegadores de jugadores y un backend futuro para autenticación y sincronización, **sin persistir partidas en el servidor**.
+Consultar el [documento de requisitos](docs/REQUISITOS.md). La arquitectura considera el navegador del máster como fuente oficial del estado de la partida, cachés autorizadas en los navegadores de jugadores y el backend de autenticación/retransmisión, **sin persistir partidas en el servidor**. Imágenes compartidas, exportaciones y operación pública siguen pendientes.
 
 No se incluyen claves, cuentas de demostración falsas ni secretos en el frontend.

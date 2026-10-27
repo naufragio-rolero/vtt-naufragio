@@ -6,8 +6,9 @@
   <meta name="theme-color" content="#f5f7fa">
   <meta name="description" content="Naufragio VTT: un tablero virtual ligero para juegos de rol.">
   <title>Naufragio VTT · Mesa de prueba</title>
-  <link rel="stylesheet" href="./styles.css?v=0.1.2">
-  <script src="./app.js?v=0.1.2" defer></script>
+  <link rel="stylesheet" href="./styles.css?v=0.2.0">
+  <script src="./app.js?v=0.2.0" defer></script>
+  <script type="module" src="./frontend/multiplayer.js"></script>
 </head>
 <body>
   <div class="app-shell">
@@ -18,7 +19,7 @@
           <span class="eyebrow">EL NAUFRAGIO</span>
           <strong>Naufragio <span>VTT</span></strong>
         </div>
-        <span class="version-pill">MVP 0.1.2</span>
+        <span class="version-pill">0.2 · Desarrollo</span>
       </div>
       <div class="sidebar-scroll">
         <section class="panel-section map-section">
@@ -50,8 +51,8 @@
           </div>
         </section>
         <section class="panel-section">
-          <div class="section-heading"><h2>La mesa</h2><span class="tiny-label">LOCAL</span></div>
-          <p class="help-text">Tu propio tablero de pruebas. Los cambios se guardan en este navegador.</p>
+          <div class="section-heading"><h2>La mesa</h2><span class="tiny-label" id="tableModeLabel">LOCAL</span></div>
+          <p class="help-text" id="tableModeHelp">Tu propio tablero de pruebas. Los cambios se guardan en este navegador.</p>
           <div class="control-row">
             <label class="control-name" for="gridSize">Casilla <output id="gridSizeValue">64 px</output></label>
             <input id="gridSize" type="range" min="32" max="96" step="8" value="64">
@@ -106,7 +107,8 @@
           <div><span class="topbar-overline">TABLERO DE PRUEBA</span><h1>Mesa sin nombre</h1></div>
         </div>
         <div class="topbar-actions">
-          <span class="local-chip"><span class="status-dot"></span> Solo este navegador</span>
+          <button type="button" class="secondary-button" id="openMultiplayer">Multijugador</button>
+          <span class="local-chip" id="connectionState"><span class="status-dot"></span> Solo este navegador</span>
           <div class="zoom-controls" aria-label="Controles de zoom">
             <button id="zoomOut" type="button" aria-label="Alejar">−</button>
             <output id="zoomValue">100 %</output>
@@ -128,11 +130,89 @@
       <div class="identity-emblem" aria-hidden="true">✦</div>
       <span class="eyebrow">BIENVENIDO A LA MESA</span>
       <h2 id="identityTitle">¿Cómo te llamamos?</h2>
-      <p>Elige un nombre para entrar al tablero. Esta versión es una prueba local: <strong>todavía no tiene contraseña ni acceso privado</strong>.</p>
+      <p>Este nombre identifica tu mesa local. Para acceder a una partida privada utiliza <strong>Multijugador</strong>.</p>
       <label class="field-label" for="identityName">Tu nombre</label>
       <input class="text-field" id="identityName" type="text" minlength="2" maxlength="24" required autocomplete="nickname" placeholder="Por ejemplo, Náufrag@">
       <button class="primary-button" type="submit">Entrar a la mesa <span aria-hidden="true">→</span></button>
     </form>
+  </dialog>
+  <dialog id="multiplayerDialog" class="multiplayer-dialog" aria-labelledby="multiplayerTitle">
+    <header><h2 id="multiplayerTitle">Multijugador</h2><button type="button" id="closeMultiplayer" aria-label="Cerrar multijugador">Cerrar</button></header>
+    <p id="multiplayerStatus" role="status" aria-live="polite">Modo local. Configura el sitio para conectar.</p>
+    <button type="button" id="openSettings">Configuración del sitio</button>
+    <p id="apiDestination"></p>
+    <section id="signedOut">
+      <label><input type="checkbox" id="trustDestination"> He revisado los destinos de API y tiempo real.</label>
+      <form id="loginForm" class="mp-form">
+        <h3>Iniciar sesión</h3>
+        <label>Usuario <input id="loginUser" required autocomplete="username" maxlength="32"></label>
+        <label>Contraseña <input id="loginPassword" type="password" required autocomplete="current-password" maxlength="256"></label>
+        <button type="submit">Iniciar sesión</button>
+      </form>
+      <details><summary>Crear una cuenta con invitación de alta</summary>
+        <p>La invitación de alta crea una cuenta ordinaria. No es el código de una partida.</p>
+        <form id="validateSignupForm" class="mp-form">
+          <label>Invitación de alta <input id="signupInvitation" required autocomplete="off" maxlength="80"></label>
+          <button type="submit">Validar invitación de alta</button>
+        </form>
+        <form id="signupForm" class="mp-form"><fieldset id="signupFields" disabled>
+          <label>Usuario nuevo <input id="signupUser" required autocomplete="username" maxlength="32"></label>
+          <label>Contraseña (15–128 caracteres) <input id="signupPassword" type="password" required autocomplete="new-password" minlength="15" maxlength="256"></label>
+          <button type="submit">Crear cuenta ordinaria</button>
+        </fieldset></form>
+      </details>
+    </section>
+    <section id="signedIn" hidden>
+      <p id="accountLabel"></p><label>Tu identificador de cuenta (para recibir invitaciones)<input id="accountId" readonly></label>
+      <button type="button" id="logout">Cerrar sesión</button>
+      <section id="adminAccess" hidden>
+        <form id="createDirectorForm" class="mp-form"><h3>Provisionar perfil de dirección</h3>
+          <label>Usuario <input id="newDirectorUser" required maxlength="32" autocomplete="off"></label>
+          <label>Contraseña inicial (15–128 caracteres) <input id="newDirectorPassword" type="password" required minlength="15" maxlength="256" autocomplete="new-password"></label>
+          <button type="submit">Crear perfil de dirección</button>
+        </form>
+      </section>
+      <div id="directorAccess" hidden>
+        <form id="createRoomForm" class="mp-form"><h3>Crear partida</h3>
+          <p>Usa una copia de tus tokens locales (máximo 64). La sala mantiene ese conjunto inicial; no admite añadir, borrar, renombrar ni compartir imágenes todavía.</p>
+          <label>Nombre <input id="roomName" required maxlength="80"></label><button type="submit">Crear partida</button>
+        </form>
+        <details><summary>Invitar a crear una cuenta ordinaria</summary>
+          <button type="button" id="createSignup">Generar invitación de alta (un uso y caducidad limitada)</button>
+          <label>Invitación de alta para compartir en privado <input id="signupOutput" readonly autocomplete="off"></label>
+        </details>
+      </div>
+      <h3>Mis partidas autorizadas</h3><button type="button" id="refreshRooms">Actualizar partidas</button><div id="roomList"></div>
+      <div id="roomInvitations"></div>
+      <form id="joinRoomForm" class="mp-form"><h3>Unirse con código de partida</h3>
+        <label>Código de sala <input id="roomCode" required autocomplete="off" maxlength="64"></label>
+        <button type="submit">Unirse a partida</button>
+      </form>
+    </section>
+    <section id="currentRoom" hidden>
+      <h3 id="currentRoomName"></h3><p id="roomState" role="status"></p><p id="presence"></p>
+      <p>Se comparten solo los tokens públicos iniciales. Los mapas e imágenes locales se conservan, pero no se comparten.</p>
+      <button type="button" id="reconnectRoom">Reconectar</button><button type="button" id="leaveRoom">Volver a mi mesa local</button>
+      <label>Código de admisión (solo se muestra al crear o regenerar)<input id="admissionCode" readonly autocomplete="off"></label>
+      <section id="roomAdministration" hidden>
+        <button type="button" id="rotateCode">Generar código nuevo</button><button type="button" id="revokeCode">Revocar código de admisión</button>
+        <form id="inviteRoomForm" class="mp-form"><h3>Invitar a esta partida</h3>
+          <label>Identificador de cuenta <input id="inviteUserId" required maxlength="36"></label>
+          <label><input id="inviteMovement" type="checkbox"> Autorizar movimiento de tokens que se le asignen</label>
+          <button type="submit">Invitar usuario registrado</button>
+        </form>
+        <button type="button" id="refreshMembers">Actualizar participantes autorizados</button><div id="members"></div>
+        <form id="assignForm" class="mp-form"><h3>Asignar tokens</h3>
+          <label>Token <select id="assignedToken"></select></label>
+          <label>Participantes (Ctrl/Cmd permite seleccionar varios)<select id="assignedUsers" multiple size="4"></select></label>
+          <button type="submit">Guardar asignación</button>
+        </form>
+      </section>
+    </section>
+  </dialog>
+  <dialog id="settingsDialog" class="settings-dialog" aria-label="Configuración del sitio">
+    <button id="closeSettings" type="button">Cerrar configuración</button>
+    <iframe id="settingsFrame" title="Configuración del sitio" src="./backend/public/settings.html"></iframe>
   </dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </body>

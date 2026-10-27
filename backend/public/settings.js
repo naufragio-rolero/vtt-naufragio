@@ -2,6 +2,8 @@ import { validateSiteConfig } from './site-config.js';
 
 const get = id => document.getElementById(id);
 const status = message => { get('status').textContent = message; };
+let providedConfig = null;
+for (const control of document.querySelectorAll('input,button')) control.disabled = true;
 function current() {
   return validateSiteConfig({
     schemaVersion: 1,
@@ -53,15 +55,36 @@ get('check').addEventListener('click', async () => {
   } catch { status('No se pudo confirmar la API. Revisa el destino, la confirmación, CORS y la conexión.'); }
   finally { get('check').disabled = false; }
 });
-try {
-  const response = await fetch('./site.config.json', { cache: 'no-store' });
-  if (!response.ok) throw new Error();
-  const value = await response.json();
+function loadConfig(value) {
   const usesLocal = [value.apiBaseUrl, value.realtimeBaseUrl].some(url => /^(http|ws):/.test(url));
   get('development').checked = usesLocal;
   const config = validateSiteConfig(value, { development: usesLocal });
   for (const key of ['siteName', 'apiBaseUrl', 'realtimeBaseUrl', 'socketPath']) get(key).value = config[key];
   for (const key of ['admin', 'director', 'user']) get(key).value = config.roleLabels[key];
   showDestination();
+}
+const embedded = window.parent !== window;
+if (embedded) {
+  get('applyLocal').hidden = false;
+  get('applyLocal').addEventListener('click', () => {
+    try {
+      const config = showDestination();
+      if (!get('confirm').checked) throw new Error('Revisa y confirma los destinos antes de aplicar.');
+      window.parent.postMessage({ type: 'naufragio:settings:apply', config }, location.origin);
+    } catch (error) { status(error.message); }
+  });
+  window.addEventListener('message', event => {
+    if (event.source !== window.parent || event.origin !== location.origin || event.data?.type !== 'naufragio:settings:load') return;
+    try { providedConfig = event.data.config; loadConfig(providedConfig); get('confirm').checked = false; } catch { status('Configuración rechazada.'); }
+  });
+}
+try {
+  let response = await fetch(embedded ? new URL('../../site.config.json', import.meta.url) : './site.config.json', { cache: 'no-store', credentials: 'omit', redirect: 'error' });
+  if (!response.ok && embedded) response = await fetch('./site.config.example.json', { credentials: 'omit' });
+  if (!response.ok) throw new Error();
+  loadConfig(await response.json());
   status('Configuración cargada (o plantilla si aún no hay fichero local). Revisa los destinos antes de comprobar.');
 } catch { status('No se pudo cargar la plantilla pública.'); }
+if (providedConfig) { try { loadConfig(providedConfig); } catch { status('Configuración rechazada.'); } }
+for (const control of document.querySelectorAll('input,button')) control.disabled = false;
+if (embedded) window.parent.postMessage({ type: 'naufragio:settings:ready' }, location.origin);

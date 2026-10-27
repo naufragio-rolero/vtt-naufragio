@@ -225,3 +225,24 @@ canvas.map-resize.dragging { cursor: crosshair; }
 :root[data-theme="light"] .secondary-button:hover { background: #e5f0f4; }
 :root[data-theme="light"] .secondary-button.muted-button { background: #fff2f2; border-color: #efced0; color: #9a4550; }
 :root[data-theme="light"] .secondary-button.muted-button:hover { background: #ffe9ea; }
+
+/* Multiplayer extends the existing table; its local storage remains separate. */
+.multiplayer-dialog, .settings-dialog { color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 14px; width: min(660px, calc(100vw - 24px)); max-height: 90dvh; padding: 22px; }
+.multiplayer-dialog::backdrop, .settings-dialog::backdrop { background: #08111dbb; }
+.multiplayer-dialog header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.multiplayer-dialog h2 { margin: 0; }
+.multiplayer-dialog h3 { margin: 20px 0 10px; }
+.multiplayer-dialog button, .settings-dialog > button { background: var(--surface-raised); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 9px 12px; margin: 5px 5px 5px 0; }
+.multiplayer-dialog input:not([type=checkbox]), .multiplayer-dialog select { display: block; width: 100%; border: 1px solid var(--border); border-radius: 6px; padding: 9px; color: var(--text); background: var(--surface-raised); }
+.multiplayer-dialog label { display: block; margin: 9px 0; }
+.multiplayer-dialog p { overflow-wrap: anywhere; }
+.multiplayer-dialog fieldset { min-width: 0; border: 0; padding: 0; margin: 0; }
+.multiplayer-dialog details, .member-row { border-top: 1px solid var(--border); margin-top: 14px; padding-top: 10px; }
+.multiplayer-dialog summary { cursor: pointer; }
+.mp-form { display: grid; gap: 5px; }
+#multiplayerStatus[data-error=true] { color: #b43b45; font-weight: 650; }
+[data-theme=dark] #multiplayerStatus[data-error=true] { color: #ffb1ba; }
+.settings-dialog iframe { width: 100%; height: 72dvh; border: 0; background: white; }
+body[data-mode=shared] .map-section, body[data-mode=shared] .selection-section, body[data-mode=shared] #addToken { display: none; }
+body[data-mode=shared] #changeIdentity { display: none; }
+#connectionState { max-width: 260px; white-space: normal; }

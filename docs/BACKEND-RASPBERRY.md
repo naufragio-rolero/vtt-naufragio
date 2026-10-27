@@ -2,7 +2,7 @@
 
 > Proyecto: **Naufragio VTT** · Repositorio: `naufragio-rolero/vtt-naufragio`
 >
-> Fecha del plan: 24 de octubre de 2026 · Actualización: 27 de octubre de 2026. Estado: **Fase 4 de sincronización autoritativa de tokens implementada localmente, sin despliegue**. Véanse [inventario](INVENTARIO-BACKEND-RASPBERRY.md), [Fase 1](FASE1-BACKEND.md), [Fase 2](FASE2-BACKEND.md), [validación ARMv7 de Fase 2](VALIDACION-ARMV7.md), [Fase 3](FASE3-BACKEND.md) y [Fase 4](FASE4-BACKEND.md).
+> Fecha del plan: 24 de octubre de 2026 · Actualización: 27 de octubre de 2026. Estado: **Fase 5 de integración del frontend implementada y validada localmente, sin despliegue**. Véanse [inventario](INVENTARIO-BACKEND-RASPBERRY.md), [Fase 1](FASE1-BACKEND.md), [Fase 2](FASE2-BACKEND.md), [validación ARMv7 de Fase 2](VALIDACION-ARMV7.md), [Fase 3](FASE3-BACKEND.md), [Fase 4](FASE4-BACKEND.md) y [Fase 5](FASE5-FRONTEND.md).
 >
 > Destinatario: Codex trabajando sobre un clon del repositorio en Windows y conectado a la Raspberry por SSH.
 >
@@ -305,7 +305,19 @@ Solicitudes, aceptación/rechazo del director y confirmaciones de movimiento por
 
 Se añaden pruebas de tres clientes simulados con estado final idéntico, concurrencia, revocaciones, suplantación, pérdidas de mensajes, desconexión y recuperación del diario. No se modifica el frontend publicado ni se conecta a la Raspberry durante esta fase. Quedan pendientes integración visual, pruebas en navegadores reales y carga ARMv7 de movimientos. [Contrato](../backend/README.md) e [informe de Fase 4](FASE4-BACKEND.md). No se consideran completados los criterios globales de aceptación en navegadores ni el MVP.
 
-## 10. Fase 5 — Mapas e imágenes entre navegadores
+## 10. Fase 5 — Integración del frontend; recursos pendientes
+
+### Alcance aprobado e implementación local — 27 de octubre de 2026
+
+La instrucción posterior del proyecto dedica esta entrega exclusivamente a integrar el Canvas existente con autenticación, salas y tokens de Fases 1–4. Sustituye el alcance de imágenes previsto originalmente para Fase 5; la secuencia de recursos que sigue se conserva como trabajo pendiente, sin renumerar ni autorizar su implementación.
+
+Se entregan configuración pública relativa a raíz/subruta, acceso y alta por invitación, provisión administrativa de dirección, participantes, permisos/asignaciones, presencia y movimientos confirmados por gesto. Se preserva la mesa local; las salas usan una copia de hasta 64 tokens genéricos fijos. El diario real de IndexedDB y Web Locks protege la autoridad del director; un perfil sin estado no puede recuperarla.
+
+Regresión: **93/93 pruebas en Node 22.23.4 y 24.18.0**, conservando las 88 anteriores. Aceptación real de tres clientes en Edge/Firefox, raíz y subruta con prefijo Socket.IO: convergencia, movimiento indebido, espera, recuperación, exclusión entre pestañas y conservación de datos locales. El modo local también se comprueba sin backend. [Resultados, capturas y reproducción en Windows](FASE5-FRONTEND.md).
+
+No se despliega ni conecta nada a Raspberry ni se publica Pages. Siguen pendientes imágenes, exportaciones, pruebas exteriores/táctiles, carga ARMv7 de movimientos y revisión operativa. No se declara completo el MVP ni la aceptación de un despliegue público de la sección 12. Las notas de fases anteriores describen su estado histórico.
+
+### Mapas e imágenes entre navegadores — trabajo pendiente
 
 El mapa actual vive en IndexedDB del navegador que lo importó; **los otros navegadores no pueden verlo por arte de magia**.
 

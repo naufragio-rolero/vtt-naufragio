@@ -1,6 +1,6 @@
-# Backend local — Fase 4
+# Backend e integración local — Fase 5
 
-Backend portable en JavaScript ESM para Node **22.23.4**, comprobado también con Node **24.18.0**. Usa HTTP, SQLite y criptografía integrados en Node; Socket.IO 4.8.4 es la única dependencia de ejecución de npm. No requiere instalar addons ni compilar dependencias nativas. El tablero publicado sigue siendo un prototipo local independiente.
+Backend portable en JavaScript ESM para Node **22.23.4**, comprobado también con Node **24.18.0**. Usa HTTP, SQLite y criptografía integrados en Node; Socket.IO 4.8.4 es la única dependencia de ejecución de npm. No requiere instalar addons ni compilar dependencias nativas. La rama de trabajo integra el Canvas con este backend; Pages aún conserva el prototipo publicado anterior. [Guía y aceptación real de Fase 5](../docs/FASE5-FRONTEND.md).
 
 ## Preparación e inicio
 
@@ -21,7 +21,7 @@ npm run start:env
 
 El comando de bootstrap pide usuario, contraseña y confirmación en una terminal interactiva. La contraseña no se muestra ni se acepta por argumento, variable de entorno o entrada canalizada. Solo funciona con una base sin cuentas, y vuelve a comprobar esa condición dentro de la transacción. No existe endpoint HTTP de bootstrap ni cuenta predeterminada. No ejecutar el comando en una terminal grabada o compartida. No versionar `.env`, bases, backups ni credenciales.
 
-`npm start` y `npm run bootstrap:admin` usan el entorno del proceso; las variantes `:env` cargan `.env`. **Usar la misma configuración y ruta SQLite para bootstrap y servicio.** No iniciar sesión pasando contraseñas en comandos de shell; el consumidor de la API debe recogerlas de forma privada. Esta fase no añade un formulario de acceso al tablero.
+`npm start` y `npm run bootstrap:admin` usan el entorno del proceso; las variantes `:env` cargan `.env`. **Usar la misma configuración y ruta SQLite para bootstrap y servicio.** No iniciar sesión pasando contraseñas en comandos de shell; el formulario integrado recoge la contraseña sin persistirla.
 
 Por defecto escucha en `http://127.0.0.1:3400`. `/health` indica salud del proceso y capacidades, sin detalles del host; no verifica disponibilidad exterior ni una sala. `createBackend(config)` no escucha al importarse y expone `listen()` y `close()`. `SIGINT`/`SIGTERM` cierran HTTP, sockets y SQLite con un plazo de cinco segundos en el ejecutable. Los errores de arranque terminan con código 1 y un mensaje fijo sin valores del entorno.
 
@@ -41,7 +41,7 @@ Las sesiones son tokens opacos `sess_…` con 256 bits aleatorios. Se devuelven 
 
 Cada petición consulta la sesión y el rol actual. Logout revoca la sesión actual; logout-all, cambio de contraseña y cambio administrativo de cuenta revocan las sesiones correspondientes. El administrador también puede revocar sesiones de otra cuenta. Desactivar o cambiar el rol de un emisor revoca sus invitaciones pendientes. No se puede desactivar ni degradar al último administrador activo. La creación administrativa vuelve a comprobar la sesión después del hash; la primera cuenta y el consumo de una invitación se verifican de nuevo dentro de la transacción.
 
-El administrador puede provisionar cuentas `admin`, `director` y `user`. Los directores solo emiten invitaciones de alta ordinaria. Una invitación lleva prefijo `signup_…`, 256 bits aleatorios, una caducidad y un único uso. El token solo se muestra en la respuesta de emisión; los listados no incluyen token ni hash. Compartirlo por un canal privado y enviarlo en el cuerpo del registro. No se construyen enlaces con tokens en la URL. La validación pública prepara el futuro formulario de alta; el registro vuelve a validar antes de consumirla. Un intento fallido de crear cuenta no consume la invitación. No se recibe una sesión ni acceso a partidas por registrarse.
+El administrador puede provisionar cuentas `admin`, `director` y `user`. Los directores solo emiten invitaciones de alta ordinaria. Una invitación lleva prefijo `signup_…`, 256 bits aleatorios, una caducidad y un único uso. El token solo se muestra en la respuesta de emisión; los listados no incluyen token ni hash. Compartirlo por un canal privado y enviarlo en el cuerpo del registro. No se construyen enlaces con tokens en la URL. La validación pública habilita el formulario integrado de alta; el registro vuelve a validar antes de consumirla. Un intento fallido de crear cuenta no consume la invitación. No se recibe una sesión ni acceso a partidas por registrarse.
 
 Invitaciones de alta y códigos de partida son independientes. Una cuenta nueva necesita además una invitación nominativa de partida y su código vigente para adquirir pertenencia. Expiradas, revocadas, usadas o con emisor sin permiso producen el mismo error de invitación de alta.
 
@@ -119,11 +119,13 @@ Una instantánea tiene `{stateId,revision,tokens:[{id,tokenVersion,x,y}]}`: hast
 
 ### Cliente separado y continuidad del director
 
-`client/token-client.js` ofrece `createTokenClient(socket,{roomId,director,store,initialTokens,acceptMove,onChange})`, métodos `move()`, `assign()`, `sync()`, `close()` y estado observable. El consumidor proporciona un socket autenticado y cerrado inicialmente. Registrar el cliente antes de conectarlo; solo dirección necesita `store`. `initialTokens` se usa exclusivamente al establecer la primera autoridad de una sala sin punto de control. No hay interfaz ni nuevas rutas de archivos estáticos para este módulo; se integrará expresamente en el frontend futuro.
+`client/token-client.js` ofrece `createTokenClient(socket,{roomId,director,store,initialTokens,acceptMove,onChange})`, métodos `move()`, `assign()`, `sync()`, `close()` y estado observable. El consumidor proporciona un socket autenticado y cerrado inicialmente. Registrar el cliente antes de conectarlo; solo dirección necesita `store`. `initialTokens` se usa exclusivamente al establecer la primera autoridad de una sala sin punto de control. `frontend/multiplayer.js` integra este cliente con el tablero; el servicio de API no publica el código del frontend.
 
 El backend fija una clave pública ECDSA P-256 y un resumen SHA-256 al crear el primer estado. Al reconectar exige instantánea coincidente y firma nueva del reto, ligada a sala/ID/revisión/resumen; `publicKey` es JWK público exacto `{kty:"EC",crv:"P-256",x,y}` y `signature` es ECDSA IEEE P1363 de 64 bytes en base64url sin padding. El formato canónico y la firma se comparten entre Node y navegador. Nunca se transmite la clave privada.
 
-El cliente guarda un diario `current`/`staged` antes de aceptar, y lo consolida al recibir confirmación. Tras un fallo compara ambos candidatos con el resumen confirmado. `client/indexeddb-store.js` proporciona persistencia por sala y exclusión Web Locks entre pestañas; resuelve escrituras en `transaction.oncomplete`, con durabilidad `strict`. Un almacén alternativo debe garantizar guardado durable y acceso exclusivo. Los tests usan almacenes sintéticos e inyección de fallos; el adaptador todavía requiere prueba en navegadores reales.
+El cliente guarda un diario `current`/`staged` antes de aceptar, y lo consolida al recibir confirmación. Tras un fallo compara ambos candidatos con el resumen confirmado. `client/indexeddb-store.js` proporciona persistencia por sala y exclusión Web Locks entre pestañas; resuelve escrituras en `transaction.oncomplete`, con durabilidad `strict`. Un almacén alternativo debe garantizar guardado durable y acceso exclusivo. Además de tests sintéticos/fallos, Fase 5 verifica el adaptador, recarga, nuevo login y segunda pestaña en Firefox y Edge reales.
+
+La integración añade `tokens:permissions:get` con `{version:1,roomId}` y ack `{ok:true,permissions}`, más el evento privado `tokens:permissions` con `{version:1,roomId,permissions}`. Se revalidan sesión y pertenencia aun en espera. Solo se entregan asignaciones propias al participante; el propietario también recibe las asignaciones de la sala y sus versiones por época. No cambia el contrato de movimientos; esta ampliación permite que la interfaz adapte controles sin convertirse en autoridad de permisos. Véase el detalle en el informe de Fase 5.
 
 Perder los datos locales o la clave deja la sala en espera; iniciar sesión desde otro dispositivo no recupera IndexedDB. No existe reset, transferencia automática ni respaldo de contenido en el backend. La clave del diario no se guarda en configuración pública, sesión, URL, logs, SQLite ni exportaciones públicas. Véanse [método, pruebas y límites](../docs/FASE4-BACKEND.md).
 
@@ -152,7 +154,7 @@ Los códigos tienen prefijo `room_`, 128 bits aleatorios y hash SHA-256 en SQLit
 
 ## Entorno, límites y configuración pública
 
-Las variables anteriores de Fase 1 se mantienen: `HOST=127.0.0.1`, `PORT=3400`, `NODE_ENV=development`, `SOCKET_PATH=/socket.io`, `ALLOWED_ORIGINS` exactos, `MAX_BODY_BYTES=16384`, `MAX_MESSAGE_BYTES=16384`, `RATE_WINDOW_MS=60000`, `HTTP_RATE_LIMIT=120`, `HANDSHAKE_RATE_LIMIT=20`, `EVENT_RATE_LIMIT=30`, `CONNECTION_LIMIT=32`, `ENABLE_DIAGNOSTICS=false`. Sus rangos se validan en `src/config.js` y se ejemplifican en `.env.example`.
+Configuración de desarrollo: `HOST=127.0.0.1`, `PORT=3400`, `NODE_ENV=development`, `SOCKET_PATH=/socket.io`, `ALLOWED_ORIGINS` exactos, `MAX_BODY_BYTES=16384`, `MAX_MESSAGE_BYTES=16384`, `RATE_WINDOW_MS=60000`, `HTTP_RATE_LIMIT=120`, `HANDSHAKE_RATE_LIMIT=20`, `EVENT_RATE_LIMIT=120`, `CONNECTION_LIMIT=32`, `ENABLE_DIAGNOSTICS=false`. Fase 5 eleva el presupuesto de eventos de 30 a 120/min para solicitudes/aceptaciones y controles, manteniendo agregación por gesto, una solicitud propia pendiente y las demás cotas. Los rangos se validan en `src/config.js` y se ejemplifican en `.env.example`.
 
 | Variable nueva | Valor por defecto | Regla |
 | --- | --- | --- |
@@ -177,4 +179,6 @@ npm run validate:site -- public/site.config.example.json
 
 `npm test` ejecuta pruebas locales con contraseñas/tokens aleatorios de pruebas, SQLite temporal o en memoria, HTTP y Socket.IO en loopback, incluido un director y dos jugadores que convergen en el mismo estado. Véanse [resultados y límites de Fase 4](../docs/FASE4-BACKEND.md) e informes históricos de [Fase 3](../docs/FASE3-BACKEND.md) y [Fase 2](../docs/FASE2-BACKEND.md). No se crean cuentas reales en la base de desarrollo durante los tests. La prueba remota serial anterior corresponde a Fase 2, descrita en [VALIDACION-ARMV7.md](../docs/VALIDACION-ARMV7.md).
 
-Salas, presencia y sincronización de tokens están disponibles mediante API/protocolo local. Imágenes, mapas, importación/exportación e integración de acceso y movimiento en el frontend publicado siguen pendientes. Recuperación de cuentas/diario local, retención/paginación, carga sostenida ARMv7, runtime posterior a Node 22 y operación/backup requieren decisiones antes de producción. No se despliega backend ni se modifican Apache, Heaven's Gate o Pages.
+`npm run frontend` sirve el frontend con lista pública explícita en loopback:8080; no expone `.env`, DB ni `.git`. La pantalla integrada permite login/alta, provisión administrativa de dirección, salas, invitaciones, asignaciones y Canvas sincronizado. La [Fase 5](../docs/FASE5-FRONTEND.md) incluye comandos de Windows y `npm run test:browser` para la aceptación opcional con herramientas temporales. No se han añadido dependencias de producción.
+
+Imágenes, mapas compartidos y exportación/importación siguen pendientes, así como publicación, recuperación de cuentas/diario, retención/paginación, carga sostenida ARMv7, runtime posterior a Node 22 y operación/backup. No se despliega backend ni se modifican Apache, Heaven's Gate o la configuración/publicación de Pages.
