@@ -17,12 +17,13 @@ test('schema 1 migrates transactionally without losing existing identity metadat
   let store = openStorage(path);
   try {
     store.db.prepare('INSERT INTO users VALUES (?,?,?,?,?,?)').run('synthetic-id', 'synthetic-user', 'synthetic-hash', 'user', 0, 1);
-    store.db.exec(`DROP TABLE room_invitations; DROP TABLE room_memberships; DROP TABLE room_codes; DROP TABLE rooms;
+    store.db.exec(`DROP TABLE room_authority; DROP TABLE token_assignments;
+      DROP TABLE room_invitations; DROP TABLE room_memberships; DROP TABLE room_codes; DROP TABLE rooms;
       PRAGMA user_version = 1;`);
   } finally { store.close(); }
   store = openStorage(path);
   try {
-    assert.equal(store.db.prepare('PRAGMA user_version').get().user_version, 2);
+    assert.equal(store.db.prepare('PRAGMA user_version').get().user_version, 3);
     assert.equal(store.db.prepare('SELECT username FROM users').get().username, 'synthetic-user');
     assert.equal(store.db.prepare('SELECT count(*) AS n FROM rooms').get().n, 0);
     assert.deepEqual(store.db.prepare('PRAGMA foreign_key_check').all(), []);

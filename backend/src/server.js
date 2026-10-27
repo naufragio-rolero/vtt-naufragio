@@ -55,7 +55,7 @@ export function createBackend(config, { reportError = () => {}, publicConfigFile
       sendError(response, error, reportError);
     });
   });
-  const { io, presence } = attachRealtime(server, config, auth, rooms, { clock, reportError });
+  const { io, presence } = attachRealtime(server, config, auth, rooms, { clock, reportError, store });
 
   async function handle(request, response) {
     const origin = request.headers.origin;
@@ -84,8 +84,8 @@ export function createBackend(config, { reportError = () => {}, publicConfigFile
       throw new HttpError(405, 'METHOD_NOT_ALLOWED');
     }
     if (pathname === '/health') {
-      sendJson(response, 200, { status: 'ok', service: 'naufragio-vtt', protocolVersion: 1, phase: 3,
-        capabilities: { authentication: true, rooms: true, gameEvents: false } });
+      sendJson(response, 200, { status: 'ok', service: 'naufragio-vtt', protocolVersion: 1, phase: 4,
+        capabilities: { authentication: true, rooms: true, gameEvents: true } });
       return;
     }
     if (pathname === '/settings') {

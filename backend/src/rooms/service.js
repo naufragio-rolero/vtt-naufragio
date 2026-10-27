@@ -176,6 +176,7 @@ export function createRoomService(store, auth, config, { clock = Date.now,
         const { room } = owner(token, roomId);
         if (userId === room.owner_id) throw new HttpError(409, 'OWNER_IMMUTABLE');
         if (!db.prepare('UPDATE room_memberships SET active=0,dice_allowed=0,move_assigned_tokens=0 WHERE room_id=? AND user_id=?').run(roomId, userId).changes) denied();
+        db.prepare('DELETE FROM token_assignments WHERE room_id=? AND user_id=?').run(roomId, userId);
         db.prepare('UPDATE room_invitations SET revoked_at=? WHERE room_id=? AND target_id=? AND used_at IS NULL AND revoked_at IS NULL').run(clock(), roomId, userId);
       });
       notify();

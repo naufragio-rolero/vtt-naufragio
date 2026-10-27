@@ -1,7 +1,7 @@
 import { HttpError } from '../errors.js';
 
 // Game action context must come from server-side membership/assignment lookups,
-// never from an HTTP payload or Socket.IO handshake. Game actions remain disabled.
+// never from an HTTP payload or Socket.IO handshake.
 export function can(actor, action, context = {}) {
   if (!actor || actor.disabled || !['admin', 'director', 'user'].includes(actor.role)) return false;
   if (['users:create', 'users:update', 'roles:update', 'sessions:revoke'].includes(action)) return actor.role === 'admin';

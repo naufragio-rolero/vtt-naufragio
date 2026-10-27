@@ -2,7 +2,7 @@
 
 > Proyecto: **Naufragio VTT** · Repositorio: `naufragio-rolero/vtt-naufragio`
 >
-> Fecha del plan: 24 de octubre de 2026 · Actualización: 27 de octubre de 2026. Estado: **validación temporal ARMv7 satisfactoria; Fase 3 de salas/presencia implementada localmente, sin despliegue**. Véanse [inventario](INVENTARIO-BACKEND-RASPBERRY.md), [Fase 1](FASE1-BACKEND.md), [Fase 2](FASE2-BACKEND.md), [validación ARMv7](VALIDACION-ARMV7.md) y [Fase 3](FASE3-BACKEND.md).
+> Fecha del plan: 24 de octubre de 2026 · Actualización: 27 de octubre de 2026. Estado: **Fase 4 de sincronización autoritativa de tokens implementada localmente, sin despliegue**. Véanse [inventario](INVENTARIO-BACKEND-RASPBERRY.md), [Fase 1](FASE1-BACKEND.md), [Fase 2](FASE2-BACKEND.md), [validación ARMv7 de Fase 2](VALIDACION-ARMV7.md), [Fase 3](FASE3-BACKEND.md) y [Fase 4](FASE4-BACKEND.md).
 >
 > Destinatario: Codex trabajando sobre un clon del repositorio en Windows y conectado a la Raspberry por SSH.
 >
@@ -298,6 +298,12 @@ Requisitos técnicos:
 - Los tokens deben conservar el comportamiento local actual cuando no haya sala conectada.
 - Medir latencia y rendimiento con dos navegadores primero y cuatro jugadores después.
 - No confiar únicamente en que los botones estén ocultos: el permiso debe verificarse en backend y máster. El usuario no puede falsificar una subida, una tirada no autorizada ni un movimiento de un token ajeno.
+
+### Implementación local de Fase 4 — 27 de octubre de 2026
+
+Solicitudes, aceptación/rechazo del director y confirmaciones de movimiento por Socket.IO, con asignaciones explícitas, permiso por partida, revalidación al confirmar, ID/época/revisiones/versiones y aislamiento por sala. Los mensajes se retransmiten y los puntos de control solo guardan clave pública, revisión y hash; no se persisten posiciones. Un cliente separado del tablero conserva el diario oficial en almacenamiento local y prueba su estado mediante firma de un reto antes de recuperar autoridad. Una segunda sesión no sustituye al director verificado sin esa prueba.
+
+Se añaden pruebas de tres clientes simulados con estado final idéntico, concurrencia, revocaciones, suplantación, pérdidas de mensajes, desconexión y recuperación del diario. No se modifica el frontend publicado ni se conecta a la Raspberry durante esta fase. Quedan pendientes integración visual, pruebas en navegadores reales y carga ARMv7 de movimientos. [Contrato](../backend/README.md) e [informe de Fase 4](FASE4-BACKEND.md). No se consideran completados los criterios globales de aceptación en navegadores ni el MVP.
 
 ## 10. Fase 5 — Mapas e imágenes entre navegadores
 

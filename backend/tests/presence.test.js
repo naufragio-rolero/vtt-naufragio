@@ -5,10 +5,13 @@ import { randomUUID } from 'node:crypto';
 import { io } from 'socket.io-client';
 import { roomFixture } from './room-helpers.js';
 import { origin } from './helpers.js';
+import { prove, localAuthority } from './token-helpers.js';
 
 function socketFor(t, base, account, roomId, extra = {}) {
   const socket = io(base.url, { autoConnect: false, reconnection: false, forceNew: true, timeout: 2000,
     extraHeaders: { Origin: origin }, transports: ['websocket'], auth: { token: account.token, roomId }, ...extra });
+  socket.roomId = roomId;
+  socket.on('authority:challenge', value => { socket.challenge = value; });
   t.after(() => socket.disconnect());
   return socket;
 }
@@ -71,6 +74,7 @@ test('both transports enforce identity, membership, Origin and strict handshakes
 
 test('disconnect waits without electing a participant; owner reconnection preserves authority', async t => {
   const f = await roomFixture(t);
+  const local = localAuthority();
   const id = f.created.room.id;
   f.admit(f.member);
   const member = socketFor(t, f, f.member, id);
@@ -78,6 +82,8 @@ test('disconnect waits without electing a participant; owner reconnection preser
   assert.equal((await requestPresence(member)).state, 'waiting');
   const director = socketFor(t, f, f.director, id);
   await connect(director);
+  assert.equal((await requestPresence(member)).state, 'waiting');
+  assert.equal((await prove(director, local)).result.ok, true);
   assert.equal((await requestPresence(member)).state, 'active');
   const duplicate = socketFor(t, f, f.member, id);
   await connect(duplicate);
@@ -94,17 +100,20 @@ test('disconnect waits without electing a participant; owner reconnection preser
   assert.deepEqual(waiting.participants.map(user => user.role), ['participant']);
   const reconnected = socketFor(t, f, f.director, id);
   await connect(reconnected);
+  assert.equal((await prove(reconnected, local)).result.ok, true);
   assert.equal((await requestPresence(member)).state, 'active');
   const replaced = disconnecting(reconnected);
   const newest = socketFor(t, f, f.director, id);
   await connect(newest);
+  assert.equal((await requestPresence(member)).state, 'active');
+  assert.equal((await prove(newest, local)).result.ok, true);
   await replaced;
   const state = await requestPresence(member);
   assert.equal(state.state, 'active');
   assert.equal(state.participants.filter(user => user.role === 'director').length, 1);
 });
 
-test('presence and grants are isolated between parties; game state messages are not implemented', async t => {
+test('presence and grants are isolated between parties; unsupported game messages stay closed', async t => {
   const f = await roomFixture(t);
   const other = await f.account('other-member-test', 'user');
   const second = f.rooms.create(f.director.token, { name: 'Second isolated party' });
@@ -154,12 +163,14 @@ test('membership revocation disconnects just that party and cannot be undone wit
 
 test('logout and role changes invalidate live authority without promoting other accounts', async t => {
   const f = await roomFixture(t);
+  const local = localAuthority();
   f.admit(f.member);
   const id = f.created.room.id;
   const member = socketFor(t, f, f.member, id);
   const director = socketFor(t, f, f.director, id);
   await connect(member);
   await connect(director);
+  assert.equal((await prove(director, local)).result.ok, true);
   let left = disconnecting(director);
   f.auth.logout(f.director.token);
   await left;
@@ -167,6 +178,7 @@ test('logout and role changes invalidate live authority without promoting other 
   const current = await f.auth.login({ username: f.director.user.username, password: f.director.secret });
   const reconnected = socketFor(t, f, current, id);
   await connect(reconnected);
+  assert.equal((await prove(reconnected, local)).result.ok, true);
   left = disconnecting(reconnected);
   f.auth.updateUser(f.token, f.director.user.id, { role: 'user' });
   await left;
@@ -188,6 +200,7 @@ test('session expiration removes the director and later the participant', async 
   const director = socketFor(t, f, f.director, f.created.room.id);
   await connect(member);
   await connect(director);
+  assert.equal((await prove(director)).result.ok, true);
   const ownerLeft = disconnecting(director);
   now += 30000;
   f.app.presence.refresh();

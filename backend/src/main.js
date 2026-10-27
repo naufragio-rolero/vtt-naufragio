@@ -5,7 +5,7 @@ async function main() {
   const config = loadConfig();
   const backend = createBackend(config, { reportError: entry => console.error(JSON.stringify(entry)) });
   try { await backend.listen(); } catch { console.error('LISTEN_FAILED'); process.exitCode = 1; await backend.close(); return; }
-  console.log('Naufragio VTT: HTTP ready (phase 3)');
+  console.log('Naufragio VTT: HTTP ready (phase 4)');
   let stopping = false;
   const stop = async () => {
     if (stopping) return;

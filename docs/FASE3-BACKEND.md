@@ -1,5 +1,7 @@
 # Fase 3 — Partidas, pertenencia y presencia
 
+> Informe histórico. La [Fase 4](FASE4-BACKEND.md) añade movimientos y exige prueba del estado local antes de recuperar autoridad. La recuperación por conexión descrita aquí corresponde únicamente a la entrega original de Fase 3.
+
 Fecha: 27 de octubre de 2026. Rama: `feat/backend-multijugador`. Base conservada: `1348fde` (Fase 2). Backend local 0.3.0; esta numeración del paquete no declara terminado el MVP jugable 0.3.
 
 ## Condición previa cumplida

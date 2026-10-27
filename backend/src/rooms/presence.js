@@ -1,8 +1,9 @@
 import { createLimiter } from '../limits.js';
 import { fields } from '../auth/validation.js';
 import { HttpError } from '../errors.js';
+import { createTokenSync } from './token-sync.js';
 
-export function attachRoomPresence(io, auth, rooms, config, { clock = Date.now, reportError = () => {} } = {}) {
+export function attachRoomPresence(io, auth, rooms, config, { clock = Date.now, reportError = () => {}, store } = {}) {
   const namespace = io.of('/');
   const knownRooms = new Set();
   const lastPresence = new Map();
@@ -11,6 +12,7 @@ export function attachRoomPresence(io, auth, rooms, config, { clock = Date.now, 
   let refreshing = false;
   let dirty = false;
   const channel = roomId => `party:${roomId}`;
+  const game = createTokenSync({ store, rooms, namespace, clock, onStatusChange: safeRefresh });
 
   function snapshot(roomId) {
     const people = new Map();
@@ -20,7 +22,7 @@ export function attachRoomPresence(io, auth, rooms, config, { clock = Date.now, 
       if (!socket.connected || socket.data.access?.room.id !== roomId) continue;
       const access = socket.data.access;
       ownerId = access.room.ownerId;
-      active ||= access.isOwner;
+      active ||= access.isOwner && game.isReady(roomId);
       people.set(access.actor.id, { id: access.actor.id, username: access.actor.username,
         role: access.isOwner ? 'director' : 'participant' });
     }
@@ -38,6 +40,7 @@ export function attachRoomPresence(io, auth, rooms, config, { clock = Date.now, 
           try { socket.data.access = rooms.access(socket.data.token, socket.data.roomId); }
           catch { socket.disconnect(true); }
         }
+        game.refresh();
         for (const roomId of knownRooms) {
           const value = snapshot(roomId);
           if (!value.participants.length) { knownRooms.delete(roomId); lastPresence.delete(roomId); }
@@ -88,29 +91,22 @@ export function attachRoomPresence(io, auth, rooms, config, { clock = Date.now, 
     socket.on('disconnect', () => {
       clearTimeout(expiryTimers.get(socket.id));
       expiryTimers.delete(socket.id);
+      game.disconnected(socket);
       safeRefresh();
     });
     const remaining = expiresAt - clock();
     const deadline = setTimeout(safeRefresh, Math.max(1, remaining));
     deadline.unref();
     expiryTimers.set(socket.id, deadline);
-    // A reconnect may replace only the same persisted owner, never another participant.
-    if (socket.data.access.isOwner) {
-      for (const other of [...namespace.sockets.values()]) {
-        if (other !== socket && other.data.roomId === roomId && other.data.access?.isOwner) {
-          other.emit('room:replaced', { version: 1, roomId });
-          other.disconnect(true);
-        }
-      }
-    }
     const accept = createLimiter(config.eventRateLimit, config.rateWindowMs, { clock });
     socket.onAny((event, ...args) => {
       const ack = typeof args.at(-1) === 'function' ? args.pop() : () => {};
       try {
         socket.data.access = rooms.access(socket.data.token, roomId);
         if (!accept(socket.id)) throw new HttpError(429, 'RATE_LIMITED');
-        if (event !== 'room:presence:get') throw new HttpError(400, 'EVENT_NOT_AVAILABLE');
+        if (event !== 'room:presence:get' && !game.handles(event)) throw new HttpError(400, 'EVENT_NOT_AVAILABLE');
         if (args.length !== 1) throw new HttpError(400, 'INVALID_MESSAGE');
+        if (game.handles(event)) { ack({ ok: true, ...game.handle(socket, event, args[0]) }); return; }
         fields(args[0], ['version']);
         if (args[0].version !== 1) throw new HttpError(400, 'INVALID_MESSAGE');
         refresh();
@@ -122,6 +118,7 @@ export function attachRoomPresence(io, auth, rooms, config, { clock = Date.now, 
     });
     safeRefresh();
     if (socket.connected) socket.emit('room:presence', snapshot(roomId));
+    if (socket.connected) game.connected(socket);
   });
   const offAuth = auth.onChanged(safeRefresh);
   const offRooms = rooms.onChanged(safeRefresh);
@@ -132,6 +129,7 @@ export function attachRoomPresence(io, auth, rooms, config, { clock = Date.now, 
     refresh: safeRefresh,
     stop() {
       stopped = true;
+      game.stop();
       clearInterval(sweep);
       offAuth();
       offRooms();

@@ -13,7 +13,7 @@ export function openStorage(path) {
   try {
     db.exec('PRAGMA foreign_keys = ON; PRAGMA busy_timeout = 5000; PRAGMA journal_mode = WAL; PRAGMA synchronous = FULL; PRAGMA trusted_schema = OFF;');
     const version = db.prepare('PRAGMA user_version').get().user_version;
-    if (![0, 1, 2].includes(version)) throw new Error('UNSUPPORTED_DATABASE_VERSION');
+    if (![0, 1, 2, 3].includes(version)) throw new Error('UNSUPPORTED_DATABASE_VERSION');
     if (version === 0) {
       db.exec(`BEGIN IMMEDIATE;
         CREATE TABLE users (
@@ -91,6 +91,24 @@ export function openStorage(path) {
         CREATE UNIQUE INDEX room_pending_invitation ON room_invitations(room_id,target_id)
           WHERE used_at IS NULL AND revoked_at IS NULL;
         PRAGMA user_version = 2;
+        COMMIT;`);
+    }
+    if (version < 3) {
+      db.exec(`BEGIN IMMEDIATE;
+        CREATE TABLE room_authority (
+          room_id TEXT PRIMARY KEY REFERENCES rooms(id),
+          state_id TEXT NOT NULL,
+          public_key TEXT NOT NULL,
+          revision INTEGER NOT NULL CHECK(revision >= 0),
+          state_digest TEXT NOT NULL CHECK(length(state_digest) = 64)
+        ) STRICT;
+        CREATE TABLE token_assignments (
+          room_id TEXT NOT NULL REFERENCES rooms(id),
+          token_id TEXT NOT NULL,
+          user_id TEXT NOT NULL REFERENCES users(id),
+          PRIMARY KEY(room_id,token_id,user_id)
+        ) STRICT;
+        PRAGMA user_version = 3;
         COMMIT;`);
     }
   } catch (error) {

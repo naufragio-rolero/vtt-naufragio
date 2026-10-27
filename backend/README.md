@@ -1,4 +1,4 @@
-# Backend local — Fase 3
+# Backend local — Fase 4
 
 Backend portable en JavaScript ESM para Node **22.23.4**, comprobado también con Node **24.18.0**. Usa HTTP, SQLite y criptografía integrados en Node; Socket.IO 4.8.4 es la única dependencia de ejecución de npm. No requiere instalar addons ni compilar dependencias nativas. El tablero publicado sigue siendo un prototipo local independiente.
 
@@ -27,7 +27,7 @@ Por defecto escucha en `http://127.0.0.1:3400`. `/health` indica salud del proce
 
 ## SQLite y contraseñas
 
-La base contiene `users`, `sessions`, `signup_invitations`, `role_labels`, `rooms`, `room_codes`, `room_memberships` y `room_invitations`. Guarda identidad, hashes, propietarios, pertenencias, permisos y fechas; no tiene tablas ni rutas para persistir contenido de partidas. El esquema 2 migra automáticamente desde el 1 dentro de una transacción, con tablas estrictas, claves foráneas y transacciones `BEGIN IMMEDIATE`. Las consultas usan parámetros. El archivo y su directorio se crean con permisos POSIX 0600/0700; en Windows hay que proteger además la carpeta mediante ACL del propietario. En producción la base no debe estar en un directorio publicado.
+La base contiene `users`, `sessions`, `signup_invitations`, `role_labels`, `rooms`, `room_codes`, `room_memberships`, `room_invitations`, `room_authority` y `token_assignments`. Guarda identidad, propietarios, pertenencias y permisos, además de clave pública/revisión/hash para verificar continuidad del estado del director. No persiste instantáneas, movimientos, coordenadas ni claves privadas. El esquema 3 migra automáticamente desde versiones anteriores, en transacciones por versión, con tablas estrictas, claves foráneas y `BEGIN IMMEDIATE`. Las consultas usan parámetros. El archivo y su directorio se crean con permisos POSIX 0600/0700; en Windows hay que proteger además la carpeta mediante ACL del propietario. En producción la base no debe estar en un directorio publicado.
 
 Se usa `node:sqlite` incluido en Node; en Node 22 su API emite un aviso experimental. No se emplean opciones exclusivas de Node 24. WAL y `synchronous=FULL` permiten durabilidad; respaldar solo el archivo principal mientras hay escrituras puede perder datos, por lo que el procedimiento de copia consistente se definirá en la fase operativa. Una versión de esquema desconocida impide arrancar. Operación prevista: un único proceso backend, no un clúster.
 
@@ -37,7 +37,7 @@ Referencias: [OWASP, perfiles de scrypt](https://cheatsheetseries.owasp.org/chea
 
 ## Sesiones, usuarios e invitaciones
 
-Las sesiones son tokens opacos `sess_…` con 256 bits aleatorios. Se devuelven en el cuerpo JSON del login y se envían únicamente mediante `Authorization: Bearer …`. Guardar el token solo en memoria del cliente; no introducirlo en URLs, localStorage, ficheros de configuración o logs. No se usan cookies ni JWT, ni hace falta una clave de firma. SQLite conserva únicamente SHA-256 del token. La sesión tiene caducidad absoluta, sin renovación automática; se admiten hasta cinco sesiones activas por cuenta.
+Las sesiones son tokens opacos `sess_…` con 256 bits aleatorios. Se devuelven en el cuerpo JSON del login y se envían únicamente mediante `Authorization: Bearer …`. Guardar el token solo en memoria del cliente; no introducirlo en URLs, localStorage, ficheros de configuración o logs. No se usan cookies ni JWT, ni hace falta una clave de firma del servicio para sesiones. La clave local de continuidad de partida descrita más abajo es independiente de la sesión. SQLite conserva únicamente SHA-256 del token. La sesión tiene caducidad absoluta, sin renovación automática; se admiten hasta cinco sesiones activas por cuenta.
 
 Cada petición consulta la sesión y el rol actual. Logout revoca la sesión actual; logout-all, cambio de contraseña y cambio administrativo de cuenta revocan las sesiones correspondientes. El administrador también puede revocar sesiones de otra cuenta. Desactivar o cambiar el rol de un emisor revoca sus invitaciones pendientes. No se puede desactivar ni degradar al último administrador activo. La creación administrativa vuelve a comprobar la sesión después del hash; la primera cuenta y el consumo de una invitación se verifican de nuevo dentro de la transacción.
 
@@ -51,7 +51,7 @@ Los cuerpos JSON son estrictos: se rechazan campos desconocidos. Los nombres de 
 
 | Ruta | Acceso y cuerpo | Resultado |
 | --- | --- | --- |
-| `GET /health` | Público | Salud, fase 3; autenticación y salas disponibles, `gameEvents=false`. |
+| `GET /health` | Público | Salud, fase 4; autenticación, salas y eventos de tokens disponibles, `gameEvents=true`. |
 | `POST /auth/login` | Público: `username`, `password` | 200: `token`, `expiresAt`, `user`. Fallo uniforme 401 para contraseña incorrecta, cuenta ausente o desactivada. |
 | `GET /auth/me` | Sesión | 200: `user` con `id`, `username`, `role`, `disabled`; sin hash. |
 | `POST /auth/logout`, `/auth/logout-all` | Sesión; objeto vacío | 204. |
@@ -75,7 +75,7 @@ Los errores HTTP son `{ "error": { "code": "..." } }`; las respuestas no incluye
 
 Los IDs internos son `admin`, `director`, `user`; los nombres visibles se leen de SQLite. Solo el administrador modifica etiquetas. La configuración pública servida en `/settings/site.config.json` incorpora esas etiquetas efectivas. El administrador técnico no obtiene autoridad sobre partidas por su rol; utiliza un perfil de dirección separado cuando sea necesario.
 
-`src/auth/permissions.js` aplica denegación por defecto. Entrar exige pertenencia autorizada comprobada por `src/rooms/service.js`. Los flags `moveAssignedTokens` y `diceAllowed` empiezan en `false` y solo el propietario puede cambiarlos. El movimiento futuro exigirá además asignación explícita del token y director conectado; conceder el flag no permite mover cualquier token. El contexto debe provenir del servidor, nunca de JSON o del handshake. Todavía no hay eventos de movimiento, tiradas, mapas, recursos ni asignaciones.
+`src/auth/permissions.js` aplica denegación por defecto. Entrar exige pertenencia autorizada comprobada por `src/rooms/service.js`. Los flags `moveAssignedTokens` y `diceAllowed` empiezan en `false` y solo el propietario puede cambiarlos. Un movimiento de jugador exige además asignación explícita del token y director verificado conectado; conceder el flag no permite mover cualquier token. La dirección verificada puede mover todos los tokens de su sala. Ese contexto se obtiene del servidor antes de retransmitir y antes de confirmar. Todavía no hay tiradas, mapas ni recursos.
 
 El namespace `/` exige exactamente `handshake.auth = {token, roomId}`. Valida identidad actual, cuenta activa, pertenencia y autoridad del propietario antes de unirse al canal interno de partida; sesión inválida produce `UNAUTHENTICATED` y partida inexistente/no autorizada `ROOM_ACCESS_DENIED`. Los campos adicionales se rechazan. Un socket pertenece a una única partida; otra partida requiere una nueva conexión autorizada. No se sirven bundles de cliente ni se activa recuperación automática de eventos. El namespace técnico `/diagnostics` conserva el ping versionado de Fase 1, solo cuando se habilita explícitamente fuera de producción.
 
@@ -87,7 +87,45 @@ Contrato de presencia:
 | Servidor → miembros de la misma partida, `room:presence` | `{version:1,roomId,ownerId,state,participants}`; `state` es `active` o `waiting`; participantes `{id,username,role}` con papel local `director`/`participant`. |
 | Servidor → conexión antigua del mismo propietario, `room:replaced` | `{version:1,roomId}`, seguido de desconexión. |
 
-El cliente presenta `waiting` como «En espera del máster». La autoridad depende del propietario persistido, sin elección ni transferencia. El director reconectado sustituye a su socket anterior; pestañas ordinarias se deduplican por cuenta. Cada evento consulta la autorización; los cambios de sesión/cuenta/pertenencia revisan inmediatamente las conexiones. Hay temporizadores de expiración y barrido cada segundo para cambios administrativos externos. La presencia no se persiste: tras reiniciar queda en espera hasta que conecte el propietario. Cualquier otro evento, incluidos movimiento, imágenes y falsa presencia del servidor, recibe `EVENT_NOT_AVAILABLE`; un exceso de frecuencia desconecta.
+El cliente presenta `waiting` como «En espera del máster». `active` requiere propietario conectado **y prueba válida del estado local**. El director reconectado sustituye a su socket anterior solo después de esa prueba; pestañas ordinarias se deduplican por cuenta. Cada evento consulta la autorización; los cambios de sesión/cuenta/pertenencia revisan inmediatamente las conexiones. Hay temporizadores de expiración y barrido cada segundo para cambios administrativos externos. Tras reiniciar se necesita probar de nuevo el estado, no basta conectarse. Solo se admiten presencia y los eventos de tokens siguientes; imágenes, mapas, chat, dados o emisiones falsificadas del servidor reciben `EVENT_NOT_AVAILABLE`. Un exceso de frecuencia desconecta.
+
+## Contrato de sincronización de tokens
+
+Todos los mensajes usan exactamente los campos indicados, incluyendo `version:1` y `roomId` igual al del handshake. IDs de evento, estado, token, sincronización y época son UUID v4. No se acepta `actorId`, rol, permisos o asignaciones aportados en solicitudes de movimiento. El backend añade la identidad al retransmitir. Los acks son `{ok:true,...resultado}` o `{ok:false,error:{code}}`.
+
+| Cliente → servidor | Campos adicionales | Acceso y resultado |
+| --- | --- | --- |
+| `authority:claim` | `challenge`, `snapshot`, `publicKey`, `signature` | Propietario: prueba de estado/dispositivo; ack `epoch`, `revision`. |
+| `token:assign` | `epoch`, `eventId`, `tokenId`, `assignmentVersion`, `userIds` | Director verificado: reemplaza asignaciones por lista de miembros activos; ack siguiente `assignmentVersion`. Versión inicial 0 por token/época. |
+| `token:move:request` | `epoch`, `eventId`, `baseRevision`, `tokenId`, `tokenVersion`, `position:{x,y}` | Miembro autorizado: ack `status=pending`, ID; duplicados devuelven resultado resuelto. Solo se retransmite al director. |
+| `token:move:accept` | `epoch`, `eventId`, `revision`, `stateDigest` | Socket del director verificado: revisión siguiente y resumen del candidato guardado localmente. Ack `status=committed` y `movement`, o resultado rechazado previo. |
+| `token:move:reject` | `epoch`, `eventId`, `reason:"DIRECTOR_REJECTED"` | Director verificado; ack `status=rejected`, motivo y revisión sin modificar estado. |
+| `tokens:sync:request` | `epoch`, `eventId` | Miembro: pide instantánea al director; ack `status=pending`, `syncId`. |
+| `tokens:sync:provide` | `epoch`, `syncId`, `snapshot` | Director verificado: valida contra el punto actual y entrega únicamente al solicitante. |
+
+| Servidor → cliente | Contenido |
+| --- | --- |
+| `authority:challenge` | Solo propietario: `version`, `roomId`, `challenge`, `expected` nulo o `{stateId,revision,digest}`. |
+| `room:authority` | Miembros: `version`, `roomId`, `state` (`active`/`waiting`), `epoch` o nulo, `revision` o nula. |
+| `token:move:requested` | Solo director verificado: solicitud validada e `actorId` calculado por el servidor. |
+| `token:move:committed` | Solo miembros actuales: `version`, `roomId`, `epoch`, `eventId`, `actorId`, `revision`, `tokenId`, `tokenVersion`, `position`. |
+| `token:move:rejected` | Solicitante y director: `version`, `roomId`, `epoch`, `eventId`, `status`, `reason`, `revision`. |
+| `tokens:sync:requested` | Solo director: `version`, `roomId`, `epoch`, `syncId`. |
+| `tokens:snapshot` | Miembros al validar autoridad o solicitante al sincronizar: `version`, `roomId`, `epoch`, `snapshot`. |
+
+Una instantánea tiene `{stateId,revision,tokens:[{id,tokenVersion,x,y}]}`: hasta 64 tokens públicos, versiones/revisión enteras seguras no negativas, coordenadas finitas entre −1 000 000 y 1 000 000. Primer estado con revisión y versiones 0. El conjunto inicial permanece fijo en esta fase. Solo se persisten las asignaciones como permisos; no las posiciones ni instancias. Cada solicitud dura hasta 10 s; hasta 128 resultados/propuestas por sala, resultados durante 60 s; hasta 32 sincronizaciones pendientes de 10 s y 32 usuarios por asignación. La frecuencia global de eventos continúa limitada.
+
+`baseRevision` debe coincidir al solicitar y `tokenVersion` debe seguir vigente al confirmar. Una propuesta pendiente bloquea ese token; propuestas de tokens distintos pueden confirmarse en secuencia, asignando revisiones globales consecutivas. Un ID reutilizado con otro contenido produce `EVENT_ID_REUSED`; versiones antiguas, `STALE_MOVE`/`STALE_EPOCH`; conflicto pendiente, `TOKEN_BUSY`; sin director probado, `DIRECTOR_NOT_READY`. Tras un rechazo no se confirma esa propuesta; el jugador conserva/restaura el último estado confirmado y reintenta con nuevo ID cuando corresponda. No se aplica movimiento optimista como estado oficial.
+
+### Cliente separado y continuidad del director
+
+`client/token-client.js` ofrece `createTokenClient(socket,{roomId,director,store,initialTokens,acceptMove,onChange})`, métodos `move()`, `assign()`, `sync()`, `close()` y estado observable. El consumidor proporciona un socket autenticado y cerrado inicialmente. Registrar el cliente antes de conectarlo; solo dirección necesita `store`. `initialTokens` se usa exclusivamente al establecer la primera autoridad de una sala sin punto de control. No hay interfaz ni nuevas rutas de archivos estáticos para este módulo; se integrará expresamente en el frontend futuro.
+
+El backend fija una clave pública ECDSA P-256 y un resumen SHA-256 al crear el primer estado. Al reconectar exige instantánea coincidente y firma nueva del reto, ligada a sala/ID/revisión/resumen; `publicKey` es JWK público exacto `{kty:"EC",crv:"P-256",x,y}` y `signature` es ECDSA IEEE P1363 de 64 bytes en base64url sin padding. El formato canónico y la firma se comparten entre Node y navegador. Nunca se transmite la clave privada.
+
+El cliente guarda un diario `current`/`staged` antes de aceptar, y lo consolida al recibir confirmación. Tras un fallo compara ambos candidatos con el resumen confirmado. `client/indexeddb-store.js` proporciona persistencia por sala y exclusión Web Locks entre pestañas; resuelve escrituras en `transaction.oncomplete`, con durabilidad `strict`. Un almacén alternativo debe garantizar guardado durable y acceso exclusivo. Los tests usan almacenes sintéticos e inyección de fallos; el adaptador todavía requiere prueba en navegadores reales.
+
+Perder los datos locales o la clave deja la sala en espera; iniciar sesión desde otro dispositivo no recupera IndexedDB. No existe reset, transferencia automática ni respaldo de contenido en el backend. La clave del diario no se guarda en configuración pública, sesión, URL, logs, SQLite ni exportaciones públicas. Véanse [método, pruebas y límites](../docs/FASE4-BACKEND.md).
 
 ## Contrato de partidas
 
@@ -137,6 +175,6 @@ npm run validate:site -- public/site.config.example.json
 
 ## Validación y siguientes fases
 
-`npm test` ejecuta pruebas locales con contraseñas/tokens aleatorios de pruebas, SQLite temporal o en memoria, HTTP y Socket.IO en loopback. Véanse [resultados y límites de Fase 3](../docs/FASE3-BACKEND.md) e [informe histórico de Fase 2](../docs/FASE2-BACKEND.md). No se crean cuentas reales en la base de desarrollo durante los tests. La prueba remota serial es un diagnóstico separado, descrito en [VALIDACION-ARMV7.md](../docs/VALIDACION-ARMV7.md).
+`npm test` ejecuta pruebas locales con contraseñas/tokens aleatorios de pruebas, SQLite temporal o en memoria, HTTP y Socket.IO en loopback, incluido un director y dos jugadores que convergen en el mismo estado. Véanse [resultados y límites de Fase 4](../docs/FASE4-BACKEND.md) e informes históricos de [Fase 3](../docs/FASE3-BACKEND.md) y [Fase 2](../docs/FASE2-BACKEND.md). No se crean cuentas reales en la base de desarrollo durante los tests. La prueba remota serial anterior corresponde a Fase 2, descrita en [VALIDACION-ARMV7.md](../docs/VALIDACION-ARMV7.md).
 
-Las salas y presencia están disponibles mediante API/protocolo local. Sincronización, contenido, importación/exportación e integración de acceso en el frontend publicado siguen pendientes. Recuperación de cuentas, retención/paginación, carga sostenida ARMv7, runtime posterior a Node 22 y operación/backup requieren decisiones antes de producción. No se despliega backend ni se modifican Apache, Heaven's Gate o Pages.
+Salas, presencia y sincronización de tokens están disponibles mediante API/protocolo local. Imágenes, mapas, importación/exportación e integración de acceso y movimiento en el frontend publicado siguen pendientes. Recuperación de cuentas/diario local, retención/paginación, carga sostenida ARMv7, runtime posterior a Node 22 y operación/backup requieren decisiones antes de producción. No se despliega backend ni se modifican Apache, Heaven's Gate o Pages.

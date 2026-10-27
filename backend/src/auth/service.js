@@ -137,6 +137,7 @@ export function createAuthService(store, config, { clock = Date.now, hasher = pa
         revokeSessions(userId);
         db.prepare('UPDATE signup_invitations SET revoked_at = ? WHERE issuer_id = ? AND used_at IS NULL AND revoked_at IS NULL').run(clock(), userId);
         db.prepare('UPDATE room_invitations SET revoked_at = ? WHERE (issuer_id=? OR target_id=?) AND used_at IS NULL AND revoked_at IS NULL').run(clock(), userId, userId);
+        db.prepare('DELETE FROM token_assignments WHERE user_id=?').run(userId);
         return publicUser(getUser(userId));
       });
       notify();
