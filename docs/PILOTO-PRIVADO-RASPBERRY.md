@@ -126,4 +126,4 @@ Verificar después que no queda listener, proceso ni archivo de ese piloto, que 
 
 ## Versionado y publicación de código
 
-Solo se sube `feat/backend-multijugador`; no hay merge con `main`, workflow ni despliegue de Pages. Estado remoto y commit de entrega: se registran tras comprobar el push. La referencia remota de `main` se compara antes/después sin modificarla.
+Código y resultados subidos a `origin/feat/backend-multijugador` en el commit **`ddd6faf`**, verificado con `git ls-remote` el 28 de octubre. El cierre documental posterior conserva ese commit de código. Solo se sube esta rama: no hay merge con `main`, workflow ni despliegue de Pages. La referencia remota de `main` es idéntica antes y después: **`37edf0d`**. No se versionan `dist/`, staging, bases, claves ni datos privados de conexión.
