@@ -13,7 +13,7 @@ export function openStorage(path) {
   try {
     db.exec('PRAGMA foreign_keys = ON; PRAGMA busy_timeout = 5000; PRAGMA journal_mode = WAL; PRAGMA synchronous = FULL; PRAGMA trusted_schema = OFF;');
     const version = db.prepare('PRAGMA user_version').get().user_version;
-    if (version !== 0 && version !== 1) throw new Error('UNSUPPORTED_DATABASE_VERSION');
+    if (![0, 1, 2].includes(version)) throw new Error('UNSUPPORTED_DATABASE_VERSION');
     if (version === 0) {
       db.exec(`BEGIN IMMEDIATE;
         CREATE TABLE users (
@@ -49,6 +49,48 @@ export function openStorage(path) {
         ) STRICT;
         INSERT INTO role_labels VALUES ('admin','Administrador'),('director','Máster'),('user','Usuario');
         PRAGMA user_version = 1;
+        COMMIT;`);
+    }
+    if (version < 2) {
+      db.exec(`BEGIN IMMEDIATE;
+        CREATE TABLE rooms (
+          id TEXT PRIMARY KEY,
+          owner_id TEXT NOT NULL REFERENCES users(id),
+          name TEXT NOT NULL CHECK(length(name) BETWEEN 1 AND 80),
+          created_at INTEGER NOT NULL
+        ) STRICT;
+        CREATE TABLE room_codes (
+          code_hash TEXT PRIMARY KEY,
+          room_id TEXT NOT NULL REFERENCES rooms(id),
+          created_at INTEGER NOT NULL,
+          expires_at INTEGER NOT NULL,
+          revoked_at INTEGER
+        ) STRICT;
+        CREATE UNIQUE INDEX room_active_code ON room_codes(room_id) WHERE revoked_at IS NULL;
+        CREATE TABLE room_memberships (
+          room_id TEXT NOT NULL REFERENCES rooms(id),
+          user_id TEXT NOT NULL REFERENCES users(id),
+          active INTEGER NOT NULL CHECK(active IN (0,1)),
+          dice_allowed INTEGER NOT NULL DEFAULT 0 CHECK(dice_allowed IN (0,1)),
+          move_assigned_tokens INTEGER NOT NULL DEFAULT 0 CHECK(move_assigned_tokens IN (0,1)),
+          joined_at INTEGER NOT NULL,
+          PRIMARY KEY(room_id,user_id)
+        ) STRICT;
+        CREATE TABLE room_invitations (
+          id TEXT PRIMARY KEY,
+          room_id TEXT NOT NULL REFERENCES rooms(id),
+          target_id TEXT NOT NULL REFERENCES users(id),
+          issuer_id TEXT NOT NULL REFERENCES users(id),
+          created_at INTEGER NOT NULL,
+          expires_at INTEGER NOT NULL,
+          used_at INTEGER,
+          revoked_at INTEGER,
+          dice_allowed INTEGER NOT NULL DEFAULT 0 CHECK(dice_allowed IN (0,1)),
+          move_assigned_tokens INTEGER NOT NULL DEFAULT 0 CHECK(move_assigned_tokens IN (0,1))
+        ) STRICT;
+        CREATE UNIQUE INDEX room_pending_invitation ON room_invitations(room_id,target_id)
+          WHERE used_at IS NULL AND revoked_at IS NULL;
+        PRAGMA user_version = 2;
         COMMIT;`);
     }
   } catch (error) {

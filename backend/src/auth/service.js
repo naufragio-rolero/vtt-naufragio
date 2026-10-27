@@ -10,17 +10,20 @@ const generate = prefix => `${prefix}_${randomBytes(32).toString('base64url')}`;
 const validToken = (token, prefix) => typeof token === 'string' && new RegExp(`^${prefix}_[A-Za-z0-9_-]{43}$`).test(token);
 const publicUser = user => ({ id: user.id, username: user.username, role: user.role, disabled: Boolean(user.disabled) });
 
-export function createAuthService(store, config, { clock = Date.now, hasher = passwords } = {}) {
+export function createAuthService(store, config, { clock = Date.now, hasher = passwords, reportChangeError = () => {} } = {}) {
   const { db } = store;
+  const listeners = new Set();
+  const notify = () => { for (const listener of listeners) { try { listener(); } catch { reportChangeError({ code: 'AUTH_REFRESH_FAILED' }); } } };
   const accountAttempt = createLimiter(config.authRateLimit, config.authWindowMs, { clock });
   const getUser = userId => db.prepare('SELECT * FROM users WHERE id = ?').get(userId);
-  function session(token) {
+  function sessionRow(token) {
     if (!validToken(token, 'sess')) throw new HttpError(401, 'UNAUTHENTICATED');
-    const row = db.prepare(`SELECT u.* FROM sessions s JOIN users u ON u.id = s.user_id
+    const row = db.prepare(`SELECT u.*,s.expires_at AS session_expires FROM sessions s JOIN users u ON u.id = s.user_id
       WHERE s.token_hash = ? AND s.expires_at > ? AND s.revoked_at IS NULL AND u.disabled = 0`).get(digest(token), clock());
     if (!row) throw new HttpError(401, 'UNAUTHENTICATED');
-    return publicUser(row);
+    return row;
   }
+  const session = token => publicUser(sessionRow(token));
   function authorized(token, action) {
     const actor = session(token);
     requirePermission(actor, action);
@@ -45,6 +48,8 @@ export function createAuthService(store, config, { clock = Date.now, hasher = pa
   }
   return {
     session,
+    sessionInfo(token) { const row = sessionRow(token); return { user: publicUser(row), expiresAt: row.session_expires }; },
+    onChanged(listener) { listeners.add(listener); return () => listeners.delete(listener); },
     bootstrapAvailable() { return db.prepare('SELECT count(*) AS total FROM users').get().total === 0; },
     async bootstrap(input) {
       fields(input, ['username', 'password']);
@@ -61,7 +66,7 @@ export function createAuthService(store, config, { clock = Date.now, hasher = pa
       if (!accountAttempt(digest(name))) throw new HttpError(429, 'AUTH_RATE_LIMITED');
       const user = db.prepare('SELECT * FROM users WHERE username = ?').get(name);
       const matches = await hasher.verify(input.password, user?.password_hash);
-      return store.transaction(() => {
+      const created = store.transaction(() => {
         const current = user && getUser(user.id);
         if (!matches || !current || current.disabled || current.password_hash !== user.password_hash) {
           throw new HttpError(401, 'INVALID_CREDENTIALS');
@@ -76,11 +81,14 @@ export function createAuthService(store, config, { clock = Date.now, hasher = pa
         db.prepare('INSERT INTO sessions(token_hash,user_id,created_at,expires_at) VALUES (?,?,?,?)').run(digest(token), current.id, now, expiresAt);
         return { token, expiresAt, user: publicUser(current) };
       });
+      notify();
+      return created;
     },
     logout(token, all = false) {
       const actor = session(token);
       if (all) revokeSessions(actor.id);
       else db.prepare('UPDATE sessions SET revoked_at = ? WHERE token_hash = ?').run(clock(), digest(token));
+      notify();
     },
     async changePassword(token, input) {
       fields(input, ['currentPassword', 'newPassword']);
@@ -96,6 +104,7 @@ export function createAuthService(store, config, { clock = Date.now, hasher = pa
         db.prepare('UPDATE users SET password_hash = ? WHERE id = ?').run(hash, actor.id);
         revokeSessions(actor.id);
       });
+      notify();
     },
     listUsers(token) {
       authorized(token, 'users:update');
@@ -114,7 +123,7 @@ export function createAuthService(store, config, { clock = Date.now, hasher = pa
       fields(input, [], ['role', 'disabled']);
       if (Object.keys(input).length === 0 || (input.disabled !== undefined && typeof input.disabled !== 'boolean')) throw new HttpError(400, 'INVALID_INPUT');
       if (input.role !== undefined) role(input.role);
-      return store.transaction(() => {
+      const updated = store.transaction(() => {
         authorized(token, 'users:update');
         const target = getUser(userId);
         if (!target) throw new HttpError(404, 'USER_NOT_FOUND');
@@ -127,14 +136,18 @@ export function createAuthService(store, config, { clock = Date.now, hasher = pa
         db.prepare('UPDATE users SET role = ?, disabled = ? WHERE id = ?').run(nextRole, disabled, userId);
         revokeSessions(userId);
         db.prepare('UPDATE signup_invitations SET revoked_at = ? WHERE issuer_id = ? AND used_at IS NULL AND revoked_at IS NULL').run(clock(), userId);
+        db.prepare('UPDATE room_invitations SET revoked_at = ? WHERE (issuer_id=? OR target_id=?) AND used_at IS NULL AND revoked_at IS NULL').run(clock(), userId, userId);
         return publicUser(getUser(userId));
       });
+      notify();
+      return updated;
     },
     revokeUserSessions(token, userId) {
       authorized(token, 'sessions:revoke');
       id(userId);
       if (!getUser(userId)) throw new HttpError(404, 'USER_NOT_FOUND');
       revokeSessions(userId);
+      notify();
     },
     createInvitation(token, input) {
       fields(input, [], ['expiresInSeconds']);

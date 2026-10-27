@@ -1,7 +1,8 @@
 import { Server } from 'socket.io';
 import { createLimiter } from './limits.js';
+import { attachRoomPresence } from './rooms/presence.js';
 
-export function attachRealtime(server, config, auth) {
+export function attachRealtime(server, config, auth, rooms, options = {}) {
   const allowed = origin => config.allowedOrigins.includes(origin);
   const handshake = createLimiter(config.handshakeRateLimit, config.rateWindowMs);
   const pending = new Map();
@@ -37,15 +38,7 @@ export function attachRealtime(server, config, auth) {
     if (!allowed(request.headers.origin)) return next(new Error('ORIGIN_DENIED'));
     next();
   });
-  // Identity alone never grants entry before server-side room authorization exists.
-  io.use((socket, next) => {
-    let code = 'ROOM_AUTHORIZATION_UNAVAILABLE';
-    try { auth.session(socket.handshake.auth?.token); }
-    catch { code = 'UNAUTHENTICATED'; }
-    const error = new Error(code);
-    error.data = { code };
-    next(error);
-  });
+  const presence = attachRoomPresence(io, auth, rooms, config, options);
 
   if (config.diagnostics) {
     io.of('/diagnostics').on('connection', socket => {
@@ -69,5 +62,5 @@ export function attachRealtime(server, config, auth) {
       });
     });
   }
-  return io;
+  return { io, presence };
 }

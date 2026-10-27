@@ -2,7 +2,7 @@
 
 > Proyecto: **Naufragio VTT** · Repositorio: `naufragio-rolero/vtt-naufragio`
 >
-> Fecha del plan: 24 de octubre de 2026 · Actualización: 26 de octubre de 2026. Estado: **inventario por SSH documentado; Fase 2 de acceso implementada localmente sobre la base de Fase 1, sin despliegue**. Véanse [inventario](INVENTARIO-BACKEND-RASPBERRY.md), [Fase 1](FASE1-BACKEND.md) y [Fase 2](FASE2-BACKEND.md).
+> Fecha del plan: 24 de octubre de 2026 · Actualización: 27 de octubre de 2026. Estado: **validación temporal ARMv7 satisfactoria; Fase 3 de salas/presencia implementada localmente, sin despliegue**. Véanse [inventario](INVENTARIO-BACKEND-RASPBERRY.md), [Fase 1](FASE1-BACKEND.md), [Fase 2](FASE2-BACKEND.md), [validación ARMv7](VALIDACION-ARMV7.md) y [Fase 3](FASE3-BACKEND.md).
 >
 > Destinatario: Codex trabajando sobre un clon del repositorio en Windows y conectado a la Raspberry por SSH.
 >
@@ -273,6 +273,12 @@ Flujos:
 8. En la reconexión, el director confirma su autoridad y envía a cada participante **solo el estado permitido** del mapa activo.
 
 Los códigos deben poder caducar o regenerarse. La persistencia mínima de metadatos de sala en SQLite está permitida; el contenido de la partida sigue exclusivamente en navegadores.
+
+### Implementación local de Fase 3 — 27 de octubre de 2026
+
+Superada primero la [validación aislada de Node 22/SQLite/autenticación en ARMv7](VALIDACION-ARMV7.md), con limpieza verificada y sin cambios de servicios. Se implementan en Windows creación exclusiva por dirección, códigos aleatorios con hash/caducidad/revocación, invitaciones nominativas a cuentas existentes, pertenencias y flags por partida denegados por defecto. La admisión exige código e invitación: no concede acceso por conocer el código o por registrarse.
+
+El namespace solo se abre a miembros autorizados para presencia. La desconexión del propietario deja la partida en espera y su reconexión recupera autoridad sin elegir sustituto. No hay asignaciones, movimientos, mapas, imágenes ni nueva interfaz de tablero; los puntos del flujo que requieren esos contenidos siguen pendientes. El alta y la invitación a partida son dos pasos independientes; la presentación combinada queda pendiente. Se migran únicamente metadatos SQLite y se superan 69 pruebas con Node 22 y 24. [Contrato](../backend/README.md) e [informe y decisiones](FASE3-BACKEND.md). Los criterios de aceptación con navegadores reales de la sección 12 siguen sin darse por satisfechos.
 
 ## 9. Fase 4 — Sincronización autoritativa
 

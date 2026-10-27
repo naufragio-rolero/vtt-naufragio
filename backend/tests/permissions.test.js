@@ -28,11 +28,11 @@ test('global permissions deny by default and separate administration from direct
 });
 
 test('future room policy requires membership, assignment and an online director', () => {
-  const context = { member: true, directorOnline: true, ownerId: director.id, tokenId: 't1', assignedTokenIds: new Set(['t1']) };
+  const context = { member: true, directorOnline: true, ownerId: director.id, tokenId: 't1', moveAssignedTokens: true, assignedTokenIds: new Set(['t1']) };
   assert.equal(can(user, 'rooms:join'), false);
   assert.equal(can(user, 'rooms:join', context), true);
   assert.equal(can(user, 'tokens:move', context), true);
-  for (const change of [{ member: false }, { directorOnline: false }, { tokenId: 'other' }, { assignedTokenIds: new Set() }]) {
+  for (const change of [{ member: false }, { directorOnline: false }, { moveAssignedTokens: false }, { tokenId: 'other' }, { assignedTokenIds: new Set() }]) {
     assert.equal(can(user, 'tokens:move', { ...context, ...change }), false);
   }
   assert.equal(can(user, 'dice:roll', context), false);

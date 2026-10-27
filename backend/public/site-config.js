@@ -20,7 +20,7 @@ export function validateSiteConfig(value, { development = false } = {}) {
   }
   if (typeof value.socketPath !== 'string' || value.socketPath.length > 200 ||
       !/^\/[a-zA-Z0-9_.-]+(?:\/[a-zA-Z0-9_.-]+)*$/.test(value.socketPath) ||
-      /^\/(health|settings|auth|rooms|invitations|users|roles|resources)(\/|$)/.test(value.socketPath) ||
+      /^\/(health|settings|auth|rooms|room-invitations|invitations|users|roles|resources)(\/|$)/.test(value.socketPath) ||
       value.socketPath.split('/').some(segment => segment === '.' || segment === '..')) invalid('socketPath');
   if (!exactKeys(value.roleLabels, ['admin', 'director', 'user'])) invalid('roleLabels');
   for (const label of Object.values(value.roleLabels)) if (!text(label, 40)) invalid('roleLabels');

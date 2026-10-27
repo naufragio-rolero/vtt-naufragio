@@ -7,6 +7,7 @@ import { validateSiteConfig } from '../public/site-config.js';
 import { openStorage } from './storage.js';
 import { createAuthService } from './auth/service.js';
 import { createAuthRouter } from './auth/routes.js';
+import { createRoomService } from './rooms/service.js';
 
 const assets = new Map([
   ['/settings/', ['settings.html', 'text/html']],
@@ -38,8 +39,9 @@ async function readJson(request, limit) {
 
 export function createBackend(config, { reportError = () => {}, publicConfigFile = new URL('../public/site.config.json', import.meta.url), clock = Date.now } = {}) {
   const store = openStorage(config.databasePath);
-  const auth = createAuthService(store, config, { clock });
-  const authRouter = createAuthRouter(auth, config, { clock });
+  const auth = createAuthService(store, config, { clock, reportChangeError: reportError });
+  const rooms = createRoomService(store, auth, config, { clock });
+  const authRouter = createAuthRouter(auth, config, { clock, rooms });
   const acceptRequest = createLimiter(config.httpRateLimit, config.rateWindowMs, { clock });
   const server = createServer({ maxHeaderSize: 8192, requestTimeout: 10000, headersTimeout: 10000, keepAliveTimeout: 5000 }, (request, response) => {
     response.setHeader('Cache-Control', 'no-store');
@@ -53,7 +55,7 @@ export function createBackend(config, { reportError = () => {}, publicConfigFile
       sendError(response, error, reportError);
     });
   });
-  const io = attachRealtime(server, config, auth);
+  const { io, presence } = attachRealtime(server, config, auth, rooms, { clock, reportError });
 
   async function handle(request, response) {
     const origin = request.headers.origin;
@@ -82,8 +84,8 @@ export function createBackend(config, { reportError = () => {}, publicConfigFile
       throw new HttpError(405, 'METHOD_NOT_ALLOWED');
     }
     if (pathname === '/health') {
-      sendJson(response, 200, { status: 'ok', service: 'naufragio-vtt', protocolVersion: 1, phase: 2,
-        capabilities: { authentication: true, rooms: false, gameEvents: false } });
+      sendJson(response, 200, { status: 'ok', service: 'naufragio-vtt', protocolVersion: 1, phase: 3,
+        capabilities: { authentication: true, rooms: true, gameEvents: false } });
       return;
     }
     if (pathname === '/settings') {
@@ -116,7 +118,7 @@ export function createBackend(config, { reportError = () => {}, publicConfigFile
 
   let closing;
   return {
-    server, io, auth, store,
+    server, io, auth, rooms, presence, store,
     listen(port = config.port) {
       return new Promise((resolve, reject) => {
         const failed = error => reject(error);
@@ -129,6 +131,7 @@ export function createBackend(config, { reportError = () => {}, publicConfigFile
     },
     close() {
       closing ??= new Promise(resolve => {
+        presence.stop();
         io.close(() => { store.close(); resolve(); });
         server.closeIdleConnections();
       });

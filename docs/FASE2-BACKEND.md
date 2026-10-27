@@ -1,5 +1,7 @@
 # Fase 2 — Cuentas, sesiones, invitaciones y permisos
 
+> Informe histórico de la entrega del 26 de octubre. El 27 se completó la [validación temporal ARMv7](VALIDACION-ARMV7.md) y después la [Fase 3 local de salas/presencia](FASE3-BACKEND.md). Los resultados y límites siguientes describen la Fase 2 original, no el estado actual del namespace.
+
 Fecha: 26 de octubre de 2026. Rama: `feat/backend-multijugador`. Se conserva la base de Fase 1 y se implementa exclusivamente acceso y autorización preparatoria. No se despliega ni se conecta a la Raspberry.
 
 ## Decisiones e implementación

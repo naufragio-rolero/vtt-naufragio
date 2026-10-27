@@ -16,7 +16,7 @@ test('health, methods and error responses reveal no environment or stack', async
   assert.equal(response.headers.get('access-control-allow-origin'), origin);
   assert.equal(response.headers.get('cache-control'), 'no-store');
   assert.deepEqual(await response.json(), { status: 'ok', service: 'naufragio-vtt', protocolVersion: 1,
-    phase: 2, capabilities: { authentication: true, rooms: false, gameEvents: false } });
+    phase: 3, capabilities: { authentication: true, rooms: true, gameEvents: false } });
   const method = await fetch(`${url}/health`, { method: 'POST' });
   assert.equal(method.status, 405);
   assert.equal(method.headers.get('allow'), 'GET');

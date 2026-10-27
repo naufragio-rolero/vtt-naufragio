@@ -28,7 +28,7 @@ export function loadConfig(env = process.env) {
   const socketPath = env.SOCKET_PATH ?? '/socket.io';
   if (socketPath.length > 200 || !/^\/[a-zA-Z0-9_.-]+(?:\/[a-zA-Z0-9_.-]+)*$/.test(socketPath) ||
       socketPath.split('/').some(segment => segment === '.' || segment === '..') ||
-      /^\/(health|settings|auth|rooms|invitations|users|roles|resources)(\/|$)/.test(socketPath)) throw new Error('Invalid SOCKET_PATH');
+      /^\/(health|settings|auth|rooms|room-invitations|invitations|users|roles|resources)(\/|$)/.test(socketPath)) throw new Error('Invalid SOCKET_PATH');
   const diagnostics = env.ENABLE_DIAGNOSTICS ?? 'false';
   if (!['true', 'false'].includes(diagnostics) || (mode === 'production' && diagnostics === 'true')) {
     throw new Error('Invalid ENABLE_DIAGNOSTICS');
@@ -51,6 +51,9 @@ export function loadConfig(env = process.env) {
     authWindowMs: integer('AUTH_WINDOW_MS', 300000, 100, 3600000),
     sessionTtlSeconds: integer('SESSION_TTL_SECONDS', 1800, 60, 3600),
     invitationTtlSeconds: integer('INVITATION_TTL_SECONDS', 86400, 60, 604800),
+    roomCodeTtlSeconds: integer('ROOM_CODE_TTL_SECONDS', 86400, 60, 604800),
+    roomInvitationTtlSeconds: integer('ROOM_INVITATION_TTL_SECONDS', 86400, 60, 604800),
+    roomJoinRateLimit: integer('ROOM_JOIN_RATE_LIMIT', 10, 1, 100),
     diagnostics: diagnostics === 'true'
   });
 }

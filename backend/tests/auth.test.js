@@ -83,9 +83,9 @@ test('admin provisions directors; directors and ordinary users cannot elevate th
     assert.equal((await api(url, path, { method: 'POST', token: ordinary.token, body: {} })).status, 403, path);
   }
   assert.equal((await api(url, '/auth/login', { method: 'POST', body: { username: 'ordinary-test', password: secret, role: 'admin' } })).status, 400);
-  assert.equal((await api(url, '/rooms', { method: 'POST', token: director.token, body: {} })).status, 501);
+  assert.equal((await api(url, '/rooms', { method: 'POST', token: director.token, body: { name: 'Synthetic room' } })).status, 201);
   assert.equal((await api(url, '/rooms', { method: 'POST', token, body: {} })).status, 403);
-  assert.equal((await api(url, '/rooms/join', { method: 'POST', token: ordinary.token, body: { role: 'admin' } })).status, 501);
+  assert.equal((await api(url, '/rooms/join', { method: 'POST', token: ordinary.token, body: { role: 'admin' } })).status, 400);
 });
 
 test('password changes require the current password and revoke all sessions', async t => {

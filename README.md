@@ -6,11 +6,11 @@ Prototipo 0.1.2 de un tablero virtual ligero para El Naufragio, inspirado en la 
 
 **[Referencias funcionales de Owlbear Rodeo](docs/REFERENCIAS-OWLBEAR.md)** — equivalencias con Owlbear 1.0/2.0, fuentes oficiales y criterios para conservar una experiencia sencilla.
 
-**[Plan de backend multijugador y despliegue portable](docs/BACKEND-RASPBERRY.md)** — frontend configurable para GitHub Pages u otro servidor; invitaciones de alta, roles y permisos, salas, exportación/importación del MVP y piloto Raspberry con Codex por SSH. **Fase 2 de acceso implementada localmente; no existe aún backend en producción.**
+**[Plan de backend multijugador y despliegue portable](docs/BACKEND-RASPBERRY.md)** — frontend configurable para GitHub Pages u otro servidor; invitaciones de alta, roles y permisos, salas, exportación/importación del MVP y piloto Raspberry con Codex por SSH. **Fase 3 de salas y presencia implementada localmente; no existe aún backend en producción.**
 
 ## Backend local en desarrollo
 
-[Instrucciones de `backend/`](backend/README.md): Node.js 22/24, SQLite para identidad, contraseñas con scrypt, bootstrap administrativo local, sesiones revocables, invitaciones de un uso y permisos en backend. [Pruebas y alcance de Fase 2](docs/FASE2-BACKEND.md). El namespace de juego sigue cerrado hasta implementar autorización de salas; el tablero publicado mantiene su funcionamiento local y no se conecta al backend. [Informe histórico de Fase 1](docs/FASE1-BACKEND.md).
+[Instrucciones de `backend/`](backend/README.md): Node.js 22/24, SQLite para identidad y metadatos de salas, contraseñas con scrypt, sesiones revocables, invitaciones separadas de alta/partida y permisos en backend. [Pruebas y alcance de Fase 3](docs/FASE3-BACKEND.md): 69 pruebas superadas en ambas versiones. El namespace solo admite miembros autorizados para presencia y espera/reconexión del director; todavía no transmite movimientos ni imágenes. El tablero publicado conserva su funcionamiento local y no se conecta al backend. [Validación temporal ARMv7](docs/VALIDACION-ARMV7.md), [histórico de Fase 1](docs/FASE1-BACKEND.md) y [Fase 2](docs/FASE2-BACKEND.md).
 
 ## Funciones actuales
 

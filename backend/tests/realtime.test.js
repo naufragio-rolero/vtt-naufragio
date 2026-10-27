@@ -101,14 +101,14 @@ test('parallel handshakes cannot exceed the connection cap', async t => {
   assert.equal(app.io.engine.clientsCount, 1);
 });
 
-test('valid sessions still cannot enter game namespaces before room authorization exists', { timeout: 15000 }, async t => {
+test('valid sessions cannot enter game namespaces by claiming a role or invented room', { timeout: 15000 }, async t => {
   const { url, token, auth, app } = await setup(t);
   for (const transport of ['polling', 'websocket']) {
     const socket = client(t, url, { transports: [transport], auth: { token, role: 'admin', roomId: 'invented' } });
     const failed = once(socket, 'connect_error', { signal: AbortSignal.timeout(3000) });
     socket.connect();
     const [error] = await failed;
-    assert.equal(error.data.code, 'ROOM_AUTHORIZATION_UNAVAILABLE');
+    assert.equal(error.data.code, 'INVALID_INPUT');
     assert.equal(socket.connected, false);
   }
   assert.equal(app.io.sockets.sockets.size, 0);
