@@ -87,6 +87,10 @@ test('disconnecting the recipient while a fragment is in flight never disconnect
   const started = await send(player, 'assets:request', { epoch: state.epoch, revision: 1, assetId: 'map' });
   assert.equal(started.ok, true);
   player.disconnect();
+  // The server must have processed the disconnect and removed its pending
+  // relay before the director sends the now-stale fragment.
+  await waitFor(() => ![...f.app.io.of('/').sockets.values()].some(socket =>
+    socket.data.token === f.member.token), 'server processed recipient disconnect');
   const attempt = await send(director, 'assets:chunk', { epoch: state.epoch,
     transferId: started.transferId, offset: 0, data: sample.toString('base64') });
   assert.equal(attempt.error?.code, 'TRANSFER_NOT_FOUND');
