@@ -174,7 +174,7 @@
       </section>
       <div id="directorAccess" hidden>
         <form id="createRoomForm" class="mp-form"><h3>Crear partida</h3>
-          <p>Usa una copia de tus tokens locales (máximo 64). La sala mantiene ese conjunto inicial; no admite añadir, borrar, renombrar ni compartir imágenes todavía.</p>
+          <p>Usa una copia de tus tokens locales (máximo 64). La sala mantiene ese conjunto inicial. El mapa activo y los retratos se comparten desde este navegador sin almacenarse en el servidor.</p>
           <label>Nombre <input id="roomName" required maxlength="80"></label><button type="submit">Crear partida</button>
         </form>
         <details><summary>Invitar a crear una cuenta ordinaria</summary>
@@ -191,7 +191,7 @@
     </section>
     <section id="currentRoom" hidden>
       <h3 id="currentRoomName"></h3><p id="roomState" role="status"></p><p id="presence"></p>
-      <p>Se comparten solo los tokens públicos iniciales. Los mapas e imágenes locales se conservan, pero no se comparten.</p>
+      <p>Se comparte el mapa activo y los recursos visibles de los tokens de esta sala. Los mapas privados y la mesa local permanecen en tu navegador.</p>
       <button type="button" id="reconnectRoom">Reconectar</button><button type="button" id="leaveRoom">Volver a mi mesa local</button>
       <label>Código de admisión (solo se muestra al crear o regenerar)<input id="admissionCode" readonly autocomplete="off"></label>
       <section id="roomAdministration" hidden>
@@ -207,6 +207,25 @@
           <label>Participantes (Ctrl/Cmd permite seleccionar varios)<select id="assignedUsers" multiple size="4"></select></label>
           <button type="submit">Guardar asignación</button>
         </form>
+        <section id="sharedMediaEditor" class="mp-form" hidden>
+          <h3>Recursos compartidos</h3>
+          <p>Solo se transmite el mapa activo y los retratos públicos. Los originales se conservan exclusivamente en este navegador.</p>
+          <label>Mapa activo (PNG, JPEG o WebP; máximo 12 MiB)
+            <input type="file" id="sharedMapUpload" accept="image/png,image/jpeg,image/webp">
+          </label>
+          <button type="button" id="sharedClearMap">Quitar mapa compartido</button>
+          <form id="sharedTokenAppearance" class="mp-form">
+            <h3>Apariencia del token seleccionado arriba</h3>
+            <label>Nombre público <input type="text" id="sharedTokenName" maxlength="64" required></label>
+            <label>Color <input type="color" id="sharedTokenColor" value="#85dcd2"></label>
+            <label>Tamaño <input type="number" id="sharedTokenSize" min="0.25" max="4" step="0.25" value="1" required></label>
+            <button type="submit">Publicar apariencia</button>
+          </form>
+          <label>Retrato del token (máximo 2 MiB)
+            <input type="file" id="sharedTokenUpload" accept="image/png,image/jpeg,image/webp">
+          </label>
+          <button type="button" id="sharedRemoveTokenImage">Quitar retrato del token</button>
+        </section>
       </section>
     </section>
   </dialog>
