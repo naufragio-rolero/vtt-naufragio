@@ -1,0 +1,56 @@
+{
+  "result": "pass",
+  "backend": "SSH tunnel to ARMv7",
+  "frontend": "Windows dist",
+  "checks": [
+    "login",
+    "user_cannot_create_room_or_upload",
+    "account_invitation_signup_and_reuse_denied",
+    "named_invitations_and_room_code",
+    "token_assignments",
+    "convergence",
+    "unassigned_move_denied",
+    "revoked_permission_backend_denied",
+    "director_move",
+    "waiting_on_logout",
+    "same_browser_login_recovery",
+    "indexeddb_reload_recovery",
+    "backend_restart_sqlite_and_authority_recovery",
+    "three_clients_stable_for_five_minutes"
+  ],
+  "steadyMoves": 30,
+  "browsers": {
+    "edge": "156.0.4314.42",
+    "firefox": "142.0.1"
+  },
+  "steadySeconds": 305.9629068,
+  "finalTokenVersions": [
+    21,
+    11,
+    0,
+    0
+  ],
+  "latency": {
+    "login": {
+      "samples": 7,
+      "minMs": 1511.425,
+      "medianMs": 1636.285,
+      "p95Ms": 1724.399800000001,
+      "maxMs": 1724.399800000001
+    },
+    "health": {
+      "samples": 60,
+      "minMs": 6.612300000007963,
+      "medianMs": 8.227699999988545,
+      "p95Ms": 13.877199999988079,
+      "maxMs": 15.664300000004005
+    },
+    "movementWire": {
+      "samples": 32,
+      "minMs": 26.948099999994156,
+      "medianMs": 38.114300000015646,
+      "p95Ms": 44.292099999998754,
+      "maxMs": 67.6704000000027
+    }
+  }
+}

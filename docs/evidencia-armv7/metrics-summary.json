@@ -1,0 +1,44 @@
+{
+  "samples": 395,
+  "monitorSeconds": 445.382,
+  "processGenerations": 2,
+  "rssMaxMiB": 95.171875,
+  "rssLastMiB": 68.24609375,
+  "availableMinMiB": 458.90625,
+  "tempMinC": 56.92,
+  "tempMaxC": 60.686,
+  "cpuUserSeconds": 30.72,
+  "cpuSystemSeconds": 1.1099999999999999,
+  "allServicesUnchanged": true,
+  "serviceChecks": 79,
+  "web": {
+    "heavensgate": {
+      "samples": 79,
+      "codes": [
+        "200"
+      ],
+      "medianMs": 118.801,
+      "p95Ms": 142.487,
+      "maxMs": 156.42000000000002
+    },
+    "forum": {
+      "samples": 79,
+      "codes": [
+        "200"
+      ],
+      "medianMs": 124.84299999999999,
+      "p95Ms": 154.79999999999998,
+      "maxMs": 172.08499999999998
+    },
+    "proxy": {
+      "samples": 79,
+      "codes": [
+        "404"
+      ],
+      "medianMs": 41.628,
+      "p95Ms": 50.378,
+      "maxMs": 57.567
+    }
+  },
+  "cpuMeanOneCorePercent": 7.146674091005025
+}

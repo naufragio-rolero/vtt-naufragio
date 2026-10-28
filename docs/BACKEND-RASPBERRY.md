@@ -6,7 +6,7 @@
 >
 > Destinatario: Codex trabajando sobre un clon del repositorio en Windows y conectado a la Raspberry por SSH.
 
-> **28 de octubre de 2026:** repetidas las 93 pruebas en Node 22/24 y la integración real Firefox/Edge; se añade construcción de `dist/` público. El piloto de tres clientes ARMv7 se detiene antes de transferir o arrancar procesos porque SSH deniega forwarding al puerto dedicado. [Informe, scripts y condiciones para continuar](PILOTO-PRIVADO-RASPBERRY.md). No hay despliegue ni cambios en servicios.
+> **28 de octubre de 2026:** construcción de `dist/` y pruebas Windows; después de diagnosticar y autorizar expresamente la excepción SSH, piloto real ARMv7 con tres navegadores, cinco minutos de estabilidad y recuperación tras reinicio del backend. Limpieza remota y rollback SSH completos. [Informe, métricas, scripts y límites](PILOTO-PRIVADO-RASPBERRY.md). No hay backend público ni instalación permanente; Apache y demás servicios sin cambios.
 >
 > **Esta guía es de preparación, no una orden de desplegar automáticamente.** La Raspberry es nuestra instalación piloto, **no una dependencia del VTT**. Antes de desplegar en cualquier máquina, hay que inspeccionar sus servicios y confirmar las decisiones dependientes del entorno.
 
