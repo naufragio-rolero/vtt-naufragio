@@ -2,6 +2,7 @@ import { createLimiter } from '../limits.js';
 import { fields } from '../auth/validation.js';
 import { HttpError } from '../errors.js';
 import { createTokenSync } from './token-sync.js';
+import { createAssetRelay } from './assets.js';
 
 export function attachRoomPresence(io, auth, rooms, config, { clock = Date.now, reportError = () => {}, store } = {}) {
   const namespace = io.of('/');
@@ -13,6 +14,7 @@ export function attachRoomPresence(io, auth, rooms, config, { clock = Date.now, 
   let dirty = false;
   const channel = roomId => `party:${roomId}`;
   const game = createTokenSync({ store, rooms, namespace, clock, onStatusChange: safeRefresh });
+  const assets = createAssetRelay({ namespace, rooms, game, clock });
 
   function snapshot(roomId) {
     const people = new Map();
@@ -41,6 +43,7 @@ export function attachRoomPresence(io, auth, rooms, config, { clock = Date.now, 
           catch { socket.disconnect(true); }
         }
         game.refresh();
+        assets.refresh();
         for (const roomId of knownRooms) {
           const value = snapshot(roomId);
           if (!value.participants.length) { knownRooms.delete(roomId); lastPresence.delete(roomId); }
@@ -91,6 +94,7 @@ export function attachRoomPresence(io, auth, rooms, config, { clock = Date.now, 
     socket.on('disconnect', () => {
       clearTimeout(expiryTimers.get(socket.id));
       expiryTimers.delete(socket.id);
+      assets.disconnected(socket);
       game.disconnected(socket);
       safeRefresh();
     });
@@ -99,14 +103,18 @@ export function attachRoomPresence(io, auth, rooms, config, { clock = Date.now, 
     deadline.unref();
     expiryTimers.set(socket.id, deadline);
     const accept = createLimiter(config.eventRateLimit, config.rateWindowMs, { clock });
+    const mediaAccept = createLimiter(2400, config.rateWindowMs, { clock });
     socket.onAny((event, ...args) => {
       const ack = typeof args.at(-1) === 'function' ? args.pop() : () => {};
       try {
         socket.data.access = rooms.access(socket.data.token, roomId);
-        if (!accept(socket.id)) throw new HttpError(429, 'RATE_LIMITED');
-        if (event !== 'room:presence:get' && !game.handles(event)) throw new HttpError(400, 'EVENT_NOT_AVAILABLE');
+        // Asset fragments have separate, strictly bounded capacity and backpressure.
+        const mediaEvent = event === 'assets:chunk';
+        if (! (mediaEvent ? mediaAccept(socket.id) : accept(socket.id))) throw new HttpError(429, 'RATE_LIMITED');
+        if (event !== 'room:presence:get' && !game.handles(event) && !assets.handles(event)) throw new HttpError(400, 'EVENT_NOT_AVAILABLE');
         if (args.length !== 1) throw new HttpError(400, 'INVALID_MESSAGE');
         if (game.handles(event)) { ack({ ok: true, ...game.handle(socket, event, args[0]) }); return; }
+        if (assets.handles(event)) { ack({ ok: true, ...assets.handle(socket, event, args[0]) }); return; }
         fields(args[0], ['version']);
         if (args[0].version !== 1) throw new HttpError(400, 'INVALID_MESSAGE');
         refresh();
@@ -119,6 +127,7 @@ export function attachRoomPresence(io, auth, rooms, config, { clock = Date.now, 
     safeRefresh();
     if (socket.connected) socket.emit('room:presence', snapshot(roomId));
     if (socket.connected) game.connected(socket);
+    if (socket.connected) assets.connected(socket);
   });
   const offAuth = auth.onChanged(safeRefresh);
   const offRooms = rooms.onChanged(safeRefresh);
@@ -129,6 +138,7 @@ export function attachRoomPresence(io, auth, rooms, config, { clock = Date.now, 
     refresh: safeRefresh,
     stop() {
       stopped = true;
+      assets.stop();
       game.stop();
       clearInterval(sweep);
       offAuth();
