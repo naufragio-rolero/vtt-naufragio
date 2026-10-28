@@ -3,7 +3,8 @@ import { HttpError } from '../errors.js';
 
 // Relay-only media. No image buffers, coordinates, manifests or game assets in SQLite.
 // At most one outstanding chunk per transfer (receiver acknowledgement is backpressure).
-const CHUNK = 8192;
+// 32 KiB stays below the 64 KiB Socket.IO frame limit after base64 encoding.
+const CHUNK = 32768;
 const MAX_MAP = 12 * 1024 * 1024;
 const MAX_TOKEN = 2 * 1024 * 1024;
 const MAX_TRANSFERS = 4;
@@ -126,14 +127,14 @@ export function createAssetRelay({ namespace, rooms, game, clock = Date.now }) {
         typeof input.data !== 'string' || input.data.length > Math.ceil(CHUNK / 3) * 4 + 4 ||
         !/^[A-Za-z0-9+/]+={0,2}$/.test(input.data)) bad('INVALID_MESSAGE');
     const t = transfers.get(input.transferId);
-    if (!t || t.owner !== socket.id || t.busy) bad('TRANSFER_NOT_FOUND', 404);
+    if (!t || t.owner !== socket.id || t.busy) bad('TRANSFER_NOT_FOUND', 409);
     const data = Buffer.from(input.data, 'base64');
     if (!data.length || data.length > CHUNK || data.toString('base64') !== input.data ||
         input.offset !== t.received || t.received + data.length > t.asset.bytes) {
       clean(input.transferId, 'INVALID_CHUNK'); bad('INVALID_CHUNK');
     }
     const recipient = namespace.sockets.get(t.receiver);
-    if (!recipient?.connected) { clean(input.transferId); bad('TRANSFER_NOT_FOUND', 404); }
+    if (!recipient?.connected) { clean(input.transferId); bad('TRANSFER_NOT_FOUND', 409); }
     try { access(recipient); } catch { clean(input.transferId); bad('ROOM_ACCESS_DENIED', 403); }
     t.busy = true;
     // Acknowledge upstream only after downstream consumed this fragment.
@@ -156,7 +157,7 @@ export function createAssetRelay({ namespace, rooms, game, clock = Date.now }) {
     if (!exact(input, ['version', 'roomId', 'epoch', 'transferId']) ||
       input.version !== 1 || input.roomId !== socket.data.roomId || input.epoch !== epoch || !uuid(input.transferId)) bad('INVALID_MESSAGE');
     const t = transfers.get(input.transferId);
-    if (!t || t.owner !== socket.id || t.busy) bad('TRANSFER_NOT_FOUND', 404);
+    if (!t || t.owner !== socket.id || t.busy) bad('TRANSFER_NOT_FOUND', 409);
     if (t.received !== t.asset.bytes || t.digest.digest('hex') !== t.asset.sha256) {
       clean(input.transferId, 'HASH_MISMATCH'); bad('HASH_MISMATCH', 409);
     }
