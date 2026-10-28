@@ -66,9 +66,9 @@ test('relay rejects malformed chunks and refuses unauthorized rooms without writ
   const player = await connect(rawSocket(t, f, f.member));
   const content = manifest(f.created.room.id, state.epoch, state.record.current.tokens[0].id);
   await send(director, 'assets:publish', content);
-  assert.equal((await send(player, 'assets:request', { epoch: state.epoch, revision: 1, assetId: 'secret' })).error?.code, 'ASSET_NOT_FOUND');
   const start = await send(player, 'assets:request', { epoch: state.epoch, revision: 1, assetId: 'map' });
   assert.equal((await send(director, 'assets:chunk', { epoch: state.epoch, transferId: start.transferId,
     offset: 1, data: sample.toString('base64') })).error?.code, 'INVALID_CHUNK');
   assert.equal((await send(director, 'assets:finish', { epoch: state.epoch, transferId: start.transferId })).error?.code, 'TRANSFER_NOT_FOUND');
+  assert.equal((await send(player, 'assets:request', { epoch: state.epoch, revision: 1, assetId: 'secret' })).error?.code, 'ASSET_NOT_FOUND');
 });
