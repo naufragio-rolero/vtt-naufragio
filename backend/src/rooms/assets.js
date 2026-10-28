@@ -106,8 +106,8 @@ export function createAssetRelay({ namespace, rooms, game, clock = Date.now }) {
     if (!session || session.manifest.epoch !== epoch || session.manifest.revision !== input.revision) bad('ASSETS_NOT_READY', 409);
     const asset = session.manifest.assets.find(a => a.id === input.assetId);
     if (!asset) bad('ASSET_NOT_FOUND', 404);
-    if ([...transfers.values()].some(t => t.receiver === socket.id) || transfers.size >= 8) bad('TRANSFER_BUSY', 429);
-    if ([...transfers.values()].filter(t => t.roomId === socket.data.roomId).length >= MAX_TRANSFERS) bad('TRANSFER_BUSY', 429);
+    if ([...transfers.values()].some(t => t.receiver === socket.id) || transfers.size >= 8) bad('TRANSFER_BUSY', 409);
+    if ([...transfers.values()].filter(t => t.roomId === socket.data.roomId).length >= MAX_TRANSFERS) bad('TRANSFER_BUSY', 409);
     const sender = namespace.sockets.get(session.owner);
     if (!sender?.connected || !game.isDirectorSocket(socket.data.roomId, sender)) bad('DIRECTOR_NOT_READY', 409);
     const transferId = randomUUID();
