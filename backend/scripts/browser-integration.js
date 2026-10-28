@@ -190,6 +190,21 @@ async function scenario(directorBrowser, playerBrowser, basePath, prefix) {
       await director.locator('#assignForm button').click();
       await director.waitForFunction(() => document.getElementById('multiplayerStatus').textContent.startsWith('Asignación guardada'));
     }
+    stage = `${basePath} active public map and portrait transfer`;
+    for (const page of pages) {
+      await page.waitForFunction(() => window.NaufragioBoard.sharedView()?.map?.name === 'Mapa legado sintético', null, { timeout: 30000 });
+    }
+    assert.equal(await one.locator('#sharedMediaEditor').isVisible(), false);
+    const image = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aK6kAAAAASUVORK5CYII=', 'base64');
+    await director.selectOption('#assignedToken', starting[0].id);
+    await director.setInputFiles('#sharedTokenUpload', { name: 'retrato-publico.png', mimeType: 'image/png', buffer: image });
+    for (const page of pages) {
+      await page.waitForFunction(id => window.NaufragioBoard.sharedView()?.portraits.includes(id), starting[0].id, { timeout: 30000 });
+    }
+    await director.setInputFiles('#sharedMapUpload', { name: 'nuevo-mapa.png', mimeType: 'image/png', buffer: image });
+    for (const page of pages) {
+      await page.waitForFunction(() => window.NaufragioBoard.sharedView()?.map?.name === 'nuevo-mapa.png', null, { timeout: 30000 });
+    }
     await closePanel(director);
     stage = `${basePath} canvas movement and convergence`;
     await moveCanvas(one, starting[0].id, 1, 0);
@@ -227,6 +242,10 @@ async function scenario(directorBrowser, playerBrowser, basePath, prefix) {
     await login(director, accounts[0].username, passwords[1]); await director.getByRole('button', { name: 'Abrir Partida de aceptación', exact: true }).click();
     await director.waitForFunction(() => document.getElementById('roomState').textContent.startsWith('Partida conectada'));
     await same(pages, confirmed);
+    for (const page of pages) {
+      await page.waitForFunction(id => window.NaufragioBoard.sharedView()?.map?.name === 'nuevo-mapa.png' &&
+        window.NaufragioBoard.sharedView()?.portraits.includes(id), starting[0].id, { timeout: 30000 });
+    }
     stage = `${basePath} second tab Web Lock`;
     const duplicate = await contexts[0].newPage(); duplicate.setDefaultTimeout(20000); await duplicate.goto(url);
     await login(duplicate, accounts[0].username, passwords[1]); await duplicate.getByRole('button', { name: 'Abrir Partida de aceptación', exact: true }).click();
