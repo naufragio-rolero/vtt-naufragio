@@ -1,6 +1,8 @@
 import { validateSiteConfig } from '../backend/public/site-config.js';
 import { createTokenClient } from '../backend/client/token-client.js';
 import { createIndexedDbStore } from '../backend/client/indexeddb-store.js';
+import { createAssetClient } from '../backend/client/asset-client.js';
+import { createRoomMediaStore } from './room-media-store.js';
 import { io } from './vendor/socket.io-4.8.4.esm.min.js';
 import { initialRoomTokens, publicTokens, socketDestination } from './board-model.js';
 
@@ -11,6 +13,7 @@ const CONFIG_KEY = 'naufragio-vtt-public-config-v1';
 const localHost = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
 let config = null, session = null, room = null, socket = null, client = null, storage = null, expiry = null;
 let rights = null, members = [], pending = new Map(), generation = 0, validatedSignup = null;
+let assetClient = null, mediaStore = null, mediaSource = null, lastPublishedEpoch = null;
 const errors = {
   INVALID_CREDENTIALS: 'Usuario o contraseña incorrectos.', INVALID_INVITATION: 'Invitación de alta caducada, usada, revocada o inválida.',
   ROOM_ACCESS_DENIED: 'No tienes autorización o el código de sala no es válido.', FORBIDDEN: 'No tienes permiso para esta operación.',
@@ -20,7 +23,9 @@ const errors = {
   TOKEN_BUSY: 'Otro movimiento de este token está pendiente. Inténtalo tras la confirmación.', STALE_MOVE: 'Ha cambiado el estado. Espera la sincronización y vuelve a intentarlo.',
   UNAUTHENTICATED: 'La sesión ha caducado o ha sido revocada. Inicia sesión de nuevo.', RATE_LIMITED: 'Se ha alcanzado el límite de mensajes. Espera antes de reconectar.',
   INVALID_INPUT: 'Revisa los campos y la política de contraseña (15–128 caracteres).', DESTINATION_REQUIRED: 'Configura y confirma los destinos antes de enviar credenciales.',
-  PERMISSION_REVOKED: 'El movimiento se rechazó porque se retiró el permiso.', DIRECTOR_DISCONNECTED: 'Movimiento cancelado: el director se ha desconectado.'
+  PERMISSION_REVOKED: 'El movimiento se rechazó porque se retiró el permiso.', DIRECTOR_DISCONNECTED: 'Movimiento cancelado: el director se ha desconectado.',
+  ASSET_MANIFEST_INVALID: 'Los metadatos de imágenes no son válidos.', TRANSFER_INTERRUPTED: 'Transferencia interrumpida; reconecta para repetirla.',
+  HASH_MISMATCH: 'La imagen no coincide con SHA-256.', TRANSFER_BUSY: 'Hay demasiadas transferencias.', ASSET_SOURCE_MISMATCH: 'La imagen del director no coincide con lo publicado.'
 };
 function status(message, error = false) {
   get('multiplayerStatus').textContent = message; get('multiplayerStatus').dataset.error = String(error);
@@ -76,6 +81,7 @@ function roomView() {
   get('currentRoomName').textContent = room.room.name;
   get('currentRoom').dataset.roomId = room.room.id;
   get('assignForm').querySelector('button').disabled = !ready || !room.isOwner;
+  get('sharedMediaEditor').hidden = !room.isOwner;
 }
 function canMove(id) {
   return Boolean(room && client?.state.ready && client.state.snapshot && socket?.connected && pending.size === 0 && rights &&
@@ -91,6 +97,7 @@ async function move(id, point) {
 }
 async function leave() {
   generation++; const old = client, oldStorage = storage;
+  assetClient?.close(); assetClient = null; mediaStore = null; mediaSource = null; lastPublishedEpoch = null;
   client = null; socket?.disconnect(); socket = null; storage = null; room = null; rights = null; pending.clear(); members = [];
   if (old) { old.close(); await old.settled(); }
   oldStorage?.close(); board.exitShared();
@@ -101,8 +108,32 @@ async function clearSession(revoke = true) {
   try { if (revoke && session) await api('/auth/logout', { method: 'POST', body: {} }); }
   finally { session = null; clearTimeout(expiry); get('signupOutput').value = ''; get('roomCode').value = ''; get('roomList').replaceChildren(); sessionView(); }
 }
-async function enter(selected, initialTokens, admissionCode) {
+async function publishMedia() {
+  if (!room?.isOwner || !mediaSource || !assetClient?.epoch || !client?.state.ready) return;
+  await assetClient.publish(mediaSource);
+  lastPublishedEpoch = assetClient.epoch;
+  status('Mapa y recursos públicos compartidos.');
+}
+function genericMedia(tokens) {
+  const colors = ['#85dcd2', '#e7c47e', '#dd8e88', '#a6a1e9', '#a8c984', '#90b7e7'];
+  return { map: null, tokens: tokens.map((token, index) => ({
+    id: token.id, name: 'Token ' + (index + 1), color: colors[index % colors.length], size: 1, imageId: null
+  })), files: {} };
+}
+async function saveMedia() {
+  if (!room?.isOwner || !mediaStore || !mediaSource) throw new Error('FORBIDDEN');
+  await mediaStore.save(mediaSource);
+  await publishMedia();
+}
+async function prepareMedia(selected, initialMedia) {
+  if (!selected.isOwner) return;
+  mediaStore = createRoomMediaStore(config.apiBaseUrl + '|' + session.user.id + '|' + selected.room.id);
+  mediaSource = initialMedia || await mediaStore.load();
+  if (initialMedia) await mediaStore.save(initialMedia);
+}
+async function enter(selected, initialTokens, admissionCode, initialMedia) {
   await leave(); room = selected;
+  await prepareMedia(selected, initialMedia);
   const current = ++generation;
   board.enterShared({ canMove, move, identityName: session.user.username, roleLabel: config.roleLabels[session.user.role] });
   const destination = socketDestination(config);
@@ -113,10 +144,32 @@ async function enter(selected, initialTokens, admissionCode) {
   client = createTokenClient(live, { roomId: room.room.id, director: room.isOwner, store: storage, initialTokens,
     onChange: value => {
       if (current !== generation) return;
-      if (value.snapshot) board.applyShared(publicTokens(value.snapshot));
+      if (value.snapshot) {
+        board.applyShared(publicTokens(value.snapshot));
+        if (room?.isOwner && !mediaSource) {
+          mediaSource = genericMedia(publicTokens(value.snapshot));
+          void saveMedia().catch(error => status(describe(error), true));
+        }
+        if (room?.isOwner && value.ready && assetClient?.epoch === value.epoch &&
+            lastPublishedEpoch !== value.epoch && mediaSource) {
+          void publishMedia().catch(error => status(describe(error), true));
+        }
+      }
       if (value.error) status(describe(new Error(value.error)), true);
       fillTokens(); roomView();
     } });
+  assetClient = createAssetClient(live, {
+    roomId: room.room.id, director: room.isOwner, getSource: async id => mediaSource?.files?.[id] || null,
+    onUpdate: value => { if (current === generation) void board.applySharedResources(value); },
+    onError: error => { if (current === generation) status(describe(new Error(error)), true); }
+  });
+  live.on('room:authority', value => {
+    if (current !== generation || !room?.isOwner || !mediaSource || value.state !== 'active') return;
+    setTimeout(() => {
+      if (current === generation && assetClient?.epoch === value.epoch && client?.state.ready &&
+          lastPublishedEpoch !== value.epoch) void publishMedia().catch(error => status(describe(error), true));
+    }, 0);
+  });
   live.on('tokens:permissions', value => { if (current === generation) { rights = value.permissions; fillAssignments(); roomView(); } });
   live.on('room:presence', value => {
     if (current !== generation) return;
@@ -222,9 +275,21 @@ action('createDirectorForm', 'submit', async () => {
   status('Perfil de dirección creado. Comunica sus credenciales por un canal privado.');
 });
 action('createRoomForm', 'submit', async () => {
-  const tokens = initialRoomTokens(board.localTokens());
+  const local = await board.localResources();
+  const tokens = initialRoomTokens(local.tokens);
+  const media = {
+    map: local.map ? { ...local.map, imageId: 'map' } : null,
+    tokens: local.tokens.map((token, index) => ({
+      id: tokens[index].id, name: (token.name || token.code || ('Token ' + (index + 1))).slice(0, 64),
+      color: /^#[0-9a-fA-F]{6}$/.test(token.color) ? token.color : '#85dcd2',
+      size: 1, imageId: null
+    })),
+    files: local.map && local.blob ? { map: local.blob } : {}
+  };
   const created = await api('/rooms', { method: 'POST', body: { name: get('roomName').value } });
-  const selected = await api(`/rooms/${created.room.id}`); await enter(selected, tokens, created.admissionCode); await refreshRooms();
+  const selected = await api('/rooms/' + created.room.id);
+  await enter(selected, tokens, created.admissionCode, media);
+  await refreshRooms();
 });
 action('joinRoomForm', 'submit', async () => { const selected = await api('/rooms/join', { method: 'POST', body: { code: get('roomCode').value } }); get('roomCode').value = ''; await enter(selected); await refreshRooms(); });
 action('refreshRooms', 'click', refreshRooms);
