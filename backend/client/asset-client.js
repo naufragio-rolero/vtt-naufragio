@@ -125,9 +125,16 @@ export function createAssetClient(socket, { roomId, director = false, getSource 
           pending.set(key, { resolve, reject });
           setTimeout(() => { if (pending.has(key)) { pending.delete(key); reject(new Error('TRANSFER_TIMEOUT')); } }, 12000);
         });
-        const response = await command('assets:chunk', { epoch, transferId, offset, data: toBase64(bytes) });
-        if (!response.pending) throw new Error('INVALID_CHUNK_ACK');
-        await acknowledged;
+        try {
+          const response = await command('assets:chunk', { epoch, transferId, offset, data: toBase64(bytes) });
+          if (!response.pending) throw new Error('INVALID_CHUNK_ACK');
+          await acknowledged;
+        } catch (error) {
+          // If the command itself fails, do not leave a rejected ack promise unobserved.
+          pending.get(key)?.resolve();
+          pending.delete(key);
+          throw error;
+        }
       }
       await command('assets:finish', { epoch, transferId: message.transferId });
     } catch (error) { fail(error); }
