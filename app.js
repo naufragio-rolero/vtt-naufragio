@@ -95,6 +95,8 @@
   let sharedMode = false;
   let localBackup = null;
   let multiplayer = null;
+  let sharedVisuals = new Map();
+  let sharedTokenImages = new Map();
   const editable = () => !sharedMode;
   const canMove = tokenId => !sharedMode || Boolean(multiplayer?.canMove(tokenId));
 
@@ -521,7 +523,7 @@
       context.globalAlpha = 0.55;
     } else context.globalAlpha = 1;
     const point = worldToScreen((token.x + 0.5) * state.cellSize, (token.y + 0.5) * state.cellSize);
-    const radius = state.cellSize * state.zoom * 0.34;
+    const radius = state.cellSize * state.zoom * 0.34 * (sharedMode ? clamp(token.size || 1, 0.25, 4) : 1);
     const selected = selectedId === token.id;
     context.save();
     context.shadowColor = "rgba(0,0,0,.5)";
@@ -549,6 +551,13 @@
     context.beginPath();
     context.arc(point.x, point.y, radius, 0, Math.PI * 2);
     context.fill();
+    const tokenImage = sharedMode && sharedTokenImages.get(token.id);
+    if (tokenImage) {
+      context.save();
+      context.beginPath(); context.arc(point.x, point.y, radius - 1, 0, Math.PI * 2); context.clip();
+      context.drawImage(tokenImage, point.x - radius, point.y - radius, radius * 2, radius * 2);
+      context.restore();
+    }
     context.lineWidth = selected ? 3 : 2;
     context.strokeStyle = selected ? "#c6fff0" : "rgba(241,249,255,.7)";
     context.stroke();
@@ -557,7 +566,7 @@
     context.font = "800 " + clamp(radius * 0.72, 10, 23) + "px system-ui, sans-serif";
     context.textAlign = "center";
     context.textBaseline = "middle";
-    context.fillText(token.code, point.x, point.y + 1, radius * 1.6);
+    if (!tokenImage) context.fillText(token.code, point.x, point.y + 1, radius * 1.6);
 
     if (selected) {
       const label = token.name || token.code;
@@ -612,7 +621,7 @@
     const radius = state.cellSize * state.zoom * 0.34 + 7;
     for (const token of [...state.tokens].reverse()) {
       const screen = worldToScreen((token.x + .5) * state.cellSize, (token.y + .5) * state.cellSize);
-      if (Math.hypot(screen.x - point.x, screen.y - point.y) <= radius) return token;
+      if (Math.hypot(screen.x - point.x, screen.y - point.y) <= radius * (sharedMode ? clamp(token.size || 1, 0.25, 4) : 1)) return token;
     }
     return null;
   }
@@ -1011,24 +1020,67 @@
   void restoreMapImage();
   window.NaufragioBoard = Object.freeze({
     localTokens: () => structuredClone((localBackup || state).tokens),
+    async localResources() {
+      if (sharedMode) throw new Error("LOCAL_BOARD_REQUIRED");
+      const map = state.map ? structuredClone(state.map) : null;
+      const blob = map ? await assetRequest("get") : null;
+      return { map: map && blob instanceof Blob ? map : null, blob: blob instanceof Blob ? blob : null,
+        tokens: structuredClone(state.tokens) };
+    },
     tokens: () => structuredClone(state.tokens),
     notify: showToast,
     enterShared(callbacks) {
       if (!sharedMode) localBackup = structuredClone(state);
       sharedMode = true; multiplayer = callbacks; mapLoadGeneration++; mapEditMode = null;
+      mapImage = null; sharedVisuals.clear(); sharedTokenImages.clear();
       state.map = null; state.tokens = []; selectedId = null; drag = null;
       document.body.dataset.mode = "shared"; refreshControls();
     },
     applyShared(tokens) {
       if (!sharedMode) return;
-      state.tokens = structuredClone(tokens); drag = null;
+      state.tokens = structuredClone(tokens).map(token => ({ ...token, ...(sharedVisuals.get(token.id) || {}) })); drag = null;
       canvas.classList.remove("dragging");
       if (!state.tokens.some(token => token.id === selectedId)) selectedId = null;
       refreshTokenList(); refreshSelectionEditor(); draw();
     },
+    async applySharedResources(data) {
+      if (!sharedMode) return;
+      const version = ++mapLoadGeneration;
+      const visuals = new Map(data.manifest?.tokens?.map(token => [token.id, {
+        name: token.name, color: token.color, size: token.size
+      }]) || []);
+      sharedVisuals = visuals;
+      state.tokens = state.tokens.map(token => ({ ...token, ...(visuals.get(token.id) || {}) }));
+      sharedTokenImages.clear(); state.map = null; mapImage = null;
+      const blobs = data.blobs || new Map();
+      for (const item of data.manifest?.tokens || []) {
+        const blob = item.imageId && blobs.get(item.imageId);
+        if (!blob) continue;
+        try {
+          const image = await decodeMapImage(blob);
+          if (version !== mapLoadGeneration || !sharedMode) return;
+          if (imageIsWithinLimits(image)) sharedTokenImages.set(item.id, image);
+        } catch { /* Unusable remote image stays hidden; never draw unverified bytes. */ }
+      }
+      const sourceMap = data.manifest?.map;
+      if (sourceMap && blobs.get('map')) {
+        try {
+          const image = await decodeMapImage(blobs.get('map'));
+          if (version !== mapLoadGeneration || !sharedMode) return;
+          if (imageIsWithinLimits(image) && image.naturalWidth === sourceMap.widthPx &&
+              image.naturalHeight === sourceMap.heightPx) {
+            state.map = structuredClone(sourceMap);
+            mapImage = image;
+          }
+        } catch { /* A malformed image cannot become the active map. */ }
+      }
+      if (version !== mapLoadGeneration || !sharedMode) return;
+      refreshMapControls(); refreshTokenList(); draw();
+    },
     exitShared() {
       if (!sharedMode) return;
-      sharedMode = false; multiplayer = null; Object.assign(state, localBackup); localBackup = null;
+      sharedMode = false; multiplayer = null; sharedVisuals.clear(); sharedTokenImages.clear(); mapImage = null;
+      Object.assign(state, localBackup); localBackup = null;
       mapLoadGeneration++; selectedId = null; drag = null; document.body.dataset.mode = "local";
       canvas.classList.remove("dragging"); refreshControls(); void restoreMapImage();
     }
