@@ -75,7 +75,7 @@ async function localOnly(engine) {
     await page.click('#addToken'); assert.equal((await tokens(page)).length, 5);
     page.on('dialog', dialog => dialog.accept()); await page.click('#deleteToken'); assert.equal((await tokens(page)).length, 4);
     await page.setInputFiles('#mapUpload', { name: 'mapa-local-sintetico.png', mimeType: 'image/png',
-      buffer: Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aK6kAAAAASUVORK5CYII=', 'base64') });
+      buffer: Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGPQXRT9HwAEVAIq3G2ZNgAAAABJRU5ErkJggg==', 'base64') });
     await page.waitForFunction(() => document.getElementById('mapFilename').textContent === 'mapa-local-sintetico.png');
     await page.reload(); await page.waitForFunction(() => window.NaufragioBoard && document.documentElement.dataset.theme === 'dark');
     assert.equal((await tokens(page)).length, 4);
@@ -126,7 +126,7 @@ async function scenario(directorBrowser, playerBrowser, basePath, prefix) {
         widthCells: 20, heightCells: 20, xCells: -10, yCells: -10 } };
     await director.evaluate(async legacy => {
       localStorage.setItem('naufragio-vtt-mvp-v1', JSON.stringify(legacy));
-      const blob = await (await fetch('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aK6kAAAAASUVORK5CYII=')).blob();
+      const blob = await (await fetch('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGPQXRT9HwAEVAIq3G2ZNgAAAABJRU5ErkJggg==')).blob();
       await new Promise((resolve, reject) => {
         const opening = indexedDB.open('naufragio-vtt-local-assets', 1);
         opening.onupgradeneeded = () => opening.result.createObjectStore('media');
@@ -195,7 +195,7 @@ async function scenario(directorBrowser, playerBrowser, basePath, prefix) {
       await page.waitForFunction(() => window.NaufragioBoard.sharedView()?.map?.name === 'Mapa legado sintético', null, { timeout: 30000 });
     }
     assert.equal(await one.locator('#sharedMediaEditor').isVisible(), false);
-    const image = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aK6kAAAAASUVORK5CYII=', 'base64');
+    const image = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGPQXRT9HwAEVAIq3G2ZNgAAAABJRU5ErkJggg==', 'base64');
     await director.selectOption('#assignedToken', starting[0].id);
     await director.setInputFiles('#sharedTokenUpload', { name: 'retrato-publico.png', mimeType: 'image/png', buffer: image });
     for (const page of pages) {
