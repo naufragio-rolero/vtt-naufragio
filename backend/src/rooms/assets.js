@@ -7,6 +7,7 @@ const CHUNK = 8192;
 const MAX_MAP = 12 * 1024 * 1024;
 const MAX_TOKEN = 2 * 1024 * 1024;
 const MAX_TRANSFERS = 4;
+const MAX_TOTAL = 24 * 1024 * 1024;
 const TIMEOUT = 15000;
 const bad = (code, status = 400) => { throw new HttpError(status, code); };
 const hex = value => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value);
@@ -45,6 +46,7 @@ function validateManifest(value) {
     assetIds.add(item.id);
     return { ...item };
   });
+  if (assets.reduce((total, item) => total + item.bytes, 0) > MAX_TOTAL) bad('ASSET_MANIFEST_INVALID');
   if (Boolean(value.map) !== assetIds.has('map') ||
       tokens.some(token => token.imageId && !assetIds.has(token.imageId)) ||
       [...assetIds].some(id => id !== 'map' && !tokenIds.has(id.slice(6)))) bad('ASSET_MANIFEST_INVALID');
@@ -104,7 +106,7 @@ export function createAssetRelay({ namespace, rooms, game, clock = Date.now }) {
     if (!session || session.manifest.epoch !== epoch || session.manifest.revision !== input.revision) bad('ASSETS_NOT_READY', 409);
     const asset = session.manifest.assets.find(a => a.id === input.assetId);
     if (!asset) bad('ASSET_NOT_FOUND', 404);
-    if ([...transfers.values()].some(t => t.receiver === socket.id)) bad('TRANSFER_BUSY', 429);
+    if ([...transfers.values()].some(t => t.receiver === socket.id) || transfers.size >= 8) bad('TRANSFER_BUSY', 429);
     if ([...transfers.values()].filter(t => t.roomId === socket.data.roomId).length >= MAX_TRANSFERS) bad('TRANSFER_BUSY', 429);
     const sender = namespace.sockets.get(session.owner);
     if (!sender?.connected || !game.isDirectorSocket(socket.data.roomId, sender)) bad('DIRECTOR_NOT_READY', 409);
