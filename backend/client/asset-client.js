@@ -55,7 +55,15 @@ export function createAssetClient(socket, { roomId, director = false, getSource 
       if (received.has(asset.id)) continue;
       incoming.set(asset.id, { asset, chunks: [], offset: 0, transferId: null });
       try {
-        const result = await command('assets:request', { epoch, revision, assetId: asset.id });
+        let result;
+        for (let attempt = 0; attempt < 90 && !stopped && version === generation; attempt++) {
+          try { result = await command('assets:request', { epoch, revision, assetId: asset.id }); break; }
+          catch (error) {
+            if (error.message !== 'TRANSFER_BUSY') throw error;
+            await new Promise(resolve => setTimeout(resolve, 1000));
+          }
+        }
+        if (!result) throw new Error('TRANSFER_BUSY');
         const entry = incoming.get(asset.id);
         if (entry) entry.transferId = result.transferId;
         // assets:finished may arrive before the request's ack; handled by the
@@ -65,7 +73,7 @@ export function createAssetClient(socket, { roomId, director = false, getSource 
           pending.set(key, { resolve, reject });
           const entry = incoming.get(asset.id);
           if (entry?.finished) { pending.delete(key); entry.finished === true ? resolve() : reject(new Error(entry.finished)); }
-          setTimeout(() => { if (pending.has(key)) { pending.delete(key); reject(new Error('TRANSFER_TIMEOUT')); } }, 90000);
+          setTimeout(() => { if (pending.has(key)) { pending.delete(key); reject(new Error('TRANSFER_TIMEOUT')); } }, 600000);
         });
       } catch (error) { fail(error); }
       finally { incoming.delete(asset.id); }
