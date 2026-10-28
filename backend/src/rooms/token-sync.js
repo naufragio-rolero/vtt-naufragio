@@ -272,6 +272,9 @@ export function createTokenSync({ store, rooms, namespace, clock = Date.now, onS
     'token:assign': assign, 'tokens:sync:request': syncRequest, 'tokens:sync:provide': syncProvide };
   return {
     isReady(roomId) { return Boolean(runtime.get(roomId)?.epoch); },
+    authorityEpoch(roomId) { return runtime.get(roomId)?.epoch ?? null; },
+    isDirectorSocket(roomId, socket) { const state = runtime.get(roomId); return Boolean(state?.epoch && state.owner === socket?.id); },
+    tokenIds(roomId) { return [...(runtime.get(roomId)?.tokens.keys() ?? [])]; },
     handles(event) { return Object.hasOwn(handlers, event); },
     handle(socket, event, input) {
       try { return handlers[event](socket, input); }
