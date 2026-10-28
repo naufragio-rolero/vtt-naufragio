@@ -8,9 +8,11 @@ const sourceRoot = fileURLToPath(new URL('../../', import.meta.url));
 export const publicFiles = Object.freeze([
   ['index.html', 'index.html'], ['app.js', 'app.js'], ['styles.css', 'styles.css'],
   ['frontend/multiplayer.js', 'frontend/multiplayer.js'], ['frontend/board-model.js', 'frontend/board-model.js'],
+  ['frontend/room-media-store.js', 'frontend/room-media-store.js'],
   ['frontend/vendor/socket.io-4.8.4.esm.min.js', 'frontend/vendor/socket.io-4.8.4.esm.min.js'],
   ['frontend/vendor/socket.io-LICENSE.txt', 'frontend/vendor/socket.io-LICENSE.txt'],
-  ['backend/client/token-client.js', 'client/token-client.js'], ['backend/client/indexeddb-store.js', 'client/indexeddb-store.js'],
+  ['backend/client/token-client.js', 'client/token-client.js'], ['backend/client/asset-client.js', 'client/asset-client.js'],
+  ['backend/client/indexeddb-store.js', 'client/indexeddb-store.js'],
   ['backend/shared/token-state.js', 'shared/token-state.js'],
   ...['settings.html', 'settings.js', 'settings.css', 'site-config.js', 'site.config.example.json', 'site.config.schema.json']
     .map(name => [`backend/public/${name}`, `settings/${name}`])
