@@ -1028,6 +1028,7 @@
         tokens: structuredClone(state.tokens) };
     },
     tokens: () => structuredClone(state.tokens),
+    sharedView: () => sharedMode ? { map: state.map && structuredClone(state.map), portraits: [...sharedTokenImages.keys()] } : null,
     notify: showToast,
     enterShared(callbacks) {
       if (!sharedMode) localBackup = structuredClone(state);
