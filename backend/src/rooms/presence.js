@@ -103,7 +103,7 @@ export function attachRoomPresence(io, auth, rooms, config, { clock = Date.now, 
     deadline.unref();
     expiryTimers.set(socket.id, deadline);
     const accept = createLimiter(config.eventRateLimit, config.rateWindowMs, { clock });
-    const mediaAccept = createLimiter(2400, config.rateWindowMs, { clock });
+    const mediaAccept = createLimiter(2400, 60000, { clock });
     socket.onAny((event, ...args) => {
       const ack = typeof args.at(-1) === 'function' ? args.pop() : () => {};
       try {
