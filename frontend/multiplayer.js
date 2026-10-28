@@ -14,6 +14,7 @@ const localHost = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname
 let config = null, session = null, room = null, socket = null, client = null, storage = null, expiry = null;
 let rights = null, members = [], pending = new Map(), generation = 0, validatedSignup = null;
 let assetClient = null, mediaStore = null, mediaSource = null, lastPublishedEpoch = null;
+let publishQueue = Promise.resolve();
 const errors = {
   INVALID_CREDENTIALS: 'Usuario o contraseña incorrectos.', INVALID_INVITATION: 'Invitación de alta caducada, usada, revocada o inválida.',
   ROOM_ACCESS_DENIED: 'No tienes autorización o el código de sala no es válido.', FORBIDDEN: 'No tienes permiso para esta operación.',
@@ -110,9 +111,17 @@ async function clearSession(revoke = true) {
 }
 async function publishMedia() {
   if (!room?.isOwner || !mediaSource || !assetClient?.epoch || !client?.state.ready) return;
-  await assetClient.publish(mediaSource);
-  lastPublishedEpoch = assetClient.epoch;
-  status('Mapa y recursos públicos compartidos.');
+  const bridge = assetClient, roomId = room.room.id, epoch = bridge.epoch;
+  // Serialize publications so one slow SHA-256 calculation never reuses a revision.
+  lastPublishedEpoch = epoch;
+  publishQueue = publishQueue.catch(() => {}).then(async () => {
+    if (assetClient !== bridge || room?.room.id !== roomId || bridge.epoch !== epoch) return;
+    try {
+      await bridge.publish(mediaSource);
+      status('Mapa y recursos públicos compartidos.');
+    } catch (error) { lastPublishedEpoch = null; throw error; }
+  });
+  return publishQueue;
 }
 function genericMedia(tokens) {
   const colors = ['#85dcd2', '#e7c47e', '#dd8e88', '#a6a1e9', '#a8c984', '#90b7e7'];
