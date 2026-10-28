@@ -70,5 +70,26 @@ test('relay rejects malformed chunks and refuses unauthorized rooms without writ
   assert.equal((await send(director, 'assets:chunk', { epoch: state.epoch, transferId: start.transferId,
     offset: 1, data: sample.toString('base64') })).error?.code, 'INVALID_CHUNK');
   assert.equal((await send(director, 'assets:finish', { epoch: state.epoch, transferId: start.transferId })).error?.code, 'TRANSFER_NOT_FOUND');
+  // A vanished transfer is a recoverable conflict, not grounds to suspend
+  // the entire room or disconnect its verified director.
+  assert.equal(director.connected, true);
+  assert.equal((await send(director, 'tokens:permissions:get')).ok, true);
   assert.equal((await send(player, 'assets:request', { epoch: state.epoch, revision: 1, assetId: 'secret' })).error?.code, 'ASSET_NOT_FOUND');
+});
+
+test('disconnecting the recipient while a fragment is in flight never disconnects the director', async t => {
+  const f = await roomFixture(t);
+  f.admit(f.member);
+  const director = await connect(rawSocket(t, f, f.director));
+  const state = await prove(director, localAuthority());
+  const player = await connect(rawSocket(t, f, f.member));
+  await send(director, 'assets:publish', manifest(f.created.room.id, state.epoch, state.record.current.tokens[0].id));
+  const started = await send(player, 'assets:request', { epoch: state.epoch, revision: 1, assetId: 'map' });
+  assert.equal(started.ok, true);
+  player.disconnect();
+  const attempt = await send(director, 'assets:chunk', { epoch: state.epoch,
+    transferId: started.transferId, offset: 0, data: sample.toString('base64') });
+  assert.equal(attempt.error?.code, 'TRANSFER_NOT_FOUND');
+  assert.equal(director.connected, true);
+  assert.equal((await send(director, 'tokens:permissions:get')).ok, true);
 });
