@@ -42,7 +42,8 @@ export function createAssetClient(socket, { roomId, director = false, getSource 
     const previous = new Map(received);
     const old = manifest;
     manifest = clone(value); revision = value.revision; generation++;
-    incoming.clear();
+    for (const waiter of pending.values()) waiter.reject(new Error('TRANSFER_INTERRUPTED'));
+    pending.clear(); incoming.clear();
     received.clear();
     for (const asset of manifest.assets) if (old?.assets.some(item =>
       item.id === asset.id && item.sha256 === asset.sha256) && previous.has(asset.id)) received.set(asset.id, previous.get(asset.id));
@@ -53,7 +54,8 @@ export function createAssetClient(socket, { roomId, director = false, getSource 
     for (const asset of manifest?.assets ?? []) {
       if (stopped || version !== generation) return;
       if (received.has(asset.id)) continue;
-      incoming.set(asset.id, { asset, chunks: [], offset: 0, transferId: null });
+      const receiving = { asset, chunks: [], offset: 0, transferId: null };
+      incoming.set(asset.id, receiving);
       try {
         let result;
         for (let attempt = 0; attempt < 90 && !stopped && version === generation; attempt++) {
@@ -64,6 +66,7 @@ export function createAssetClient(socket, { roomId, director = false, getSource 
           }
         }
         if (!result) throw new Error('TRANSFER_BUSY');
+        if (stopped || version !== generation) return;
         const entry = incoming.get(asset.id);
         if (entry) entry.transferId = result.transferId;
         // assets:finished may arrive before the request's ack; handled by the
@@ -76,7 +79,7 @@ export function createAssetClient(socket, { roomId, director = false, getSource 
           setTimeout(() => { if (pending.has(key)) { pending.delete(key); reject(new Error('TRANSFER_TIMEOUT')); } }, 600000);
         });
       } catch (error) { fail(error); }
-      finally { incoming.delete(asset.id); }
+      finally { if (incoming.get(asset.id) === receiving) incoming.delete(asset.id); }
     }
   }
   listen('assets:chunk', (message, ack) => {
