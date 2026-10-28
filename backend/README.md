@@ -184,3 +184,10 @@ npm run validate:site -- public/site.config.example.json
 `npm run frontend` sirve el frontend con lista pública explícita en loopback:8080; no expone `.env`, DB ni `.git`. La pantalla integrada permite login/alta, provisión administrativa de dirección, salas, invitaciones, asignaciones y Canvas sincronizado. La [Fase 5](../docs/FASE5-FRONTEND.md) incluye comandos de Windows y `npm run test:browser` para la aceptación opcional con herramientas temporales. No se han añadido dependencias de producción.
 
 Imágenes, mapas compartidos y exportación/importación siguen pendientes, así como publicación, recuperación de cuentas/diario, retención/paginación, carga sostenida ARMv7, runtime posterior a Node 22 y operación/backup. No se despliega backend ni se modifican Apache, Heaven's Gate o la configuración/publicación de Pages.
+
+
+## Fase 6 — Mapa activo y retratos compartidos (rama de desarrollo)
+
+El director puede distribuir el mapa activo y los retratos públicos de los tokens de la sala. Los blobs originales permanecen en IndexedDB del director; el backend únicamente retransmite fragmentos acotados con SHA-256, sin persistencia de recursos. El modo local no se modifica. El cliente permite cambios de mapa, nombre, color, tamaño y retrato de los tokens iniciales, sin crear ni borrar tokens durante la sesión.
+
+Consultar [Fase 6 y protocolo de recursos](../docs/FASE6-RECURSOS.md) para límites, aislamiento entre salas y procedimiento de pruebas. **La implementación está pendiente de ejecutar las suites y la aceptación visual; no desplegar hasta validarla.**
