@@ -203,6 +203,12 @@ function fillTokens() {
   select.replaceChildren(...ids.map(token => new Option(token.code, token.id)));
   if (ids.some(token => token.id === before)) select.value = before;
   fillAssignments();
+  const selected = mediaSource?.tokens.find(token => token.id === select.value);
+  if (selected) {
+    get('sharedTokenName').value = selected.name;
+    get('sharedTokenColor').value = selected.color;
+    get('sharedTokenSize').value = String(selected.size);
+  }
 }
 function fillAssignments() {
   const select = get('assignedUsers'); const tokenId = get('assignedToken').value;
@@ -302,6 +308,67 @@ action('revokeCode', 'click', async () => { await api(`/rooms/${room.room.id}/co
 action('refreshMembers', 'click', refreshMembers);
 get('assignedToken').addEventListener('change', fillAssignments);
 action('assignForm', 'submit', async () => { await client.assign(get('assignedToken').value, [...get('assignedUsers').selectedOptions].map(option => option.value)); status('Asignación guardada en el backend.'); });
+
+async function validateImage(file, max) {
+  if (!file || !['image/png', 'image/jpeg', 'image/webp'].includes(file.type) || file.size < 1 || file.size > max) throw new Error('ASSET_MANIFEST_INVALID');
+  const bitmap = await createImageBitmap(file);
+  try {
+    if (!bitmap.width || !bitmap.height || bitmap.width > 8000 || bitmap.height > 8000 ||
+        bitmap.width * bitmap.height > 20000000) throw new Error('ASSET_MANIFEST_INVALID');
+    return { widthPx: bitmap.width, heightPx: bitmap.height };
+  } finally { bitmap.close(); }
+}
+action('sharedMapUpload', 'change', async () => {
+  if (!room?.isOwner || !mediaSource) throw new Error('FORBIDDEN');
+  const file = get('sharedMapUpload').files?.[0]; if (!file) return;
+  try {
+    const dimensions = await validateImage(file, 12 * 1024 * 1024);
+    const old = mediaSource.map;
+    const widthCells = old?.widthCells ?? 20;
+    const heightCells = old?.heightCells ?? Math.min(200, 20 * dimensions.heightPx / dimensions.widthPx);
+    mediaSource.map = { name: file.name.slice(0, 100) || 'Mapa', ...dimensions, widthCells, heightCells,
+      xCells: old?.xCells ?? -10, yCells: old?.yCells ?? -heightCells / 2, imageId: 'map' };
+    mediaSource.files.map = file; await saveMedia();
+  } finally { get('sharedMapUpload').value = ''; }
+});
+action('sharedClearMap', 'click', async () => {
+  if (!room?.isOwner || !mediaSource) throw new Error('FORBIDDEN');
+  mediaSource.map = null; delete mediaSource.files.map; await saveMedia();
+});
+action('sharedTokenUpload', 'change', async () => {
+  if (!room?.isOwner || !mediaSource) throw new Error('FORBIDDEN');
+  const file = get('sharedTokenUpload').files?.[0], id = get('assignedToken').value;
+  try {
+    if (!file) return;
+    await validateImage(file, 2 * 1024 * 1024);
+    const token = mediaSource.tokens.find(token => token.id === id);
+    if (!token) throw new Error('TOKEN_NOT_FOUND');
+    token.imageId = 'token:' + id; mediaSource.files[token.imageId] = file; await saveMedia();
+  } finally { get('sharedTokenUpload').value = ''; }
+});
+action('sharedRemoveTokenImage', 'click', async () => {
+  const token = mediaSource?.tokens.find(token => token.id === get('assignedToken').value);
+  if (!room?.isOwner || !token) throw new Error('FORBIDDEN');
+  if (token.imageId) delete mediaSource.files[token.imageId];
+  token.imageId = null; await saveMedia();
+});
+action('sharedTokenAppearance', 'submit', async () => {
+  const token = mediaSource?.tokens.find(token => token.id === get('assignedToken').value);
+  if (!room?.isOwner || !token) throw new Error('FORBIDDEN');
+  const name = get('sharedTokenName').value.trim().slice(0, 64);
+  const color = get('sharedTokenColor').value, size = Number(get('sharedTokenSize').value);
+  if (!name || !/^#[0-9a-fA-F]{6}$/.test(color) || !(size >= 0.25 && size <= 4)) throw new Error('INVALID_INPUT');
+  token.name = name; token.color = color; token.size = size;
+  await saveMedia();
+});
+get('assignedToken').addEventListener('change', () => {
+  const token = mediaSource?.tokens.find(token => token.id === get('assignedToken').value);
+  if (!token) return;
+  get('sharedTokenName').value = token.name;
+  get('sharedTokenColor').value = token.color;
+  get('sharedTokenSize').value = String(token.size);
+});
+
 try {
   const saved = localStorage.getItem(CONFIG_KEY);
   if (saved) config = validateConfig(JSON.parse(saved));
