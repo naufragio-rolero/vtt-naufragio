@@ -1,5 +1,5 @@
 // Private, per-origin/per-account/per-room director image originals.
-// Never included in the public build and never exported into site.config.json.
+// This adapter is public; private data never enters the public build or site.config.json.
 export function createRoomMediaStore(identity) {
   if (typeof identity !== 'string' || identity.length > 600 || !identity) throw new Error('INVALID_ROOM_MEDIA_ID');
   const key = 'room:' + identity;
