@@ -1,6 +1,10 @@
 // Shared browser-side media client. The director owns Blob originals; players
 // receive only the active public manifest and verified bytes, never hidden assets.
-const CHUNK = 8192;
+// 32 KiB -> 43.7 KiB base64, inside the backend's 64 KiB frame limit.
+const CHUNK = 32768;
+// The server accepts 2400 chunks/minute per authenticated socket. Keep a
+// shared conservative budget across ALL recipients of this director.
+const CHUNK_INTERVAL_MS = 40;
 const encoder = new TextEncoder();
 const toBase64 = bytes => {
   let output = '';
@@ -15,6 +19,13 @@ export function createAssetClient(socket, { roomId, director = false, getSource 
   onUpdate = () => {}, onError = () => {} } = {}) {
   let epoch = null, revision = 0, manifest = null, stopped = false;
   let generation = 0;
+  let nextChunkSlot = 0;
+  async function paceChunk() {
+    const now = Date.now();
+    const slot = Math.max(now, nextChunkSlot);
+    nextChunkSlot = slot + CHUNK_INTERVAL_MS;
+    if (slot > now) await new Promise(resolve => setTimeout(resolve, slot - now));
+  }
   const received = new Map(), incoming = new Map(), pending = new Map(), listeners = [];
   const listen = (event, handler) => { socket.on(event, handler); listeners.push([event, handler]); };
   const command = async (event, fields) => {
@@ -129,22 +140,29 @@ export function createAssetClient(socket, { roomId, director = false, getSource 
           await digest(blob) !== message.asset.sha256) throw new Error('ASSET_SOURCE_MISMATCH');
       for (let offset = 0; offset < blob.size; offset += CHUNK) {
         if (stopped || epoch !== message.epoch || revision !== message.revision) return;
+        // Shared pacing prevents a perfectly legitimate map from exhausting the
+        // director's aggregate per-minute budget when many members download it.
+        await paceChunk();
+        if (stopped || epoch !== message.epoch || revision !== message.revision) return;
         const bytes = new Uint8Array(await blob.slice(offset, offset + CHUNK).arrayBuffer());
         const transferId = message.transferId;
-        const acknowledged = new Promise((resolve, reject) => {
-          const key = transferId + ':' + offset;
-          pending.set(key, { resolve, reject });
-          setTimeout(() => { if (pending.has(key)) { pending.delete(key); reject(new Error('TRANSFER_TIMEOUT')); } }, 12000);
-        });
+        const key = transferId + ':' + offset;
+        // A resolved Error (not a rejected detached Promise) avoids unhandled
+        // rejections if the Socket.IO command fails before its downstream ack.
+        let finishAck;
+        const acknowledged = new Promise(resolve => { finishAck = resolve; });
+        pending.set(key, { resolve: () => finishAck(null), reject: error => finishAck(error) });
+        const deadline = setTimeout(() => {
+          if (pending.has(key)) { pending.delete(key); finishAck(new Error('TRANSFER_TIMEOUT')); }
+        }, 12000);
         try {
           const response = await command('assets:chunk', { epoch, transferId, offset, data: toBase64(bytes) });
           if (!response.pending) throw new Error('INVALID_CHUNK_ACK');
-          await acknowledged;
-        } catch (error) {
-          // If the command itself fails, do not leave a rejected ack promise unobserved.
-          pending.get(key)?.resolve();
+          const outcome = await acknowledged;
+          if (outcome) throw outcome;
+        } finally {
+          clearTimeout(deadline);
           pending.delete(key);
-          throw error;
         }
       }
       await command('assets:finish', { epoch, transferId: message.transferId });
