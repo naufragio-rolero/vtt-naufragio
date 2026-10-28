@@ -40,7 +40,7 @@ export function loadConfig(env = process.env) {
     mode, host, port: integer('PORT', 3400, 1, 65535),
     allowedOrigins: Object.freeze([...new Set(allowedOrigins)]), socketPath,
     maxBodyBytes: integer('MAX_BODY_BYTES', 16384, 256, 1048576),
-    maxMessageBytes: integer('MAX_MESSAGE_BYTES', 16384, 256, 1048576),
+    maxMessageBytes: integer('MAX_MESSAGE_BYTES', 65536, 256, 1048576),
     rateWindowMs: integer('RATE_WINDOW_MS', 60000, 100, 3600000),
     httpRateLimit: integer('HTTP_RATE_LIMIT', 120, 1, 10000),
     handshakeRateLimit: integer('HANDSHAKE_RATE_LIMIT', 20, 1, 1000),
