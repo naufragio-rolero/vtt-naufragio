@@ -27,6 +27,20 @@ export function createAssetClient(socket, { roomId, director = false, getSource 
     if (slot > now) await new Promise(resolve => setTimeout(resolve, slot - now));
   }
   const received = new Map(), incoming = new Map(), pending = new Map(), listeners = [];
+  // Every pending operation owns its deadline. Settling, superseding or
+  // closing a client MUST clear the timer as well as its Map entry.
+  function settlePending(key, error = null) {
+    const waiter = pending.get(key);
+    if (!waiter) return false;
+    pending.delete(key);
+    if (waiter.timer !== undefined) clearTimeout(waiter.timer);
+    if (error) waiter.reject(error);
+    else waiter.resolve();
+    return true;
+  }
+  function cancelPending(reason = 'TRANSFER_INTERRUPTED') {
+    for (const key of [...pending.keys()]) settlePending(key, new Error(reason));
+  }
   const listen = (event, handler) => { socket.on(event, handler); listeners.push([event, handler]); };
   const command = async (event, fields) => {
     const answer = await socket.timeout(12000).emitWithAck(event, { version: 1, roomId, ...fields });
@@ -38,8 +52,7 @@ export function createAssetClient(socket, { roomId, director = false, getSource 
   function reset() {
     generation++;
     manifest = null; received.clear(); incoming.clear(); revision = 0;
-    for (const item of pending.values()) item.reject(new Error('TRANSFER_INTERRUPTED'));
-    pending.clear(); emit();
+    cancelPending(); emit();
   }
   listen('disconnect', reset);
   listen('room:authority', value => {
@@ -53,8 +66,7 @@ export function createAssetClient(socket, { roomId, director = false, getSource 
     const previous = new Map(received);
     const old = manifest;
     manifest = clone(value); revision = value.revision; generation++;
-    for (const waiter of pending.values()) waiter.reject(new Error('TRANSFER_INTERRUPTED'));
-    pending.clear(); incoming.clear();
+    cancelPending(); incoming.clear();
     received.clear();
     for (const asset of manifest.assets) if (old?.assets.some(item =>
       item.id === asset.id && item.sha256 === asset.sha256) && previous.has(asset.id)) received.set(asset.id, previous.get(asset.id));
@@ -84,10 +96,14 @@ export function createAssetClient(socket, { roomId, director = false, getSource 
         // shared promise installed before sending the request below.
         await new Promise((resolve, reject) => {
           const key = result.transferId;
-          pending.set(key, { resolve, reject });
+          const timer = setTimeout(() => {
+            settlePending(key, new Error('TRANSFER_TIMEOUT'));
+          }, 600000);
+          pending.set(key, { resolve, reject, timer });
           const entry = incoming.get(asset.id);
-          if (entry?.finished) { pending.delete(key); entry.finished === true ? resolve() : reject(new Error(entry.finished)); }
-          setTimeout(() => { if (pending.has(key)) { pending.delete(key); reject(new Error('TRANSFER_TIMEOUT')); } }, 600000);
+          if (entry?.finished) {
+            settlePending(key, entry.finished === true ? null : new Error(entry.finished));
+          }
         });
       } catch (error) { fail(error); }
       finally { if (incoming.get(asset.id) === receiving) incoming.delete(asset.id); }
@@ -120,14 +136,13 @@ export function createAssetClient(socket, { roomId, director = false, getSource 
       received.set(entry.asset.id, blob);
       emit();
     } catch (cause) { error = cause.message; }
-    const waiter = pending.get(message.transferId);
-    if (waiter) { pending.delete(message.transferId); error ? waiter.reject(new Error(error)) : waiter.resolve(); }
-    else entry.finished = error || true;
+    if (!settlePending(message.transferId, error ? new Error(error) : null)) {
+      entry.finished = error || true;
+    }
   });
   listen('assets:failed', message => {
     if (message.roomId !== roomId) return;
-    const waiter = pending.get(message.transferId);
-    if (waiter) { pending.delete(message.transferId); waiter.reject(new Error(message.code)); }
+    settlePending(message.transferId, new Error(message.code));
     const entry = [...incoming.values()].find(value => value.transferId === message.transferId);
     if (entry) entry.finished = message.code;
   });
@@ -153,7 +168,7 @@ export function createAssetClient(socket, { roomId, director = false, getSource 
         const acknowledged = new Promise(resolve => { finishAck = resolve; });
         pending.set(key, { resolve: () => finishAck(null), reject: error => finishAck(error) });
         const deadline = setTimeout(() => {
-          if (pending.has(key)) { pending.delete(key); finishAck(new Error('TRANSFER_TIMEOUT')); }
+          settlePending(key, new Error('TRANSFER_TIMEOUT'));
         }, 12000);
         try {
           const response = await command('assets:chunk', { epoch, transferId, offset, data: toBase64(bytes) });
@@ -162,7 +177,7 @@ export function createAssetClient(socket, { roomId, director = false, getSource 
           if (outcome) throw outcome;
         } finally {
           clearTimeout(deadline);
-          pending.delete(key);
+          settlePending(key);
         }
       }
       await command('assets:finish', { epoch, transferId: message.transferId });
@@ -171,8 +186,7 @@ export function createAssetClient(socket, { roomId, director = false, getSource 
   listen('assets:chunk:acked', message => {
     if (message.roomId !== roomId) return;
     const key = message.transferId + ':' + message.offset;
-    pending.get(key)?.resolve();
-    pending.delete(key);
+    settlePending(key);
   });
   return {
     async publish(source) {
@@ -195,8 +209,7 @@ export function createAssetClient(socket, { roomId, director = false, getSource 
     close() {
       stopped = true;
       for (const [event, handler] of listeners) socket.off(event, handler);
-      for (const waiter of pending.values()) waiter.reject(new Error('TRANSFER_INTERRUPTED'));
-      pending.clear(); incoming.clear(); received.clear();
+      cancelPending(); incoming.clear(); received.clear();
     }
   };
 }
