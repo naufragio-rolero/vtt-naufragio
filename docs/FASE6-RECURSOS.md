@@ -64,3 +64,14 @@ La primera implementación de Fase 6 fue devuelta por la validación de Windows 
 - **F6-04:** la fixture de PNG 1×1 ha sido sustituida en las tres apariciones por una imagen RGBA con CRC correcto, verificada independientemente.
 
 **Importante:** corregido en código y cubierto por nuevas pruebas no significa que dichas pruebas hayan pasado en el entorno Windows. Este repositorio todavía no acredita la reevaluación funcional ni una ejecución ARMv7 de la Fase 6. No desplegar sin el informe posterior.
+
+## Segunda reevaluación Windows: temporizador de recepción (29/10/2026)
+
+El informe de Codex correspondiente a `1b0f9449` acreditó **102/102 pruebas Node 22 y 24**, Playwright completo y transmisión de un PNG real de 12 MiB a dos navegadores. Los problemas F6-01 a F6-04 se consideraron superados, pero el veredicto siguió siendo **NO APTO** por un temporizador receptor de 600 000 ms que no se cancelaba al terminar o cerrar.
+
+Corrección de desarrollo posterior:
+
+- `backend/client/asset-client.js`: función centralizada `settlePending`, que elimina el registro, cancela el `setTimeout` asociado y resuelve o rechaza el acuse. Se invoca en finalización, fallo, sustitución de manifiesto, suspensión de autoridad, desconexión y `close()`. La misma disciplina cubre los acuses del emisor.
+- `backend/tests/asset-client-timers.test.js`: nueva regresión que comprueba los temporizadores del receptor en finalización con hash correcto, error de relay, cierre con descarga pendiente, cambio de manifiesto y suspensión de autoridad.
+
+Se ha realizado una **comprobación aislada del código real del cliente con un socket y temporizadores simulados**: ninguna de estas rutas deja un temporizador de 600 segundos registrado. No sustituye el test completo Node 22/24 ni las pruebas Playwright. **Sigue prohibido el piloto ARMv7 hasta que Codex ejecute la nueva suite y repita el diagnóstico de temporizadores en Windows.**
