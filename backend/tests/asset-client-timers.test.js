@@ -17,11 +17,13 @@ function fakeSocket() {
   } });
   return socket;
 }
-async function until(check, description) {
-  for (let i = 0; i < 200; i++) {
+async function until(check, description, timeoutMs = 8000) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
     if (check()) return;
-    await new Promise(resolve => setTimeout(resolve, 5));
+    await new Promise(resolve => setTimeout(resolve, 10));
   }
+  if (check()) return;
   assert.fail('Timed out: ' + description);
 }
 function join(socket, roomId, epoch, bytes, revision = 1) {
@@ -91,8 +93,14 @@ test('receiver deadlines are cleared on success, failure, authority change, mani
     // A replaced public manifest must release the old timer, then close the new one.
     const replaced = receiver();
     await until(() => replaced.socket.requests.length === 1 && outstanding.size === 1, 'old manifest registered');
+    const previousDeadline = [...outstanding][0];
     join(replaced.socket, roomId, epoch, bytes, 2);
-    await until(() => replaced.socket.requests.length === 2, 'new manifest registered');
+    // Superseding the manifest must cancel the old deadline synchronously.
+    assert.equal(outstanding.has(previousDeadline), false, 'previous manifest timer must be cleared');
+    // The fake transport records a request BEFORE its async acknowledgement
+    // resumes downloadAll(). Wait for the replacement deadline itself.
+    await until(() => replaced.socket.requests.length === 2 &&
+      outstanding.size === 1 && !outstanding.has(previousDeadline), 'replacement timer registered');
     assert.equal(outstanding.size, 1, 'only the replacement timer may survive');
     replaced.client.close();
     assert.equal(outstanding.size, 0);
