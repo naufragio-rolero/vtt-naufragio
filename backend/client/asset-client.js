@@ -166,10 +166,12 @@ export function createAssetClient(socket, { roomId, director = false, getSource 
         // rejections if the Socket.IO command fails before its downstream ack.
         let finishAck;
         const acknowledged = new Promise(resolve => { finishAck = resolve; });
-        pending.set(key, { resolve: () => finishAck(null), reject: error => finishAck(error) });
-        const deadline = setTimeout(() => {
+        const waiter = { resolve: () => finishAck(null), reject: error => finishAck(error) };
+        pending.set(key, waiter);
+        waiter.timer = setTimeout(() => {
           settlePending(key, new Error('TRANSFER_TIMEOUT'));
         }, 12000);
+        const deadline = waiter.timer;
         try {
           const response = await command('assets:chunk', { epoch, transferId, offset, data: toBase64(bytes) });
           if (!response.pending) throw new Error('INVALID_CHUNK_ACK');
