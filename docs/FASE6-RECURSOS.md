@@ -75,3 +75,35 @@ Corrección de desarrollo posterior:
 - `backend/tests/asset-client-timers.test.js`: nueva regresión que comprueba los temporizadores del receptor en finalización con hash correcto, error de relay, cierre con descarga pendiente, cambio de manifiesto y suspensión de autoridad.
 
 Se ha realizado una **comprobación aislada del código real del cliente con un socket y temporizadores simulados**: ninguna de estas rutas deja un temporizador de 600 segundos registrado. No sustituye el test completo Node 22/24 ni las pruebas Playwright. **Sigue prohibido el piloto ARMv7 hasta que Codex ejecute la nueva suite y repita el diagnóstico de temporizadores en Windows.**
+
+## Tercera reevaluación Windows (29/10/2026): carrera del test y contención del equipo
+
+El informe sobre `5ad09912` concluyó **NO APTO** por una única aserción fallida de la prueba nueva de temporizadores y cancelaciones de plazo bajo fuerte carga compartida. Los diagnósticos independientes del **producto** fueron satisfactorios: dos jugadores recibieron un PNG real de 12 MiB con SHA-256 correcto, Edge/Firefox superaron la aceptación y la limpieza observada fue de cero temporizadores residuales en Node 22 y 24.
+
+### Corrección de la carrera de prueba
+
+En `backend/tests/asset-client-timers.test.js`, el transporte sintético registra la segunda petición **antes** de que se resuelva su `await`. Esperar solo dos solicitudes permitía evaluar la existencia del segundo temporizador demasiado pronto. Ahora la regresión:
+
+1. Captura el identificador del temporizador del manifiesto anterior.
+2. Exige que **ese identificador desaparezca** al sustituir el manifiesto.
+3. Espera la segunda solicitud **y el nuevo temporizador** (exactamente uno, distinto del anterior).
+4. Comprueba que `close()` también elimina el segundo temporizador.
+
+Se conserva la misma exigencia de limpieza: no hay temporizadores permitidos tras el cierre. El helper de espera utiliza un plazo verificable, no una pausa fija arbitraria.
+
+### Protocolo de validación reproducible
+
+**No ejecutar suites de Node 22, Node 24 ni Playwright al mismo tiempo en el mismo Windows.** Los timeouts anteriores de 120 s (transferencia grande) y 10 s (CLI) ocurrieron durante ejecución conjunta de múltiples cargas pesadas y pasaron de forma aislada; esto **sugiere contención**, no demuestra por sí solo causalidad.
+
+Desde una exportación limpia del commit a comprobar, instalar con `npm ci --ignore-scripts` y ejecutar **en secuencia** (cada proceso debe haber terminado y liberado sus recursos antes de iniciar el siguiente):
+
+1. Node 22: `node --test tests/asset-client-timers.test.js`. Debe terminar con exit 0, incluida la sustitución de manifiesto.
+2. Node 22: `npm run test:serial`. Ejecuta **todos los archivos de prueba** con concurrencia entre archivos limitada a uno; no reduce ni excluye las aserciones.
+3. Node 24: repetir la prueba de temporizadores y `npm run test:serial`, también sin procesos de Node 22 en paralelo.
+4. Ejecutar `npm run build:frontend`, revisar hashes y lista de `dist/`.
+5. Con Node 24, ejecutar Playwright original con `BROWSER_USE_DIST=1` y Edge/Firefox disponibles; después, **por separado**, el ensayo de imagen PNG real de 12 MiB con dos receptores y los diagnósticos de interrupciones/SHA-256.
+6. Repetir el diagnóstico de temporizadores con ambos runtimes; comprobar ausencia de handles de 600 000/12 000 ms, rechazos sin gestionar y procesos residuales.
+
+Se conserva `npm test` (`node --test`) para desarrollo; se incorpora `npm run test:serial` como validación prepiloto reproducible en equipos de recursos compartidos. Registrar el código de salida real, duración, pruebas fallidas/canceladas y las métricas de cada **ejecución individual**. No presentar pruebas aisladas como una suite completa ni declarar APTO si alguna comprobación de aceptación falla.
+
+**Esta actualización corrige las pruebas y el procedimiento, no añade funciones nuevas al producto.** La Fase 6 **continúa pendiente** hasta que se ejecute esta secuencia y se obtenga el informe formal. No modificar la Raspberry ni fusionar con `main`.
