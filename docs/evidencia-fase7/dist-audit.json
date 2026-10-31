@@ -1,0 +1,271 @@
+[
+  {
+    "configuration": "none",
+    "publicFiles": 24,
+    "manifestFiles": 25,
+    "bytes": 252939,
+    "hashesVerified": true,
+    "reproducible": true,
+    "secretScan": "pass",
+    "manifestSha256": "f803fa2dd03130658b34754d28f39bde0c53a508ef501929da660d3d85283169",
+    "files": [
+      {
+        "path": "app.js",
+        "bytes": 43700,
+        "sha256": "320f024e1eea05e09fef352abbd79dce34bf841e7990d57984db874a8b0e4c0a"
+      },
+      {
+        "path": "client/asset-client.js",
+        "bytes": 10717,
+        "sha256": "8d5b5a56df0a216f668ef33fd6538eab3e152a66bda62184e05efc46aca8800f"
+      },
+      {
+        "path": "client/indexeddb-store.js",
+        "bytes": 2243,
+        "sha256": "e6e064d1a04cfd70e90d635c0f7794fdd7eccf24fd603f95b2979b75a9fcab93"
+      },
+      {
+        "path": "client/token-client.js",
+        "bytes": 9016,
+        "sha256": "6a38940cf6fedcdc5abc7a21f23ae9b5010593ffa1cfeb967414e57989c1f416"
+      },
+      {
+        "path": "frontend/board-model.js",
+        "bytes": 1332,
+        "sha256": "291623bb89924ab22e6d82658f06ae97502e1178d062ed90978b3f31ad806491"
+      },
+      {
+        "path": "frontend/join.css",
+        "bytes": 607,
+        "sha256": "e0c22a1c9f33aa58a6af944d60a63a0367511221ece995c278d1bdabfee416e5"
+      },
+      {
+        "path": "frontend/join.js",
+        "bytes": 4022,
+        "sha256": "9207f0162de78ae33b7373b91c880c5dbe467fd76b3eb96de08a3ed771729186"
+      },
+      {
+        "path": "frontend/multiplayer.js",
+        "bytes": 28442,
+        "sha256": "6077ab0ddf26bc2810a4ba421fcecf4394b13d5bc3940c24a0b4c450018820a6"
+      },
+      {
+        "path": "frontend/qr.js",
+        "bytes": 4126,
+        "sha256": "4c7b6ac9bbbb490951373140a1512b2eb2160996f2b249129d7f159f8043b7ee"
+      },
+      {
+        "path": "frontend/room-media-store.js",
+        "bytes": 1351,
+        "sha256": "801078417b2ee3f800d6888acc9d083e4323a4f5fbd66550f256ed6b2a90a933"
+      },
+      {
+        "path": "frontend/vendor/qrcode-generator-2.0.4.js",
+        "bytes": 51907,
+        "sha256": "ea91d7118a5395289170da848b7c6758b996163bfbccf312591ab65a4911b7c0"
+      },
+      {
+        "path": "frontend/vendor/qrcode-LICENSE.txt",
+        "bytes": 1071,
+        "sha256": "3a850fa5f08101db6f40676c2786e10bd2cd5fff7b12ffdf1e0c434d4e49d90c"
+      },
+      {
+        "path": "frontend/vendor/socket.io-4.8.4.esm.min.js",
+        "bytes": 40759,
+        "sha256": "771c3872e7d9bf81020615fda67ef0fd2aa61fcaf1990100714a46fa2c39f8a1"
+      },
+      {
+        "path": "frontend/vendor/socket.io-LICENSE.txt",
+        "bytes": 1116,
+        "sha256": "73cb68c437d59e066f9386ef97be57298df4db119fdbd7d7150817c6dbd9f189"
+      },
+      {
+        "path": "index.html",
+        "bytes": 17372,
+        "sha256": "7fa09c470f5f9c75ff1e6423a2e86d2692729ca5dac3950bfbc2a0f52827f071"
+      },
+      {
+        "path": "join.html",
+        "bytes": 859,
+        "sha256": "fb186f5df54307d4c6544d7cf105ab60c4b9e7dd477b988c2d544a78c2ed0ffd"
+      },
+      {
+        "path": "settings/settings.css",
+        "bytes": 532,
+        "sha256": "c8717f3f13d02fa120d62323c5b02068e397f16ff219c8c41abd989ca6a495fc"
+      },
+      {
+        "path": "settings/settings.html",
+        "bytes": 1917,
+        "sha256": "f1008811ff14ff231fb688551600294b6e95450849e3117e47429fa519faf8b3"
+      },
+      {
+        "path": "settings/settings.js",
+        "bytes": 5004,
+        "sha256": "9810d183efc43f20e389a86ffe5da8266683f46e8f724228b6ce46fe6d1c0399"
+      },
+      {
+        "path": "settings/site-config.js",
+        "bytes": 2354,
+        "sha256": "eeaf5d84bf3886a7178a95110b7ef6799defe794d8199d8d21c7887e547c1da3"
+      },
+      {
+        "path": "settings/site.config.example.json",
+        "bytes": 273,
+        "sha256": "f65ca783f8eb619c8e106a1cd3acc812a1ab1270c2f638c16932116da9201a30"
+      },
+      {
+        "path": "settings/site.config.schema.json",
+        "bytes": 1292,
+        "sha256": "26063ebfe0aede6e50a8d0e659045efb51775ddfa9d6383ab59507dcb711e031"
+      },
+      {
+        "path": "shared/token-state.js",
+        "bytes": 2262,
+        "sha256": "a02b602a19305c447c7fdf78e6adbcc17d06b8b48763bfac7174a392311fd8cc"
+      },
+      {
+        "path": "styles.css",
+        "bytes": 20665,
+        "sha256": "2b0e2fc01b997c8463668f7ce56e405000afa3ea05d4d1bba6b42a9be7130b4b"
+      }
+    ]
+  },
+  {
+    "configuration": "proposed-public-HTTPS",
+    "publicFiles": 25,
+    "manifestFiles": 26,
+    "bytes": 253222,
+    "hashesVerified": true,
+    "reproducible": true,
+    "secretScan": "pass",
+    "manifestSha256": "a8367dfe0e8f5da01be76c54e2ca30779f293e77924ba722e01d8d3e1cec822b",
+    "files": [
+      {
+        "path": "app.js",
+        "bytes": 43700,
+        "sha256": "320f024e1eea05e09fef352abbd79dce34bf841e7990d57984db874a8b0e4c0a"
+      },
+      {
+        "path": "client/asset-client.js",
+        "bytes": 10717,
+        "sha256": "8d5b5a56df0a216f668ef33fd6538eab3e152a66bda62184e05efc46aca8800f"
+      },
+      {
+        "path": "client/indexeddb-store.js",
+        "bytes": 2243,
+        "sha256": "e6e064d1a04cfd70e90d635c0f7794fdd7eccf24fd603f95b2979b75a9fcab93"
+      },
+      {
+        "path": "client/token-client.js",
+        "bytes": 9016,
+        "sha256": "6a38940cf6fedcdc5abc7a21f23ae9b5010593ffa1cfeb967414e57989c1f416"
+      },
+      {
+        "path": "frontend/board-model.js",
+        "bytes": 1332,
+        "sha256": "291623bb89924ab22e6d82658f06ae97502e1178d062ed90978b3f31ad806491"
+      },
+      {
+        "path": "frontend/join.css",
+        "bytes": 607,
+        "sha256": "e0c22a1c9f33aa58a6af944d60a63a0367511221ece995c278d1bdabfee416e5"
+      },
+      {
+        "path": "frontend/join.js",
+        "bytes": 4022,
+        "sha256": "9207f0162de78ae33b7373b91c880c5dbe467fd76b3eb96de08a3ed771729186"
+      },
+      {
+        "path": "frontend/multiplayer.js",
+        "bytes": 28442,
+        "sha256": "6077ab0ddf26bc2810a4ba421fcecf4394b13d5bc3940c24a0b4c450018820a6"
+      },
+      {
+        "path": "frontend/qr.js",
+        "bytes": 4126,
+        "sha256": "4c7b6ac9bbbb490951373140a1512b2eb2160996f2b249129d7f159f8043b7ee"
+      },
+      {
+        "path": "frontend/room-media-store.js",
+        "bytes": 1351,
+        "sha256": "801078417b2ee3f800d6888acc9d083e4323a4f5fbd66550f256ed6b2a90a933"
+      },
+      {
+        "path": "frontend/vendor/qrcode-generator-2.0.4.js",
+        "bytes": 51907,
+        "sha256": "ea91d7118a5395289170da848b7c6758b996163bfbccf312591ab65a4911b7c0"
+      },
+      {
+        "path": "frontend/vendor/qrcode-LICENSE.txt",
+        "bytes": 1071,
+        "sha256": "3a850fa5f08101db6f40676c2786e10bd2cd5fff7b12ffdf1e0c434d4e49d90c"
+      },
+      {
+        "path": "frontend/vendor/socket.io-4.8.4.esm.min.js",
+        "bytes": 40759,
+        "sha256": "771c3872e7d9bf81020615fda67ef0fd2aa61fcaf1990100714a46fa2c39f8a1"
+      },
+      {
+        "path": "frontend/vendor/socket.io-LICENSE.txt",
+        "bytes": 1116,
+        "sha256": "73cb68c437d59e066f9386ef97be57298df4db119fdbd7d7150817c6dbd9f189"
+      },
+      {
+        "path": "index.html",
+        "bytes": 17372,
+        "sha256": "7fa09c470f5f9c75ff1e6423a2e86d2692729ca5dac3950bfbc2a0f52827f071"
+      },
+      {
+        "path": "join.html",
+        "bytes": 859,
+        "sha256": "fb186f5df54307d4c6544d7cf105ab60c4b9e7dd477b988c2d544a78c2ed0ffd"
+      },
+      {
+        "path": "settings/settings.css",
+        "bytes": 532,
+        "sha256": "c8717f3f13d02fa120d62323c5b02068e397f16ff219c8c41abd989ca6a495fc"
+      },
+      {
+        "path": "settings/settings.html",
+        "bytes": 1917,
+        "sha256": "f1008811ff14ff231fb688551600294b6e95450849e3117e47429fa519faf8b3"
+      },
+      {
+        "path": "settings/settings.js",
+        "bytes": 5004,
+        "sha256": "9810d183efc43f20e389a86ffe5da8266683f46e8f724228b6ce46fe6d1c0399"
+      },
+      {
+        "path": "settings/site-config.js",
+        "bytes": 2354,
+        "sha256": "eeaf5d84bf3886a7178a95110b7ef6799defe794d8199d8d21c7887e547c1da3"
+      },
+      {
+        "path": "settings/site.config.example.json",
+        "bytes": 273,
+        "sha256": "f65ca783f8eb619c8e106a1cd3acc812a1ab1270c2f638c16932116da9201a30"
+      },
+      {
+        "path": "settings/site.config.schema.json",
+        "bytes": 1292,
+        "sha256": "26063ebfe0aede6e50a8d0e659045efb51775ddfa9d6383ab59507dcb711e031"
+      },
+      {
+        "path": "shared/token-state.js",
+        "bytes": 2262,
+        "sha256": "a02b602a19305c447c7fdf78e6adbcc17d06b8b48763bfac7174a392311fd8cc"
+      },
+      {
+        "path": "site.config.json",
+        "bytes": 283,
+        "sha256": "2d0635f7fa118e6e41459739a09593e7448158618bc5b26fe3cef72daed1ea12"
+      },
+      {
+        "path": "styles.css",
+        "bytes": 20665,
+        "sha256": "2b0e2fc01b997c8463668f7ce56e405000afa3ea05d4d1bba6b42a9be7130b4b"
+      }
+    ]
+  }
+]

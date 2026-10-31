@@ -1,5 +1,7 @@
 # Backend multijugador — Despliegue portable y referencia Raspberry Pi
 
+Actualización F7: [proxy de confianza, invitados temporales mediante QR y preparación de producción](FASE7-ACCESO-QR.md). El esquema SQLite pasa a 4, conservando autenticación, pertenencias y autoridad de las fases anteriores. Los artefactos systemd/Apache son propuestas sin aplicar; la autorización actual comprende exclusivamente código, pruebas Windows y documentación. La numeración histórica del plan siguiente se conserva: los informes de implementación F1–F7 concretan lo realmente entregado y sus limitaciones.
+
 > Proyecto: **Naufragio VTT** · Repositorio: `naufragio-rolero/vtt-naufragio`
 >
 > Fecha del plan: 24 de octubre de 2026 · Actualización: 27 de octubre de 2026. Estado: **Fase 5 de integración del frontend implementada y validada localmente, sin despliegue**. Véanse [inventario](INVENTARIO-BACKEND-RASPBERRY.md), [Fase 1](FASE1-BACKEND.md), [Fase 2](FASE2-BACKEND.md), [validación ARMv7 de Fase 2](VALIDACION-ARMV7.md), [Fase 3](FASE3-BACKEND.md), [Fase 4](FASE4-BACKEND.md) y [Fase 5](FASE5-FRONTEND.md).

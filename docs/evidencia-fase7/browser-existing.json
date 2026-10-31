@@ -1,0 +1,62 @@
+{
+  "result": "pass",
+  "artifact": "dist",
+  "chromium": "156.0.4314.50",
+  "firefox": "142.0.1",
+  "scenarios": [
+    {
+      "scenario": "local-only",
+      "browser": "chromium",
+      "result": "pass",
+      "mapAndTokensAfterReload": "preserved",
+      "themeGridZoom": "pass"
+    },
+    {
+      "scenario": "local-only",
+      "browser": "firefox",
+      "result": "pass",
+      "mapAndTokensAfterReload": "preserved",
+      "themeGridZoom": "pass"
+    },
+    {
+      "basePath": "/",
+      "socketPrefix": "/",
+      "director": "chromium",
+      "players": [
+        "firefox",
+        "chromium"
+      ],
+      "result": "pass",
+      "finalTokenVersions": [
+        1,
+        1
+      ],
+      "legacyData": "preserved",
+      "realIndexedDB": "pass",
+      "webLocks": "pass",
+      "signupAndReuse": "pass",
+      "adminProvisioning": "pass",
+      "missingState": "rejected"
+    },
+    {
+      "basePath": "/vtt/",
+      "socketPrefix": "/transport",
+      "director": "firefox",
+      "players": [
+        "chromium",
+        "chromium"
+      ],
+      "result": "pass",
+      "finalTokenVersions": [
+        1,
+        1
+      ],
+      "legacyData": "preserved",
+      "realIndexedDB": "pass",
+      "webLocks": "pass",
+      "signupAndReuse": "pass",
+      "adminProvisioning": "pass",
+      "missingState": "rejected"
+    }
+  ]
+}

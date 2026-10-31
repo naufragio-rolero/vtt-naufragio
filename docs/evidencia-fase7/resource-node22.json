@@ -1,0 +1,19 @@
+{
+  "result": "pass",
+  "clients": 3,
+  "bytes": 12582912,
+  "sha256": "83c284437091769655604889a18b9776613865a2200143501ea3cf7c3656fb1e",
+  "transferMs": 31074,
+  "backendOnly": {
+    "node": "v22.23.4",
+    "peakRssMiB": 88,
+    "rssMiB": 72,
+    "cpuMs": 10093,
+    "elapsedMs": 39135
+  },
+  "healthSamples": 60,
+  "healthMedianMs": 9.64,
+  "healthP95Ms": 28.61,
+  "errors": 0,
+  "workerClosed": true
+}

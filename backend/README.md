@@ -1,4 +1,10 @@
-# Backend e integración local — Fase 5
+# Backend e integración local — Fases 1–7
+
+Fase 7: [acceso QR, proxy de confianza, preparación y rollback](../docs/FASE7-ACCESO-QR.md). Cambios desarrollados y probados localmente; no habilitan el backend público ni modifican Pages. El acceso ocasional usa aprobación del director y las mismas sesiones/pertenencias/permisos, con identidad temporal restringida a una sala.
+
+`npm run test:browser:qr` ejecuta la aceptación adicional QR con Edge/Firefox, emulación móvil, WebSocket/polling y PNG real de 12 MiB. Usa las mismas variables `BROWSER_TOOLS_DIR`/`PLAYWRIGHT_BROWSERS_PATH` de la guía de navegadores; opcionalmente `BROWSER_QR_REPORT` guarda solo resultados saneados. Genera dist temporal, cuentas sintéticas y servidores de loopback, y los limpia al terminar. Ejecutar después de la suite, sin pruebas pesadas concurrentes.
+
+Para que un QR real pueda abrir la mesa sin configurar servidores en cada móvil, el alojamiento estático debe servir un `site.config.json` público válido. La plantilla propuesta es `deploy/site.config.json`; `npm run build:frontend -- --config deploy/site.config.json` prepara el artefacto para la futura API HTTPS, **sin publicarlo ni contactar con ella**. Para ensayos locales utilizar endpoints localhost y origen permitido concordante. Sin configuración publicada se muestra un error comprensible en incorporación, sin aceptar un backend suministrado por el enlace.
 
 Validación posterior: [Windows y piloto privado ARMv7](../docs/PILOTO-PRIVADO-RASPBERRY.md). Tres clientes reales contra Raspberry, cinco minutos de estabilidad, reinicio del backend y recuperación aprobados; limpieza y rollback SSH verificados. `npm run build:frontend` genera `../dist/` solo con archivos del navegador y manifiesto; `npm run serve:dist` lo sirve en loopback. Para validar ese artefacto con los navegadores existentes, ejecutar `test:browser` con `BROWSER_USE_DIST=1`. El preflight `scripts/pilot-preflight.ps1` detiene el piloto si SSH deniega forwarding; no modifica políticas ni servicios. Los scripts `pilot-*` nuevos son herramientas de prueba controlada, no parte del servicio público ni autorización permanente.
 
@@ -10,7 +16,7 @@ Seleccionar Node 22 mediante `.nvmrc` o el gestor habitual, y trabajar dentro de
 
 ```text
 npm ci --ignore-scripts
-npm test
+npm run test:serial
 ```
 
 En PowerShell, para preparar el entorno y crear la primera cuenta:
@@ -29,9 +35,9 @@ Por defecto escucha en `http://127.0.0.1:3400`. `/health` indica salud del proce
 
 ## SQLite y contraseñas
 
-La base contiene `users`, `sessions`, `signup_invitations`, `role_labels`, `rooms`, `room_codes`, `room_memberships`, `room_invitations`, `room_authority` y `token_assignments`. Guarda identidad, propietarios, pertenencias y permisos, además de clave pública/revisión/hash para verificar continuidad del estado del director. No persiste instantáneas, movimientos, coordenadas ni claves privadas. El esquema 3 migra automáticamente desde versiones anteriores, en transacciones por versión, con tablas estrictas, claves foráneas y `BEGIN IMMEDIATE`. Las consultas usan parámetros. El archivo y su directorio se crean con permisos POSIX 0600/0700; en Windows hay que proteger además la carpeta mediante ACL del propietario. En producción la base no debe estar en un directorio publicado.
+La base contiene `users`, `sessions`, `signup_invitations`, `role_labels`, `rooms`, `room_codes`, `room_memberships`, `room_invitations`, `room_authority` y `token_assignments`; desde F7 añade `room_admissions`, `guest_requests` y `guest_accounts`. Guarda identidad, propietarios, pertenencias y permisos, además de clave pública/revisión/hash para verificar continuidad del estado del director. No persiste instantáneas, movimientos, coordenadas ni claves privadas. El esquema 4 migra automáticamente desde versiones anteriores, en transacciones por versión, con tablas estrictas, claves foráneas y `BEGIN IMMEDIATE`. Las consultas usan parámetros. El archivo y su directorio se crean con permisos POSIX 0600/0700; en Windows hay que proteger además la carpeta mediante ACL del propietario. En producción la base no debe estar en un directorio publicado.
 
-Se usa `node:sqlite` incluido en Node; en Node 22 su API emite un aviso experimental. No se emplean opciones exclusivas de Node 24. WAL y `synchronous=FULL` permiten durabilidad; respaldar solo el archivo principal mientras hay escrituras puede perder datos, por lo que el procedimiento de copia consistente se definirá en la fase operativa. Una versión de esquema desconocida impide arrancar. Operación prevista: un único proceso backend, no un clúster.
+Se usa `node:sqlite` incluido en Node; en Node 22 su API emite un aviso experimental. No se emplean opciones exclusivas de Node 24. WAL y `synchronous=FULL` permiten durabilidad; respaldar solo el archivo principal mientras hay escrituras puede perder datos, por lo que se incorpora `npm run backup -- <origen.sqlite> <destino-nuevo.sqlite>` con backup online e integridad; procedimiento privado de recuperación en Fase 7. Una versión de esquema desconocida impide arrancar. Operación prevista: un único proceso backend, no un clúster.
 
 Se ha elegido **scrypt de `node:crypto`**, disponible en Node 22, para evitar addons Argon2 y problemas de compilación/ABI en ARMv7. Parámetros fijos: **N=32768, r=8, p=3**, sal aleatoria de 16 bytes y resultado de 64 bytes; el formato guarda algoritmo y parámetros. Este perfil consume aproximadamente 32 MiB por derivación y figura entre las alternativas de OWASP. `maxmem` se limita a 48 MiB. Hay una sola derivación activa y hasta cuatro en espera; al llenarse la cola se responde 503. Se usa `timingSafeEqual` y una derivación de coste equivalente para cuentas inexistentes. Las contraseñas nuevas requieren 15–128 puntos de código Unicode y hasta 512 bytes UTF-8; se preservan espacios y no se truncan.
 
@@ -39,7 +45,7 @@ Referencias: [OWASP, perfiles de scrypt](https://cheatsheetseries.owasp.org/chea
 
 ## Sesiones, usuarios e invitaciones
 
-Las sesiones son tokens opacos `sess_…` con 256 bits aleatorios. Se devuelven en el cuerpo JSON del login y se envían únicamente mediante `Authorization: Bearer …`. Guardar el token solo en memoria del cliente; no introducirlo en URLs, localStorage, ficheros de configuración o logs. No se usan cookies ni JWT, ni hace falta una clave de firma del servicio para sesiones. La clave local de continuidad de partida descrita más abajo es independiente de la sesión. SQLite conserva únicamente SHA-256 del token. La sesión tiene caducidad absoluta, sin renovación automática; se admiten hasta cinco sesiones activas por cuenta.
+Las sesiones son tokens opacos `sess_…` con 256 bits aleatorios. Se devuelven en el cuerpo JSON del login y se envían únicamente mediante `Authorization: Bearer …`. Guardar el token de cuenta solo en memoria; los invitados temporales usan sessionStorage de la pestaña para recuperar su admisión tras recarga; no introducirlo en URLs, localStorage, ficheros de configuración o logs. No se usan cookies ni JWT, ni hace falta una clave de firma del servicio para sesiones. La clave local de continuidad de partida descrita más abajo es independiente de la sesión. SQLite conserva únicamente SHA-256 del token. La sesión tiene caducidad absoluta, sin renovación automática; se admiten hasta cinco sesiones activas por cuenta.
 
 Cada petición consulta la sesión y el rol actual. Logout revoca la sesión actual; logout-all, cambio de contraseña y cambio administrativo de cuenta revocan las sesiones correspondientes. El administrador también puede revocar sesiones de otra cuenta. Desactivar o cambiar el rol de un emisor revoca sus invitaciones pendientes. No se puede desactivar ni degradar al último administrador activo. La creación administrativa vuelve a comprobar la sesión después del hash; la primera cuenta y el consumo de una invitación se verifican de nuevo dentro de la transacción.
 
@@ -156,7 +162,7 @@ Los códigos tienen prefijo `room_`, 128 bits aleatorios y hash SHA-256 en SQLit
 
 ## Entorno, límites y configuración pública
 
-Configuración de desarrollo: `HOST=127.0.0.1`, `PORT=3400`, `NODE_ENV=development`, `SOCKET_PATH=/socket.io`, `ALLOWED_ORIGINS` exactos, `MAX_BODY_BYTES=16384`, `MAX_MESSAGE_BYTES=16384`, `RATE_WINDOW_MS=60000`, `HTTP_RATE_LIMIT=120`, `HANDSHAKE_RATE_LIMIT=20`, `EVENT_RATE_LIMIT=120`, `CONNECTION_LIMIT=32`, `ENABLE_DIAGNOSTICS=false`. Fase 5 eleva el presupuesto de eventos de 30 a 120/min para solicitudes/aceptaciones y controles, manteniendo agregación por gesto, una solicitud propia pendiente y las demás cotas. Los rangos se validan en `src/config.js` y se ejemplifican en `.env.example`.
+Configuración de desarrollo: `HOST=127.0.0.1`, `PORT=3400`, `NODE_ENV=development`, `SOCKET_PATH=/socket.io`, `ALLOWED_ORIGINS` exactos, `MAX_BODY_BYTES=16384`, `MAX_MESSAGE_BYTES=65536`, `RATE_WINDOW_MS=60000`, `HTTP_RATE_LIMIT=120`, `HANDSHAKE_RATE_LIMIT=20`, `EVENT_RATE_LIMIT=120`, `CONNECTION_LIMIT=32`, `ENABLE_DIAGNOSTICS=false`. Fase 5 eleva el presupuesto de eventos de 30 a 120/min para solicitudes/aceptaciones y controles, manteniendo agregación por gesto, una solicitud propia pendiente y las demás cotas. Los rangos se validan en `src/config.js` y se ejemplifican en `.env.example`.
 
 | Variable nueva | Valor por defecto | Regla |
 | --- | --- | --- |
@@ -169,7 +175,7 @@ Configuración de desarrollo: `HOST=127.0.0.1`, `PORT=3400`, `NODE_ENV=developme
 | `ROOM_INVITATION_TTL_SECONDS` | `86400` | 60–604800 segundos; máximo de invitaciones nominativas de partida. |
 | `ROOM_JOIN_RATE_LIMIT` | `10` | 1–100 intentos de admisión por cuenta y peer durante `AUTH_WINDOW_MS`. |
 
-Los límites de intentos se aplican al login por peer y por nombre normalizado, y a registro/validación de invitación/cambio de contraseña/provisión por peer. La admisión a partida se limita por cuenta y peer. Incluyen intentos correctos e incorrectos. Se mantienen en memoria acotada y caducan; reiniciar el proceso los reinicia. Una cuenta puede tener hasta cinco sesiones; un emisor, 50 invitaciones de alta activas; un director, 100 partidas; una partida, 100 invitaciones pendientes. Detrás de proxy se comparte el límite por peer porque se ignora `X-Forwarded-For`; el rate limiting del proxy y su confianza quedan para despliegue. Orígenes se comprueban en HTTP, polling y WebSocket; CORS nunca sustituye la sesión. Producción exige orígenes HTTPS y rechaza diagnóstico.
+Los límites de intentos se aplican al login por peer y por nombre normalizado, y a registro/validación de invitación/cambio de contraseña/provisión por peer. La admisión a partida se limita por cuenta y peer. Incluyen intentos correctos e incorrectos. Se mantienen en memoria acotada y caducan; reiniciar el proceso los reinicia. Una cuenta puede tener hasta cinco sesiones; un emisor, 50 invitaciones de alta activas; un director, 100 partidas; una partida, 100 invitaciones pendientes. En modo directo se ignoran cabeceras reenviadas; detrás de Apache F7 incorpora un modo explícito de confianza con loopback, secreto privado y cabeceras saneadas. Cada IP validada mantiene su propio límite. Orígenes se comprueban en HTTP, polling y WebSocket; CORS nunca sustituye la sesión. Producción exige orígenes HTTPS y rechaza diagnóstico.
 
 `/settings/` permite revisar endpoints y preparar/descargar el JSON público sin escribir configuración global. `site.config.schema.json` y `site-config.js` comprueban campos, URLs HTTPS/WSS, localhost explícito de desarrollo y rutas. La comprobación de salud requiere confirmación del destino efectivo, omite credenciales y redirecciones, y tiene timeout. Las etiquetas se administran mediante `PUT /roles`, no por modificar un fichero local del cliente.
 
@@ -179,15 +185,15 @@ npm run validate:site -- public/site.config.example.json
 
 ## Validación y siguientes fases
 
-`npm test` ejecuta pruebas locales con contraseñas/tokens aleatorios de pruebas, SQLite temporal o en memoria, HTTP y Socket.IO en loopback, incluido un director y dos jugadores que convergen en el mismo estado. Véanse [resultados y límites de Fase 4](../docs/FASE4-BACKEND.md) e informes históricos de [Fase 3](../docs/FASE3-BACKEND.md) y [Fase 2](../docs/FASE2-BACKEND.md). No se crean cuentas reales en la base de desarrollo durante los tests. La prueba remota serial anterior corresponde a Fase 2, descrita en [VALIDACION-ARMV7.md](../docs/VALIDACION-ARMV7.md).
+`npm run test:serial` ejecuta pruebas locales con contraseñas/tokens aleatorios de pruebas, SQLite temporal o en memoria, HTTP y Socket.IO en loopback, incluido un director y dos jugadores que convergen en el mismo estado. Véanse [resultados y límites de Fase 4](../docs/FASE4-BACKEND.md) e informes históricos de [Fase 3](../docs/FASE3-BACKEND.md) y [Fase 2](../docs/FASE2-BACKEND.md). No se crean cuentas reales en la base de desarrollo durante los tests. La prueba remota serial anterior corresponde a Fase 2, descrita en [VALIDACION-ARMV7.md](../docs/VALIDACION-ARMV7.md).
 
 `npm run frontend` sirve el frontend con lista pública explícita en loopback:8080; no expone `.env`, DB ni `.git`. La pantalla integrada permite login/alta, provisión administrativa de dirección, salas, invitaciones, asignaciones y Canvas sincronizado. La [Fase 5](../docs/FASE5-FRONTEND.md) incluye comandos de Windows y `npm run test:browser` para la aceptación opcional con herramientas temporales. No se han añadido dependencias de producción.
 
-Imágenes, mapas compartidos y exportación/importación siguen pendientes, así como publicación, recuperación de cuentas/diario, retención/paginación, carga sostenida ARMv7, runtime posterior a Node 22 y operación/backup. No se despliega backend ni se modifican Apache, Heaven's Gate o la configuración/publicación de Pages.
+Mapas/retratos compartidos están implementados en F6 y QR/backup en F7. Siguen pendientes exportación/importación, publicación, recuperación de cuentas/diario, retención/paginación, carga sostenida ARMv7 y runtime posterior a Node 22. No se despliega backend ni se modifican Apache, Heaven's Gate o la configuración/publicación de Pages.
 
 
 ## Fase 6 — Mapa activo y retratos compartidos (rama de desarrollo)
 
 El director puede distribuir el mapa activo y los retratos públicos de los tokens de la sala. Los blobs originales permanecen en IndexedDB del director; el backend únicamente retransmite fragmentos acotados con SHA-256, sin persistencia de recursos. El modo local no se modifica. El cliente permite cambios de mapa, nombre, color, tamaño y retrato de los tokens iniciales, sin crear ni borrar tokens durante la sesión.
 
-Consultar [Fase 6 y protocolo de recursos](../docs/FASE6-RECURSOS.md) para límites, aislamiento entre salas y procedimiento de pruebas. **La implementación está pendiente de ejecutar las suites y la aceptación visual; no desplegar hasta validarla.**
+Consultar [Fase 6 y protocolo de recursos](../docs/FASE6-RECURSOS.md) para límites, aislamiento entre salas y procedimiento de pruebas. Las regresiones locales y los límites de despliegue de la rama actual se documentan en Fase 7; no confundirlos con una validación pública WSS.

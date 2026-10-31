@@ -1,0 +1,13 @@
+{
+  "result": "pass",
+  "missingProxySecret": "startup denied",
+  "productionHost": "127.0.0.1",
+  "productionPort": 3400,
+  "maxMessageBytes": 65536,
+  "maxBodyBytes": 16384,
+  "allowedOrigins": [
+    "https://naufragio-rolero.github.io"
+  ],
+  "proxyTemplate": "static consistency verified; Apache configtest NOT executed",
+  "systemd": "template only; Linux verification NOT executed"
+}

@@ -41,6 +41,7 @@ Principios:
 | DEC-14 | Un usuario ordinario **no crea partidas ni sube mapas/tokens**. Solo puede unirse a las partidas autorizadas, mover tokens asignados y tirar dados si el máster activa ese permiso para la partida. |
 | DEC-15 | El MVP incluye **exportar e importar partidas completas, mapas individuales y tokens** sin necesitar persistencia de contenido en el backend. |
 | DEC-16 | El frontend será **independiente del alojamiento**; dispondrá de configuración visible para URL de autenticación/API, tiempo real y otros ajustes públicos del sitio. La Raspberry es un destino de referencia, no un requisito del producto. |
+| DEC-17 | En jornadas se admite un **participante temporal** sin contraseña, mediante QR caducable y aprobación expresa del director. No es registro público: identidad de rol `user`, restringida a una sala, con sesión caducable y permisos denegados por defecto. Reutiliza la autorización existente; no puede convertirse en cuenta de dirección. El acceso habitual por cuenta e invitación nominativa se conserva. |
 
 ## 3. Modelo conceptual
 
@@ -49,6 +50,7 @@ Principios:
 - **Cuenta:** identidad de acceso con credenciales gestionadas por el servicio de autenticación; se provisiona administrativamente o mediante invitación individual emitida por un máster autorizado.
 - **Invitación de alta:** enlace/código de un solo uso y caducidad limitada que permite crear una cuenta ordinaria, sin autorregistro público ni escalado de rol.
 - **Invitación a partida:** código/enlace diferente, vinculado a la sala; invita a una cuenta ya autenticada a una partida concreta.
+- **Admisión QR:** capacidad temporal que permite solicitar acceso, nunca entrar directamente. Cada solicitud tiene una capacidad privada independiente; solo su reclamación aprobada crea una pertenencia temporal. Cerrar/revocar el QR impide nuevas incorporaciones; revocar la pertenencia expulsa al invitado ya conectado. Véase [Fase 7](FASE7-ACCESO-QR.md).
 - **Participante/usuario:** nombre visible, avatar opcional y relación con su cuenta. No crea partidas ni importa imágenes; solo puede mover los tokens asignados y usar herramientas expresamente permitidas.
 - **Máster:** participante propietario de la sala y autoridad final sobre acciones, mapas, visibilidad, subidas de recursos y permisos de los usuarios. Puede emitir invitaciones de alta de cuentas ordinarias.
 - **Administrador:** gestiona despliegue, configuración global y las cuentas con privilegios de dirección.

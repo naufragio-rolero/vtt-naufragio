@@ -1,6 +1,6 @@
 # Naufragio VTT
 
-Tablero virtual ligero para El Naufragio, inspirado en la sencillez de Owlbear Rodeo 1.0. Esta rama integra la mesa local con salas multijugador de tokens públicos; las imágenes compartidas y el MVP completo siguen pendientes.
+Tablero virtual ligero para El Naufragio, inspirado en la sencillez de Owlbear Rodeo 1.0. Esta rama integra la mesa local con salas multijugador, mapa activo y retratos compartidos y acceso temporal mediante QR. El MVP completo y la publicación siguen pendientes.
 
 **[Requisitos completos y plan de trabajo](docs/REQUISITOS.md)** — arquitectura, alcance del MVP y decisiones confirmadas.
 
@@ -41,7 +41,7 @@ El Canvas conserva rejilla, zoom, desplazamiento y temas. Solo dirección mueve 
 5. Desde **La mesa → Apariencia**, elige entre tema claro y oscuro.
 6. Recarga la página para comprobar que se conservan fondo, tamaño, posición, tema y tokens.
 
-Esta iteración admite **un mapa local**. Las salas compartidas sincronizan únicamente posiciones de tokens; no envían ese mapa a otros participantes.
+Esta iteración admite **un mapa local**. En la rama multijugador, el director comparte expresamente el mapa activo y retratos, con SHA-256 y permisos; el tablero local permanece separado.
 
 **[Documento de trabajo y pruebas: importación de mapas](docs/PLAN-MAPAS.md).**
 
@@ -68,6 +68,8 @@ La mesa local conserva tokens/ajustes en localStorage y su mapa en IndexedDB. La
 
 ## Próximas fases
 
-Consultar el [documento de requisitos](docs/REQUISITOS.md). La arquitectura considera el navegador del máster como fuente oficial del estado de la partida, cachés autorizadas en los navegadores de jugadores y el backend de autenticación/retransmisión, **sin persistir partidas en el servidor**. Imágenes compartidas, exportaciones y operación pública siguen pendientes.
+La rama `feat/backend-multijugador` incorpora [Fase 6: mapa activo y retratos](docs/FASE6-RECURSOS.md) y [Fase 7: acceso QR y preparación de producción](docs/FASE7-ACCESO-QR.md). El director puede admitir participantes temporales sin contraseña, con permisos de jugador denegados por defecto y revocación inmediata. El QR usa la configuración pública del sitio, no un servidor introducido por el móvil. Esta entrega no cambia la web publicada ni activa el backend público.
+
+Consultar el [documento de requisitos](docs/REQUISITOS.md). La arquitectura considera el navegador del máster como fuente oficial del estado de la partida, cachés autorizadas en los navegadores de jugadores y el backend de autenticación/retransmisión, **sin persistir partidas en el servidor**. Exportaciones y operación pública siguen pendientes; mapas/retratos compartidos y QR están disponibles en la rama de desarrollo.
 
 No se incluyen claves, cuentas de demostración falsas ni secretos en el frontend.

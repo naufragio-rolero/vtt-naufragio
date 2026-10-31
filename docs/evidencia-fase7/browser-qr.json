@@ -1,0 +1,57 @@
+{
+  "result": "pass",
+  "edge": "156.0.4314.50",
+  "firefox": "142.0.1",
+  "scenarios": [
+    {
+      "basePath": "/",
+      "transport": "websocket",
+      "clients": 3,
+      "mobileEmulation": [
+        "Firefox touch 390x844",
+        "Edge mobile 393x852"
+      ],
+      "qrDecode": true,
+      "approvalAndRejection": true,
+      "roomIsolation": true,
+      "expulsion": true,
+      "sha256": "26eb22b863f25a94cd02e2cb15f4edf46f7e1c637546d67362cc39fbea96dff6",
+      "bytes": 12582912,
+      "transferMs": 34439,
+      "interruptedTransfer": true,
+      "reconnectAndReload": true,
+      "residual600sTimers": 0,
+      "pageErrors": 0,
+      "unhandledRejections": 0,
+      "urlOrReferrerLeaks": 0,
+      "peakBackendAndDriverRssMiB": 336,
+      "cpuMs": 23890,
+      "durationMs": 115791
+    },
+    {
+      "basePath": "/vtt/",
+      "transport": "polling",
+      "clients": 3,
+      "mobileEmulation": [
+        "Firefox touch 390x844",
+        "Edge mobile 393x852"
+      ],
+      "qrDecode": true,
+      "approvalAndRejection": true,
+      "roomIsolation": true,
+      "expulsion": true,
+      "sha256": "fd1595e0821950bef014cfe569eb674f270bfb8c7688e252bd89abf0c81f5f53",
+      "bytes": 12582912,
+      "transferMs": 46671,
+      "interruptedTransfer": true,
+      "reconnectAndReload": true,
+      "residual600sTimers": 0,
+      "pageErrors": 0,
+      "unhandledRejections": 0,
+      "urlOrReferrerLeaks": 0,
+      "peakBackendAndDriverRssMiB": 591,
+      "cpuMs": 45157,
+      "durationMs": 143825
+    }
+  ]
+}

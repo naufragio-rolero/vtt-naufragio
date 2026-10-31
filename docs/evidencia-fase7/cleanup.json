@@ -1,0 +1,12 @@
+{
+  "windowsOnly": true,
+  "testProcessAudit": "zero Node and Playwright browser test processes detected",
+  "allNodeProcesses": 0,
+  "backendServerClosed": true,
+  "engineIoClientsAfterClose": 0,
+  "qrFixtureDirectories": 0,
+  "cleanValidationCopyRemoved": true,
+  "failedSyntheticBackupDirectoriesRemoved": 3,
+  "sharedExistingNodeAndBrowserToolsRetained": true,
+  "raspberryAccess": false
+}
