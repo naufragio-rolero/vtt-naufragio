@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="es">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Conectividad de la beta · Naufragio VTT</title>
+<style>body{max-width:42rem;margin:3rem auto;padding:0 1rem;font:18px system-ui;background:#141b25;color:#eef3fb}button{font:inherit;padding:.7rem}li{margin:1rem 0}a{color:#a9d0ff}</style>
+<h1>Comprobar conexión de la beta</h1>
+<p>Comprueba HTTPS, WebSocket y HTTP polling sin iniciar sesión. Para probar una red externa, desactiva el Wi-Fi del móvil.</p>
+<button id="run" disabled>Comprobar conexión</button>
+<ul><li id="https">HTTPS: pendiente</li><li id="websocket">WebSocket: pendiente</li><li id="polling">Polling: pendiente</li></ul>
+<p id="summary" role="status">Cargando configuración pública…</p>
+<p>Esta prueba comprueba el transporte; no valida cuentas ni una partida. No solicita contraseñas y no muestra identificadores de conexión.</p>
+<a href="./index.html">Volver a la beta</a>
+<script type="module">
+import {validateSiteConfig} from './settings/site-config.js';
+const get=id=>document.getElementById(id);
+let config;
+function endpoint(transport,sid){
+  const url=new URL(config.socketPath.replace(/\/$/,'')+'/',config.realtimeBaseUrl);
+  if(transport==='websocket')url.protocol=url.protocol==='https:'?'wss:':'ws:';
+  url.search=new URLSearchParams({EIO:'4',transport,...(sid?{sid}:{})}).toString();
+  return url;
+}
+async function request(url,options={}){
+  return fetch(url,{credentials:'omit',cache:'no-store',redirect:'error',referrerPolicy:'no-referrer',signal:AbortSignal.timeout(10000),...options});
+}
+function welcome(value){
+  if(typeof value!=='string'||!value.startsWith('0'))throw new Error('HANDSHAKE');
+  const data=JSON.parse(value.slice(1));
+  if(typeof data.sid!=='string'||!data.sid||typeof data.pingInterval!=='number')throw new Error('HANDSHAKE');
+  return data;
+}
+async function websocket(){
+  const socket=new WebSocket(endpoint('websocket'));
+  let timeout;
+  try{
+    await new Promise((resolve,reject)=>{
+      timeout=setTimeout(()=>reject(new Error('TIMEOUT')),10000);
+      socket.onerror=()=>reject(new Error('CONNECTION'));
+      socket.onclose=()=>reject(new Error('CLOSED'));
+      socket.onmessage=event=>{try{welcome(event.data);resolve();}catch{reject(new Error('HANDSHAKE'));}};
+    });
+    socket.send('1');
+  }finally{clearTimeout(timeout);socket.close();}
+}
+async function polling(){
+  const response=await request(endpoint('polling'));
+  if(!response.ok)throw new Error('HTTP');
+  const data=welcome(await response.text());
+  const closed=await request(endpoint('polling',data.sid),{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:'1'});
+  if(!closed.ok)throw new Error('HTTP');
+}
+async function https(){
+  const response=await request(config.apiBaseUrl.replace(/\/$/,'')+'/health');
+  if(!response.ok)throw new Error('HTTP');
+  const data=await response.json();
+  if(data.status!=='ok'||data.service!=='naufragio-vtt'||data.protocolVersion!==1)throw new Error('IDENTITY');
+}
+get('run').onclick=async()=>{
+  get('run').disabled=true;let passed=0;
+  try{
+    for(const [id,check] of [['https',https],['websocket',websocket],['polling',polling]]){
+      const label=id==='https'?'HTTPS':id==='websocket'?'WebSocket':'Polling';
+      get(id).textContent=label+': comprobando…';
+      try{await check();get(id).textContent=label+': OK';passed++;}
+      catch{get(id).textContent=label+': FALLO';}
+    }
+    get('summary').textContent=passed===3?'Las tres conexiones funcionan.':'Alguna conexión no ha podido confirmarse.';
+  }finally{get('run').disabled=false;}
+};
+try{
+  const response=await request(new URL('./site.config.json',location.href));
+  if(!response.ok)throw new Error();config=validateSiteConfig(await response.json());
+  get('summary').textContent='Destino: '+new URL(config.apiBaseUrl).host;
+  get('run').disabled=false;
+}catch{get('summary').textContent='No se pudo cargar la configuración pública de esta beta.';}
+</script>
+</html>

@@ -82,6 +82,11 @@
       "sha256": "fb186f5df54307d4c6544d7cf105ab60c4b9e7dd477b988c2d544a78c2ed0ffd"
     },
     {
+      "path": "network-check.html",
+      "bytes": 4064,
+      "sha256": "0902b3d1ee97dbd8d6746728b06cd3aeb7a2f04cf733fa24e641d15c468b4e09"
+    },
+    {
       "path": "settings/settings.css",
       "bytes": 532,
       "sha256": "c8717f3f13d02fa120d62323c5b02068e397f16ff219c8c41abd989ca6a495fc"
