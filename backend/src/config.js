@@ -60,7 +60,7 @@ export function loadConfig(env = process.env) {
     databasePath,
     authRateLimit: integer('AUTH_RATE_LIMIT', 10, 1, 100),
     authWindowMs: integer('AUTH_WINDOW_MS', 300000, 100, 3600000),
-    sessionTtlSeconds: integer('SESSION_TTL_SECONDS', 1800, 60, 3600),
+    sessionTtlSeconds: integer('SESSION_TTL_SECONDS', 1800, 60, 16200),
     invitationTtlSeconds: integer('INVITATION_TTL_SECONDS', 86400, 60, 604800),
     roomCodeTtlSeconds: integer('ROOM_CODE_TTL_SECONDS', 86400, 60, 604800),
     roomInvitationTtlSeconds: integer('ROOM_INVITATION_TTL_SECONDS', 86400, 60, 604800),

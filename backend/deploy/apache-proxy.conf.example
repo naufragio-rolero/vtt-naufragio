@@ -14,7 +14,7 @@ RequestHeader unset X-Forwarded-Proto
 RequestHeader unset X-Naufragio-Proxy-Token
 RequestHeader set X-Forwarded-For "expr=%{CONN_REMOTE_ADDR}"
 RequestHeader set X-Forwarded-Proto "https"
-Include /etc/apache2/secrets/naufragio-vtt-proxy.conf
+Include /etc/naufragio-vtt/apache-proxy-secret.conf
 LimitRequestBody 131072
 ProxyPass "/socket.io/" "http://127.0.0.1:3400/socket.io/" upgrade=websocket connectiontimeout=5 timeout=120
 ProxyPassReverse "/socket.io/" "http://127.0.0.1:3400/socket.io/"

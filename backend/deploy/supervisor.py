@@ -4,9 +4,11 @@ No changes to other services. systemd WatchdogSec/KillMode cover supervisor
 failure or a stalled monitor; Linux parent-death signal also covers child orphaning.
 """
 import ctypes
+import functools
 import json
 import os
 import pathlib
+import re
 import signal
 import socket
 import subprocess
@@ -17,8 +19,13 @@ RSS_KIB = 160 * 1024
 AVAILABLE_KIB = 192 * 1024
 TEMPERATURE_C = 75
 SERVICES = ['apache2', 'mariadb', 'ssh', 'smbd']
-libc = ctypes.CDLL(None, use_errno=True)
 stopping = False
+
+
+class ResourceGuard(RuntimeError):
+    def __init__(self, sample):
+        super().__init__('RESOURCE_GUARD')
+        self.sample = sample
 
 
 def stop(*_):
@@ -26,8 +33,57 @@ def stop(*_):
     stopping = True
 
 
-for sig in (signal.SIGTERM, signal.SIGINT):
-    signal.signal(sig, stop)
+MAX_SECONDS = 16200
+
+
+def supervision_window(env):
+    value = env.get('SUPERVISOR_MAX_SECONDS', '900')
+    if not re.fullmatch(r'[0-9]+', value) or not 1 <= int(value) <= MAX_SECONDS:
+        raise RuntimeError('INVALID_SUPERVISION_WINDOW')
+    return int(value)
+
+
+def independent_probes(items):
+    if not isinstance(items, list) or len(items) != 6:
+        raise RuntimeError('SIX_INDEPENDENT_PROBES_REQUIRED')
+    hosts = set()
+    for item in items:
+        host = item.get('host', '')
+        if (not re.fullmatch(r'[a-z0-9]+(?:[.-][a-z0-9]+)*', host)
+                or host == 'api.naufragio.net' or host in hosts
+                or not item.get('path', '').startswith('/')
+                or any(c in item['path'] for c in '\r\n?#')
+                or not isinstance(item.get('expected'), int)):
+            raise RuntimeError('INVALID_INDEPENDENT_PROBE')
+        hosts.add(host)
+    return items
+
+
+class MetricsLog:
+    """Bounded on-disk history: current file plus three 2 MiB segments."""
+    def __init__(self, path, max_bytes=2 * 1024 * 1024):
+        self.path = pathlib.Path(path)
+        self.max_bytes = max_bytes
+        self.file = None
+
+    def __enter__(self):
+        self.file = self.path.open('a', buffering=1)
+        return self
+
+    def write(self, value):
+        line = json.dumps(value) + '\n'
+        if self.file.tell() + len(line.encode()) > self.max_bytes:
+            self.file.close()
+            for n in range(3, 0, -1):
+                source = self.path if n == 1 else pathlib.Path(str(self.path) + '.' + str(n - 1))
+                if source.exists():
+                    source.replace(str(self.path) + '.' + str(n))
+            self.file = self.path.open('a', buffering=1)
+        self.file.write(line)
+
+    def __exit__(self, *_):
+        if self.file:
+            self.file.close()
 
 
 def notify(message):
@@ -79,19 +135,47 @@ def resources(child=None):
               'backendRssKiB': backend, 'supervisorRssKiB': own,
               'rssKiB': backend + own}
     if available < AVAILABLE_KIB or temp >= TEMPERATURE_C or backend + own > RSS_KIB:
-        raise RuntimeError('RESOURCE_GUARD')
+        raise ResourceGuard(result)
     return result
+
+
+class NoHealthRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, *args, **kwargs):
+        return None
+
+
+@functools.lru_cache(maxsize=1)
+def health_opener():
+    # Reuse handlers and TLS context: rebuilding an opener on every health
+    # sample retains native allocations and can grow the monitor's own RSS.
+    return urllib.request.build_opener(urllib.request.ProxyHandler({}), NoHealthRedirect())
+
+
+def health_request(env):
+    headers = {}
+    if env.get('TRUST_PROXY_LOOPBACK', 'false') == 'true':
+        token = env.get('TRUSTED_PROXY_TOKEN', '')
+        if not re.fullmatch(r'[a-f0-9]{64}', token):
+            raise RuntimeError('INVALID_HEALTH_PROXY_CONFIGURATION')
+        headers = {'X-Naufragio-Proxy-Token': token,
+                   'X-Forwarded-Proto': 'https', 'X-Forwarded-For': '127.0.0.1'}
+    return urllib.request.Request('http://127.0.0.1:3400/health', headers=headers)
 
 
 def health():
     try:
-        with urllib.request.urlopen('http://127.0.0.1:3400/health', timeout=1) as response:
-            return response.status == 200
+        with health_opener().open(health_request(os.environ), timeout=1) as response:
+            body = json.loads(response.read(4096))
+            return (response.status == 200 and body.get('status') == 'ok'
+                    and body.get('service') == 'naufragio-vtt' and body.get('protocolVersion') == 1)
     except OSError:
         return False
 
 
 def main():
+    libc = ctypes.CDLL(None, use_errno=True)
+    for sig in (signal.SIGTERM, signal.SIGINT):
+        signal.signal(sig, stop)
     child = None
     reason = 'normal_stop'
     began = time.monotonic()
@@ -101,13 +185,12 @@ def main():
             raise RuntimeError('UNPRIVILEGED_USER_REQUIRED')
         if int(os.environ.get('WATCHDOG_USEC', '0')) <= 0:
             raise RuntimeError('SYSTEMD_WATCHDOG_REQUIRED')
-        limit = int(os.environ.get('SUPERVISOR_MAX_SECONDS', '900'))
-        if not 1 <= limit <= 3600:
-            raise RuntimeError('INVALID_SUPERVISION_WINDOW')
+        limit = supervision_window(os.environ)
+        health_request(os.environ)
         initial = resources()
         if initial['availableKiB'] < 384 * 1024:
             raise RuntimeError('INSUFFICIENT_INITIAL_MEMORY')
-        probes = json.loads(pathlib.Path(os.environ['SUPERVISOR_PROBES']).read_text())
+        probes = independent_probes(json.loads(pathlib.Path(os.environ['SUPERVISOR_PROBES']).read_text()))
         baseline_services = service_state()
         baseline_web = [probe(item) for item in probes]
         print(json.dumps({'state': 'baseline', 'resources': initial,
@@ -128,7 +211,7 @@ def main():
         ready = False
         n = 0
         metrics = pathlib.Path(os.environ['SUPERVISOR_METRICS'])
-        with metrics.open('a', buffering=1) as log:
+        with MetricsLog(metrics) as log:
             while not stopping and time.monotonic() - began < limit:
                 if child.poll() is not None:
                     raise RuntimeError('BACKEND_EXITED')
@@ -147,7 +230,9 @@ def main():
                     sample['servicesUnchanged'] = service_state() == baseline_services
                     if not sample['servicesUnchanged']:
                         raise RuntimeError('SERVICE_CHANGED')
-                log.write(json.dumps(sample) + '\n')
+                    if ready and not health():
+                        raise RuntimeError('BACKEND_UNHEALTHY')
+                log.write(sample)
                 if not ready:
                     if health():
                         ready = True
@@ -160,6 +245,8 @@ def main():
         if not stopping:
             reason = 'supervision_window_complete'
     except Exception as error:
+        if isinstance(error, ResourceGuard):
+            print(json.dumps({'state': 'resource_guard', 'resources': error.sample}), flush=True)
         # KillMode=control-group can terminate an in-flight curl/systemctl
         # together with Node during an explicitly requested systemctl stop.
         # Never convert resource/service guard failures into a successful stop.
