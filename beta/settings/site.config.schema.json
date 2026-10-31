@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Naufragio VTT — configuración pública v1",
+  "description": "Estructura del fichero público. site-config.js comprueba además esquemas HTTPS/WSS, localhost de desarrollo, credenciales, query, fragmentos y segmentos de ruta.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "siteName", "apiBaseUrl", "realtimeBaseUrl", "socketPath", "roleLabels"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "siteName": { "type": "string", "minLength": 1, "maxLength": 80 },
+    "apiBaseUrl": { "type": "string", "format": "uri", "maxLength": 2048, "pattern": "^https?://" },
+    "realtimeBaseUrl": { "type": "string", "format": "uri", "maxLength": 2048, "pattern": "^(https?|wss?)://" },
+    "socketPath": { "type": "string", "maxLength": 200, "pattern": "^/[a-zA-Z0-9_.-]+(/[a-zA-Z0-9_.-]+)*$" },
+    "roleLabels": {
+      "type": "object", "additionalProperties": false, "required": ["admin", "director", "user"],
+      "properties": {
+        "admin": { "type": "string", "minLength": 1, "maxLength": 40 },
+        "director": { "type": "string", "minLength": 1, "maxLength": 40 },
+        "user": { "type": "string", "minLength": 1, "maxLength": 40 }
+      }
+    }
+  }
+}
