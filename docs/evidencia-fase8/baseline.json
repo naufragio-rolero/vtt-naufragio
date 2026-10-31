@@ -1,0 +1,143 @@
+﻿{
+  "utc": "2026-10-31T16:27:57Z",
+  "sharedConfig": {
+    "files": 298,
+    "sha256": "c09b648c61f6e47577fa25b11d61e67a83dfe4a4b6a3a11c8b50c2daf0f28e27"
+  },
+  "otherAccounts": {
+    "passwd": "7f4f38f86486f0f42806d5fe6f6fe7ebf53a2b84d93dd6895239656f973a1228",
+    "group": "59dfb21b2ea9901de06ec58b56afe07ce688affc15d2dd4ff1202b93b0a2a618",
+    "shadow": "506ab76c0e9121d011acbd868046966c7bb7b03c75e3b9f2810e6e6f03f4b82e",
+    "gshadow": "89955d36166675f877faebcfc64d607fa1876356f8284b47d71211633d651b67"
+  },
+  "web": [
+    {
+      "label": "heavensgate",
+      "expected": 200,
+      "exit": 0,
+      "stdout": "200 0.186102 0",
+      "stderr": ""
+    },
+    {
+      "label": "forum",
+      "expected": 200,
+      "exit": 0,
+      "stdout": "200 0.212267 0",
+      "stderr": ""
+    },
+    {
+      "label": "proxy",
+      "expected": 404,
+      "exit": 0,
+      "stdout": "404 0.101862 0",
+      "stderr": ""
+    },
+    {
+      "label": "bibprof",
+      "expected": 200,
+      "exit": 0,
+      "stdout": "200 0.196098 0",
+      "stderr": ""
+    },
+    {
+      "label": "ordenanthia",
+      "expected": 200,
+      "exit": 0,
+      "stdout": "200 0.117711 0",
+      "stderr": ""
+    },
+    {
+      "label": "gallery",
+      "expected": 200,
+      "exit": 0,
+      "stdout": "200 0.121004 0",
+      "stderr": ""
+    },
+    {
+      "label": "api",
+      "expected": 403,
+      "exit": 0,
+      "stdout": "403 0.130838 0",
+      "stderr": ""
+    }
+  ],
+  "services": {
+    "exit": 0,
+    "stdout": "MainPID=31389\nId=apache2.service\nActiveState=active\n\nMainPID=868\nId=mariadb.service\nActiveState=active\n\nMainPID=803\nId=ssh.service\nActiveState=active\n\nMainPID=1029\nId=smbd.service\nActiveState=active",
+    "stderr": ""
+  },
+  "availableKiB": 533288,
+  "temperatureC": 59.072,
+  "ssd": {
+    "exit": 0,
+    "stdout": "/dev/sdb1 ext4 rw,noatime",
+    "stderr": ""
+  },
+  "disk": {
+    "exit": 0,
+    "stdout": "Filesystem     1024-blocks     Used Available Capacity Mounted on\n/dev/sdb1        114792580 22351076  86564156      21% /mnt/ssd",
+    "stderr": ""
+  },
+  "listenersSha256": "affc9d5ec0203bfeeb37d9558355ba833a2d01d33f077ec3e3741075bc9ff5ac",
+  "listenerPorts": [
+    22,
+    80,
+    139,
+    443,
+    445,
+    3306,
+    8787,
+    9090
+  ],
+  "paths": {
+    "/opt/naufragio-vtt": false,
+    "/etc/naufragio-vtt": false,
+    "/mnt/ssd/naufragio-vtt": false,
+    "/etc/systemd/system/naufragio-vtt.service": false
+  },
+  "account": {
+    "exit": 2,
+    "stdout": "",
+    "stderr": ""
+  },
+  "vttUnit": {
+    "exit": 0,
+    "stdout": "Result=success\nLoadState=not-found\nActiveState=inactive\nUnitFileState=",
+    "stderr": ""
+  },
+  "controllers": "cpuset cpu io pids",
+  "kernelMemoryFlags": [
+    "cgroup_disable=memory"
+  ],
+  "bootInvestigation": {
+    "/boot/config.txt": {
+      "relevantLines": [],
+      "mtimeUtc": "2026-10-06T00:07:18Z"
+    },
+    "/boot/firmware/config.txt": {
+      "relevantLines": [],
+      "mtimeUtc": "2026-10-06T00:07:18Z"
+    },
+    "/boot/cmdline.txt": {
+      "relevantLines": [],
+      "mtimeUtc": "2026-10-06T00:07:18Z"
+    },
+    "/boot/firmware/cmdline.txt": {
+      "relevantLines": [],
+      "mtimeUtc": "1980-01-01T00:00:00Z"
+    },
+    "kernelConfig": [
+      "CONFIG_CGROUPS=y",
+      "CONFIG_MEMCG=y",
+      "CONFIG_MEMCG_NMI_SAFETY_REQUIRES_ATOMIC=y",
+      "CONFIG_CMDLINE=\"console=ttyAMA0,115200 kgdboc=ttyAMA0,115200 root=/dev/mmcblk0p2 rootfstype=ext4 rootwait\"",
+      "CONFIG_CMDLINE_FROM_BOOTLOADER=y",
+      "# CONFIG_CMDLINE_EXTEND is not set",
+      "# CONFIG_CMDLINE_FORCE is not set",
+      "# CONFIG_CMDLINE_PARTITION is not set"
+    ],
+    "deviceTreeMemoryFlags": [
+      "cgroup_disable=memory"
+    ]
+  }
+}

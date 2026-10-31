@@ -1,0 +1,7 @@
+{
+  "generations": [
+    7,
+    8
+  ],
+  "scope": "successful installed acceptance including its intentional unit restart, before final shutdown checks"
+}

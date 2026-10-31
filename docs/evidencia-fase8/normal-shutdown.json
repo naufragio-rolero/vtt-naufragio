@@ -1,0 +1,12 @@
+[
+  {
+    "normalStop": 1,
+    "state": "MainPID=0\nResult=success\nActiveState=inactive\nUnitFileState=disabled",
+    "listenerAbsent": true
+  },
+  {
+    "normalStop": 2,
+    "state": "MainPID=0\nResult=success\nActiveState=inactive\nUnitFileState=disabled",
+    "listenerAbsent": true
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "fault": "SIGKILL",
+    "secondsToNoListener": 1.841,
+    "state": {
+      "MainPID": "0",
+      "Result": "signal",
+      "ActiveState": "failed",
+      "SubState": "failed",
+      "UnitFileState": "disabled"
+    },
+    "noListener": true
+  },
+  {
+    "fault": "SIGSTOP",
+    "secondsToNoListener": 12.079,
+    "state": {
+      "MainPID": "0",
+      "Result": "watchdog",
+      "ActiveState": "failed",
+      "SubState": "failed",
+      "UnitFileState": "disabled"
+    },
+    "noListener": true
+  }
+]

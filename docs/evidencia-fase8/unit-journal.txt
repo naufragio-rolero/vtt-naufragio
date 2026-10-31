@@ -1,0 +1,126 @@
+Starting naufragio-vtt.service - Naufragio VTT isolated backend...
+{"state": "baseline", "resources": {"availableKiB": 528844, "temperatureC": 60.148, "backendRssKiB": 0, "supervisorRssKiB": 17020, "rssKiB": 17020}, "web": [{"label": "heavensgate", "code": "200", "seconds": 0.224969}, {"label": "forum", "code": "200", "seconds": 0.243818}, {"label": "proxy", "code": "404", "seconds": 0.137657}, {"label": "bibprof", "code": "200", "seconds": 0.261326}, {"label": "ordenanthia", "code": "200", "seconds": 0.135973}, {"label": "gallery", "code": "200", "seconds": 0.120753}, {"label": "api", "code": "403", "seconds": 0.153113}]}
+(node:20481) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Naufragio VTT: HTTP ready (phase 4)
+Started naufragio-vtt.service - Naufragio VTT isolated backend.
+naufragio-vtt.service: Sent signal SIGKILL to main process 20457 (python3) on client request.
+naufragio-vtt.service: Main process exited, code=killed, status=9/KILL
+naufragio-vtt.service: Failed with result 'signal'.
+naufragio-vtt.service: Consumed 4.633s CPU time.
+Starting naufragio-vtt.service - Naufragio VTT isolated backend...
+{"state": "baseline", "resources": {"availableKiB": 531104, "temperatureC": 60.686, "backendRssKiB": 0, "supervisorRssKiB": 17020, "rssKiB": 17020}, "web": [{"label": "heavensgate", "code": "200", "seconds": 0.213281}, {"label": "forum", "code": "200", "seconds": 0.209728}, {"label": "proxy", "code": "404", "seconds": 0.117467}, {"label": "bibprof", "code": "200", "seconds": 0.225111}, {"label": "ordenanthia", "code": "200", "seconds": 0.135734}, {"label": "gallery", "code": "200", "seconds": 0.12049}, {"label": "api", "code": "403", "seconds": 0.152006}]}
+(node:20611) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Naufragio VTT: HTTP ready (phase 4)
+Started naufragio-vtt.service - Naufragio VTT isolated backend.
+naufragio-vtt.service: Sent signal SIGSTOP to main process 20600 (python3) on client request.
+naufragio-vtt.service: Watchdog timeout (limit 10s)!
+naufragio-vtt.service: Killing process 20600 (python3) with signal SIGKILL.
+naufragio-vtt.service: Killing process 20611 (node) with signal SIGKILL.
+naufragio-vtt.service: Killing process 20614 (node) with signal SIGKILL.
+naufragio-vtt.service: Killing process 20615 (node) with signal SIGKILL.
+naufragio-vtt.service: Main process exited, code=killed, status=9/KILL
+naufragio-vtt.service: Killing process 20615 (node) with signal SIGKILL.
+naufragio-vtt.service: Failed with result 'watchdog'.
+naufragio-vtt.service: Consumed 4.887s CPU time.
+Starting naufragio-vtt.service - Naufragio VTT isolated backend...
+{"state": "baseline", "resources": {"availableKiB": 533904, "temperatureC": 61.762, "backendRssKiB": 0, "supervisorRssKiB": 17020, "rssKiB": 17020}, "web": [{"label": "heavensgate", "code": "200", "seconds": 0.219818}, {"label": "forum", "code": "200", "seconds": 0.214303}, {"label": "proxy", "code": "404", "seconds": 0.11976}, {"label": "bibprof", "code": "200", "seconds": 0.238742}, {"label": "ordenanthia", "code": "200", "seconds": 0.138735}, {"label": "gallery", "code": "200", "seconds": 0.124608}, {"label": "api", "code": "403", "seconds": 0.168905}]}
+(node:20913) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Naufragio VTT: HTTP ready (phase 4)
+Started naufragio-vtt.service - Naufragio VTT isolated backend.
+Stopping naufragio-vtt.service - Naufragio VTT isolated backend...
+{"state": "supervisor_stopped", "reason": "normal_stop", "backendExited": true}
+naufragio-vtt.service: Deactivated successfully.
+Stopped naufragio-vtt.service - Naufragio VTT isolated backend.
+naufragio-vtt.service: Consumed 4.862s CPU time.
+Starting naufragio-vtt.service - Naufragio VTT isolated backend...
+{"state": "baseline", "resources": {"availableKiB": 529732, "temperatureC": 61.224, "backendRssKiB": 0, "supervisorRssKiB": 17020, "rssKiB": 17020}, "web": [{"label": "heavensgate", "code": "200", "seconds": 0.2123}, {"label": "forum", "code": "200", "seconds": 0.233734}, {"label": "proxy", "code": "404", "seconds": 0.11716}, {"label": "bibprof", "code": "200", "seconds": 0.226066}, {"label": "ordenanthia", "code": "200", "seconds": 0.135045}, {"label": "gallery", "code": "200", "seconds": 0.14721}, {"label": "api", "code": "403", "seconds": 0.152011}]}
+(node:21258) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Naufragio VTT: HTTP ready (phase 4)
+Started naufragio-vtt.service - Naufragio VTT isolated backend.
+Stopping naufragio-vtt.service - Naufragio VTT isolated backend...
+{"state": "supervisor_stopped", "reason": "normal_stop", "backendExited": true}
+naufragio-vtt.service: Deactivated successfully.
+Stopped naufragio-vtt.service - Naufragio VTT isolated backend.
+naufragio-vtt.service: Consumed 8.457s CPU time.
+Starting naufragio-vtt.service - Naufragio VTT isolated backend...
+{"state": "baseline", "resources": {"availableKiB": 530628, "temperatureC": 60.148, "backendRssKiB": 0, "supervisorRssKiB": 16984, "rssKiB": 16984}, "web": [{"label": "heavensgate", "code": "200", "seconds": 0.198119}, {"label": "forum", "code": "200", "seconds": 0.233231}, {"label": "proxy", "code": "404", "seconds": 0.117948}, {"label": "bibprof", "code": "200", "seconds": 0.227002}, {"label": "ordenanthia", "code": "200", "seconds": 0.140057}, {"label": "gallery", "code": "200", "seconds": 0.120265}, {"label": "api", "code": "403", "seconds": 0.147667}]}
+(node:21736) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Naufragio VTT: HTTP ready (phase 4)
+Started naufragio-vtt.service - Naufragio VTT isolated backend.
+Stopping naufragio-vtt.service - Naufragio VTT isolated backend...
+{"state": "supervisor_stopped", "reason": "normal_stop", "backendExited": true}
+naufragio-vtt.service: Deactivated successfully.
+Stopped naufragio-vtt.service - Naufragio VTT isolated backend.
+naufragio-vtt.service: Consumed 8.447s CPU time.
+Starting naufragio-vtt.service - Naufragio VTT isolated backend...
+{"state": "baseline", "resources": {"availableKiB": 531724, "temperatureC": 60.148, "backendRssKiB": 0, "supervisorRssKiB": 17020, "rssKiB": 17020}, "web": [{"label": "heavensgate", "code": "200", "seconds": 0.21104}, {"label": "forum", "code": "200", "seconds": 0.207046}, {"label": "proxy", "code": "404", "seconds": 0.117781}, {"label": "bibprof", "code": "200", "seconds": 0.226696}, {"label": "ordenanthia", "code": "200", "seconds": 0.135097}, {"label": "gallery", "code": "200", "seconds": 0.121583}, {"label": "api", "code": "403", "seconds": 0.177778}]}
+(node:22108) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Naufragio VTT: HTTP ready (phase 4)
+Started naufragio-vtt.service - Naufragio VTT isolated backend.
+Stopping naufragio-vtt.service - Naufragio VTT isolated backend...
+{"state": "supervisor_stopped", "reason": "normal_stop", "backendExited": true}
+naufragio-vtt.service: Deactivated successfully.
+Stopped naufragio-vtt.service - Naufragio VTT isolated backend.
+naufragio-vtt.service: Consumed 51.451s CPU time.
+Starting naufragio-vtt.service - Naufragio VTT isolated backend...
+{"state": "baseline", "resources": {"availableKiB": 541056, "temperatureC": 61.224, "backendRssKiB": 0, "supervisorRssKiB": 16984, "rssKiB": 16984}, "web": [{"label": "heavensgate", "code": "200", "seconds": 0.212584}, {"label": "forum", "code": "200", "seconds": 0.216341}, {"label": "proxy", "code": "404", "seconds": 0.117186}, {"label": "bibprof", "code": "200", "seconds": 0.249157}, {"label": "ordenanthia", "code": "200", "seconds": 0.135138}, {"label": "gallery", "code": "200", "seconds": 0.120777}, {"label": "api", "code": "403", "seconds": 0.151943}]}
+(node:22888) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Naufragio VTT: HTTP ready (phase 4)
+Started naufragio-vtt.service - Naufragio VTT isolated backend.
+Stopping naufragio-vtt.service - Naufragio VTT isolated backend...
+{"state": "supervisor_stopped", "reason": "normal_stop", "backendExited": true}
+naufragio-vtt.service: Deactivated successfully.
+Stopped naufragio-vtt.service - Naufragio VTT isolated backend.
+naufragio-vtt.service: Consumed 50.399s CPU time.
+Starting naufragio-vtt.service - Naufragio VTT isolated backend...
+{"state": "baseline", "resources": {"availableKiB": 426268, "temperatureC": 65.528, "backendRssKiB": 0, "supervisorRssKiB": 17020, "rssKiB": 17020}, "web": [{"label": "heavensgate", "code": "200", "seconds": 0.213021}, {"label": "forum", "code": "200", "seconds": 0.208018}, {"label": "proxy", "code": "404", "seconds": 0.11757}, {"label": "bibprof", "code": "200", "seconds": 0.236086}, {"label": "ordenanthia", "code": "200", "seconds": 0.135276}, {"label": "gallery", "code": "200", "seconds": 0.121038}, {"label": "api", "code": "403", "seconds": 0.159852}]}
+(node:23187) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Naufragio VTT: HTTP ready (phase 4)
+Started naufragio-vtt.service - Naufragio VTT isolated backend.
+Stopping naufragio-vtt.service - Naufragio VTT isolated backend...
+{"state": "supervisor_stopped", "reason": "CalledProcessError", "backendExited": true}
+naufragio-vtt.service: Main process exited, code=exited, status=1/FAILURE
+naufragio-vtt.service: Failed with result 'exit-code'.
+Stopped naufragio-vtt.service - Naufragio VTT isolated backend.
+naufragio-vtt.service: Consumed 37.795s CPU time.
+Starting naufragio-vtt.service - Naufragio VTT isolated backend...
+{"state": "baseline", "resources": {"availableKiB": 566360, "temperatureC": 61.762, "backendRssKiB": 0, "supervisorRssKiB": 17028, "rssKiB": 17028}, "web": [{"label": "heavensgate", "code": "200", "seconds": 0.212213}, {"label": "forum", "code": "200", "seconds": 0.218991}, {"label": "proxy", "code": "404", "seconds": 0.116965}, {"label": "bibprof", "code": "200", "seconds": 0.226947}, {"label": "ordenanthia", "code": "200", "seconds": 0.148651}, {"label": "gallery", "code": "200", "seconds": 0.120896}, {"label": "api", "code": "403", "seconds": 0.152862}]}
+(node:23826) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Naufragio VTT: HTTP ready (phase 4)
+Started naufragio-vtt.service - Naufragio VTT isolated backend.
+Stopping naufragio-vtt.service - Naufragio VTT isolated backend...
+{"state": "supervisor_stopped", "reason": "normal_stop", "backendExited": true}
+naufragio-vtt.service: Deactivated successfully.
+Stopped naufragio-vtt.service - Naufragio VTT isolated backend.
+naufragio-vtt.service: Consumed 4.754s CPU time.
+Starting naufragio-vtt.service - Naufragio VTT isolated backend...
+{"state": "baseline", "resources": {"availableKiB": 564908, "temperatureC": 61.762, "backendRssKiB": 0, "supervisorRssKiB": 17040, "rssKiB": 17040}, "web": [{"label": "heavensgate", "code": "200", "seconds": 0.211115}, {"label": "forum", "code": "200", "seconds": 0.210368}, {"label": "proxy", "code": "404", "seconds": 0.117367}, {"label": "bibprof", "code": "200", "seconds": 0.251559}, {"label": "ordenanthia", "code": "200", "seconds": 0.135019}, {"label": "gallery", "code": "200", "seconds": 0.120349}, {"label": "api", "code": "403", "seconds": 0.151878}]}
+(node:23968) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Naufragio VTT: HTTP ready (phase 4)
+Started naufragio-vtt.service - Naufragio VTT isolated backend.
+Stopping naufragio-vtt.service - Naufragio VTT isolated backend...
+{"state": "supervisor_stopped", "reason": "normal_stop", "backendExited": true}
+naufragio-vtt.service: Deactivated successfully.
+Stopped naufragio-vtt.service - Naufragio VTT isolated backend.
+naufragio-vtt.service: Consumed 4.648s CPU time.
+Starting naufragio-vtt.service - Naufragio VTT isolated backend...
+{"state": "baseline", "resources": {"availableKiB": 565220, "temperatureC": 62.3, "backendRssKiB": 0, "supervisorRssKiB": 17020, "rssKiB": 17020}, "web": [{"label": "heavensgate", "code": "200", "seconds": 0.211304}, {"label": "forum", "code": "200", "seconds": 0.218026}, {"label": "proxy", "code": "404", "seconds": 0.13475}, {"label": "bibprof", "code": "200", "seconds": 0.22571}, {"label": "ordenanthia", "code": "200", "seconds": 0.134974}, {"label": "gallery", "code": "200", "seconds": 0.121634}, {"label": "api", "code": "403", "seconds": 0.173513}]}
+(node:24048) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Naufragio VTT: HTTP ready (phase 4)
+Started naufragio-vtt.service - Naufragio VTT isolated backend.
+Stopping naufragio-vtt.service - Naufragio VTT isolated backend...
+{"state": "supervisor_stopped", "reason": "normal_stop", "backendExited": true}
+naufragio-vtt.service: Deactivated successfully.
+Stopped naufragio-vtt.service - Naufragio VTT isolated backend.
+naufragio-vtt.service: Consumed 4.908s CPU time.

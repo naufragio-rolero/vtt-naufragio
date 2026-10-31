@@ -1,0 +1,15 @@
+{
+  "installed": true,
+  "uid": 997,
+  "gid": 980,
+  "shell": "/usr/sbin/nologin",
+  "home": "/nonexistent",
+  "release": "/opt/naufragio-vtt/releases/fb6b0a1-f8",
+  "runtimeExecutableSha256": "407b390f1667066e55cb36c8622e79d6d488aed417d072487bfbe92f47829d6b",
+  "unitVerifyExit": 0,
+  "unitVerifyStderr": "",
+  "proxyMode": false,
+  "dataOnSsd": true,
+  "automaticStartEnabled": false,
+  "rollback": "/opt/naufragio-vtt/rollback-phase8.py"
+}

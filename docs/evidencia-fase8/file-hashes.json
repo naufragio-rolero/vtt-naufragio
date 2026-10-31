@@ -1,0 +1,12 @@
+{
+  "deploymentOverlays": {
+    "backend/deploy/supervisor.py": "7d844f7b43f3120e4d854e610ba4495f9945131a05dae01d29046ecc9bacdd5a",
+    "backend/deploy/naufragio-vtt.service": "8966329be0af2c040791236a3d81bc1e3d0534709f0d58b2001a1fbae119fe8e",
+    "backend/deploy/backend.env.example": "2b086d9d4b485532f5b55c952148a94c5276a0c2b1a163a961455101980cc44d"
+  },
+  "diagnostics": {
+    "validate-installed.mjs": "d5379af8eb8e66a42f80d77c211c687ddf2dd4dc35c7914604da5c937c9742c1",
+    "synthetic-ssd-fixture.mjs": "f04ae9794fa803ec672ce8915033cad5b84f2fb88d7354a21d5db66149ed6888",
+    "rollback-phase8.py": "e9a88434450f625b0b23eb2c84ad89eab12da3a417116444a99f577fead508fa"
+  }
+}

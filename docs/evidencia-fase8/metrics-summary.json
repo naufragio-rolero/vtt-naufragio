@@ -1,0 +1,86 @@
+{
+  "functionalGenerations": [
+    7,
+    8
+  ],
+  "samples": 153,
+  "sampledWindowSeconds": 201.14,
+  "nodeRssMaxMiB": 96.48828125,
+  "supervisorRssMaxMiB": 18.7578125,
+  "combinedRssMaxMiB": 115.1953125,
+  "availableMinMiB": 332.2265625,
+  "temperatureMaxC": 68.756,
+  "cpuUserSeconds": 48.41,
+  "cpuSystemSeconds": 3.34,
+  "cpuMeanOneCorePercent": 25.728348414039974,
+  "serviceChecks": 31,
+  "allServicesUnchanged": true,
+  "allAttemptSamples": 321,
+  "allAttemptsCombinedRssMaxMiB": 115.78125,
+  "allAttemptsTemperatureMaxC": 68.756,
+  "web": {
+    "api": {
+      "samples": 21,
+      "codes": [
+        "403"
+      ],
+      "medianMs": 209.281,
+      "p95Ms": 247.41299999999998,
+      "maxMs": 265.504
+    },
+    "bibprof": {
+      "samples": 22,
+      "codes": [
+        "200"
+      ],
+      "medianMs": 263.405,
+      "p95Ms": 327.66499999999996,
+      "maxMs": 328.852
+    },
+    "forum": {
+      "samples": 22,
+      "codes": [
+        "200"
+      ],
+      "medianMs": 251.33499999999998,
+      "p95Ms": 406.27000000000004,
+      "maxMs": 471.17900000000003
+    },
+    "gallery": {
+      "samples": 22,
+      "codes": [
+        "200"
+      ],
+      "medianMs": 149.991,
+      "p95Ms": 217.021,
+      "maxMs": 278.934
+    },
+    "heavensgate": {
+      "samples": 22,
+      "codes": [
+        "200"
+      ],
+      "medianMs": 251.54700000000003,
+      "p95Ms": 325.188,
+      "maxMs": 332.934
+    },
+    "ordenanthia": {
+      "samples": 22,
+      "codes": [
+        "200"
+      ],
+      "medianMs": 159.591,
+      "p95Ms": 206.571,
+      "maxMs": 242.042
+    },
+    "proxy": {
+      "samples": 22,
+      "codes": [
+        "404"
+      ],
+      "medianMs": 155.53300000000002,
+      "p95Ms": 198.77700000000002,
+      "maxMs": 236.69899999999998
+    }
+  }
+}

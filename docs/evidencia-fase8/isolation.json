@@ -1,0 +1,14 @@
+{
+  "uidVerified": true,
+  "noCapabilities": true,
+  "noNewPrivileges": true,
+  "onlyLoopback3400": true,
+  "namespaceWritePermissions": {
+    "/opt/naufragio-vtt/current/backend/src/main.js": false,
+    "/etc/naufragio-vtt/backend.env": false,
+    "/mnt/ssd/naufragio-vtt/data": true,
+    "/mnt/ssd/naufragio-vtt/backups": false
+  },
+  "properties": "Restart=no\nWatchdogUSec=10s\nCPUQuotaPerSecUSec=1s\nMemoryHigh=infinity\nMemoryMax=infinity\nTasksMax=32\nUser=naufragio-vtt\nGroup=naufragio-vtt\nPrivateTmp=yes\nProtectHome=yes\nProtectSystem=strict\nNoNewPrivileges=yes\nKillMode=control-group\nWatchdogSignal=9",
+  "runtimeSha256": "407b390f1667066e55cb36c8622e79d6d488aed417d072487bfbe92f47829d6b"
+}

@@ -1,0 +1,15 @@
+{
+  "beforeFirstRemoteWrite": true,
+  "onlyNewPaths": [
+    "/opt/naufragio-vtt",
+    "/etc/naufragio-vtt",
+    "/mnt/ssd/naufragio-vtt",
+    "/etc/systemd/system/naufragio-vtt.service"
+  ],
+  "newAccount": "naufragio-vtt",
+  "onFailure": "stop/disable only VTT, preserve diagnostic data for review; rollback script removes only these new resources",
+  "sharedConfigBaseline": {
+    "files": 298,
+    "sha256": "c09b648c61f6e47577fa25b11d61e67a83dfe4a4b6a3a11c8b50c2daf0f28e27"
+  }
+}

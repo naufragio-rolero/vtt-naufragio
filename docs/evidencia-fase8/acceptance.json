@@ -1,0 +1,28 @@
+{
+  "result": "pass",
+  "scope": "installed production backend on SSD; local ARMv7 protocol clients",
+  "clients": 4,
+  "players": 3,
+  "authenticationAndQrApproval": true,
+  "transports": [
+    "websocket",
+    "websocket",
+    "polling",
+    "websocket"
+  ],
+  "permissionsAndConvergence": true,
+  "transferMs": 72715.023847,
+  "bytes": 12582912,
+  "sha256": "be2c53c7c34f609ec6d1a59a2e3f7627f336b1504220c59f12cd83ec25f1d7e6",
+  "playerReconnect": true,
+  "unitRestartPersistentAuthority": true,
+  "mediaAfterUnitRestart": true,
+  "revocation": true,
+  "clientPeakRssMiB": 254.4765625,
+  "errors": [],
+  "health": {
+    "samples": 84,
+    "medianMs": 87.38284700000077,
+    "maxMs": 183.4654190000001
+  }
+}

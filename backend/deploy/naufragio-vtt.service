@@ -1,25 +1,29 @@
-# Proposal only: do not install until the Raspberry deployment is expressly authorized.
+# Private supervised installation. No automatic start until separately authorized.
 [Unit]
 Description=Naufragio VTT isolated backend
 After=network.target
-RequiresMountsFor=/mnt/ssd/services/naufragio-vtt/data
+RequiresMountsFor=/mnt/ssd/naufragio-vtt/data
 
 [Service]
-Type=simple
+Type=notify
+NotifyAccess=main
 User=naufragio-vtt
 Group=naufragio-vtt
 WorkingDirectory=/opt/naufragio-vtt/current/backend
 EnvironmentFile=/etc/naufragio-vtt/backend.env
 Environment=UV_THREADPOOL_SIZE=1
-ExecStart=/opt/naufragio-vtt/runtime/bin/node --max-old-space-size=64 src/main.js
-Restart=on-failure
-RestartSec=5
-TimeoutStopSec=15
+ExecStart=/usr/bin/python3 /opt/naufragio-vtt/current/backend/deploy/supervisor.py
+Restart=no
+WatchdogSec=10
+WatchdogSignal=SIGKILL
+TimeoutStartSec=45
+TimeoutStopSec=8
+KillMode=control-group
 UMask=0077
 Nice=10
 CPUQuota=100%
-MemoryHigh=160M
-MemoryMax=192M
+# memory controller is disabled at boot: do not claim kernel memory enforcement.
+# External supervisor stops at 160 MiB summed Node + supervisor RSS.
 TasksMax=32
 LimitNOFILE=1024
 LimitCORE=0
@@ -33,7 +37,7 @@ ProtectControlGroups=yes
 RestrictSUIDSGID=yes
 CapabilityBoundingSet=
 RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
-ReadWritePaths=/mnt/ssd/services/naufragio-vtt/data
+ReadWritePaths=/mnt/ssd/naufragio-vtt/data
 ReadOnlyPaths=/opt/naufragio-vtt
 StandardOutput=journal
 StandardError=journal

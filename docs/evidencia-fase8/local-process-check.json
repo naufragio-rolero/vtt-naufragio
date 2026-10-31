@@ -1,0 +1,6 @@
+﻿{
+    "associatedProcesses":  0,
+    "localListenersCreated":  0,
+    "transport":  "synchronous SSH execution only; no forwarding or local server",
+    "unrelatedSessionsPreserved":  true
+}

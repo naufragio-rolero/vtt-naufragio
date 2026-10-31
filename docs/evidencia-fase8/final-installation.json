@@ -1,0 +1,51 @@
+{
+  "applicationModuleCount": 24,
+  "applicationModulesMatchCommit": true,
+  "deploymentOverlaysMatchWorkspace": true,
+  "lockedSystemAccount": true,
+  "account": "uid=997(naufragio-vtt) gid=980(naufragio-vtt) groups=980(naufragio-vtt)",
+  "paths": {
+    "/opt/naufragio-vtt/runtime/bin/node": {
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o555",
+      "bytes": 107563500
+    },
+    "/etc/naufragio-vtt/backend.env": {
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o600",
+      "bytes": 694
+    },
+    "/mnt/ssd/naufragio-vtt/data/naufragio.sqlite": {
+      "uid": 997,
+      "gid": 980,
+      "mode": "0o600",
+      "bytes": 163840
+    },
+    "/mnt/ssd/naufragio-vtt/backups/initial-empty.sqlite": {
+      "uid": 997,
+      "gid": 980,
+      "mode": "0o600",
+      "bytes": 163840
+    }
+  },
+  "dataOnSsd": true,
+  "publicConfigurationSubset": {
+    "NODE_ENV": "production",
+    "HOST": "127.0.0.1",
+    "PORT": "3400",
+    "DATABASE_PATH": "/mnt/ssd/naufragio-vtt/data/naufragio.sqlite",
+    "TRUST_PROXY_LOOPBACK": "false",
+    "MAX_MESSAGE_BYTES": "65536",
+    "MAX_BODY_BYTES": "16384",
+    "HTTP_RATE_LIMIT": "600",
+    "SUPERVISOR_MAX_SECONDS": "900"
+  },
+  "validationDirectoryRemoved": true,
+  "remoteStagingDirectories": 0,
+  "nodePids": "",
+  "unitActive": "inactive",
+  "unitEnabled": "disabled",
+  "privateTmpDirectories": 0
+}

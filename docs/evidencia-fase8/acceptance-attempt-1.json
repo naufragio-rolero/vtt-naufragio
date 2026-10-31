@@ -1,0 +1,15 @@
+{
+  "result": "fail",
+  "scope": "installed production backend on SSD; local ARMv7 protocol clients",
+  "clients": 4,
+  "players": 3,
+  "authenticationAndQrApproval": true,
+  "transports": [
+    "websocket",
+    "websocket",
+    "polling",
+    "websocket"
+  ],
+  "stage": "installed permissions and movement",
+  "error": "Error"
+}

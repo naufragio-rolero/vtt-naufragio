@@ -1,0 +1,8 @@
+﻿{
+    "stagingRemoved":  true,
+    "associatedProcesses":  0,
+    "localListenersCreated":  0,
+    "unrelatedSessionsPreserved":  true,
+    "removed":  "own clean source, ARM runtime/archive, npm cache, package and validation dependencies",
+    "cleanup":  "mixed Windows ownership contexts handled without ACL changes"
+}

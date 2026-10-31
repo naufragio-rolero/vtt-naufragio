@@ -1,0 +1,39 @@
+{
+  "result": "fail",
+  "scope": "installed production backend on SSD; local ARMv7 protocol clients",
+  "clients": 4,
+  "players": 3,
+  "authenticationAndQrApproval": true,
+  "transports": [
+    "websocket",
+    "websocket",
+    "polling",
+    "websocket"
+  ],
+  "permissionsAndConvergence": true,
+  "stage": "12 MiB to three players",
+  "error": "AssertionError",
+  "message": "WAIT_TIMEOUT",
+  "tokenStates": [
+    {
+      "ready": true,
+      "error": null,
+      "revision": 1
+    },
+    {
+      "ready": false,
+      "error": null,
+      "revision": 1
+    },
+    {
+      "ready": true,
+      "error": null,
+      "revision": 1
+    },
+    {
+      "ready": true,
+      "error": null,
+      "revision": 1
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "backupIntegrity": "ok",
+  "foreignKeyViolations": 0,
+  "schemaVersion": 4,
+  "rooms": 4,
+  "restoredLogin": true,
+  "restoreIntegrity": true
+}

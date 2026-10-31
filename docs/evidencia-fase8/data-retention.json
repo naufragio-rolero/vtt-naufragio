@@ -1,0 +1,1 @@
+﻿{"beforeSyntheticCleanup": {"alreadyRemovedByPriorCleanup": true}, "cleanDatabase": {"integrity": "ok", "schemaVersion": 4, "users": 0, "rooms": 0, "backupIntegrity": "ok"}, "validationRemoved": true, "noVttProcesses": true, "noListener3400": true, "onlyRetainedData": "empty schema-4 SQLite and consistent empty baseline backup; private production config and runtime retained"}

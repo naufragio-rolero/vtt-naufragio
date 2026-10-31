@@ -1,0 +1,13 @@
+{
+  "sourceCommit": "fb6b0a1d03c5ce388eeb06d6ab82f535a4ed26f2",
+  "runtimeVersion": "22.23.4",
+  "runtimeArchiveSha256": "c9057c6a3b8fbb9651ed115c1e96d4a7281b7b9c9ca89fa05865c98ed7ffd437",
+  "runtimeExecutableSha256": "407b390f1667066e55cb36c8622e79d6d488aed417d072487bfbe92f47829d6b",
+  "packageBytes": 40091657,
+  "packageSha256": "49761cef5b4ed585f671c2971e5dc006fd37e4d481597470caa879d2da0f957c",
+  "overlays": [
+    "backend/deploy/supervisor.py",
+    "backend/deploy/naufragio-vtt.service"
+  ],
+  "productionDependencies": "npm ci --omit=dev --ignore-scripts; no remote install"
+}
