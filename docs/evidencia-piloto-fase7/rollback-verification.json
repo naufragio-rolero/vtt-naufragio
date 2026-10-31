@@ -1,0 +1,8 @@
+{
+  "forwarding3400": "denied",
+  "forwarding3401": "denied",
+  "mysqlGreeting": true,
+  "policyProcessExited": true,
+  "tunnelExited": true,
+  "supervisorExited": true
+}

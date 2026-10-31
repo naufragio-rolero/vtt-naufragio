@@ -1,0 +1,27 @@
+﻿{
+  "utc": "2026-10-31T13:27:06Z",
+  "nodePids": {
+    "exit": 1,
+    "stdout": "",
+    "stderr": ""
+  },
+  "pilotOrTemplateProcesses": [],
+  "templateDirectoriesRemaining": 0,
+  "listenerPorts": [
+    22,
+    80,
+    139,
+    443,
+    445,
+    3306,
+    8787,
+    9090
+  ],
+  "services": {
+    "exit": 0,
+    "stdout": "MainPID=31389\nId=apache2.service\nActiveState=active\n\nMainPID=868\nId=mariadb.service\nActiveState=active\n\nMainPID=803\nId=ssh.service\nActiveState=active\n\nMainPID=1029\nId=smbd.service\nActiveState=active",
+    "stderr": ""
+  },
+  "pilotBackendStaged": false,
+  "pilotBackendStarted": false
+}

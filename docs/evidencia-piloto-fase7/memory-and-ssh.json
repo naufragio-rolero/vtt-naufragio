@@ -1,0 +1,48 @@
+﻿{
+  "kernel": {
+    "exit": 0,
+    "stdout": "6.18.50+rpt-rpi-v7",
+    "stderr": ""
+  },
+  "cmdlineMemoryFlags": [
+    "cgroup_disable=memory"
+  ],
+  "controllers": "cpuset cpu io pids",
+  "procCgroups": "#subsys_name\thierarchy\tnum_cgroups\tenabled\ncpuset\t0\t63\t1\ncpu\t0\t63\t1\ncpuacct\t0\t63\t1\nblkio\t0\t63\t1\ndevices\t0\t63\t1\nfreezer\t0\t63\t1\nnet_cls\t0\t63\t1\nperf_event\t0\t63\t1\nnet_prio\t0\t63\t1\npids\t0\t63\t1",
+  "kernelConfigSource": "/boot/config-6.18.50+rpt-rpi-v7",
+  "kernelMemoryConfig": [
+    "CONFIG_PSI=y",
+    "CONFIG_PSI_DEFAULT_DISABLED=y",
+    "CONFIG_CGROUPS=y",
+    "CONFIG_MEMCG=y",
+    "CONFIG_MEMCG_NMI_SAFETY_REQUIRES_ATOMIC=y",
+    "# CONFIG_MEMCG_V1 is not set",
+    "CONFIG_SWAP=y"
+  ],
+  "/boot/firmware/cmdline.txt": [],
+  "/boot/cmdline.txt": [],
+  "sudo": {
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "sshdSyntax": {
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "effectiveExit": 0,
+  "effective": [
+    "pubkeyauthentication yes",
+    "passwordauthentication no",
+    "kbdinteractiveauthentication no",
+    "gatewayports no",
+    "allowtcpforwarding local",
+    "disableforwarding no",
+    "trustedusercakeys none",
+    "authorizedkeyscommand none",
+    "authorizedkeysfile .ssh/authorized_keys .ssh/authorized_keys2",
+    "permitopen 127.0.0.1:3306"
+  ],
+  "readOnly": true
+}

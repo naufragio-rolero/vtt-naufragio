@@ -1,0 +1,16 @@
+{
+  "candidateSyntaxExit": 0,
+  "effectiveChecks": [
+    {
+      "account": "pilot",
+      "onlyPermitOpenChanged": true,
+      "permitOpen": "127.0.0.1:3306 127.0.0.1:3400"
+    },
+    {
+      "account": "other",
+      "onlyPermitOpenChanged": true,
+      "permitOpen": "127.0.0.1:3306"
+    }
+  ],
+  "originalSha256": "f1805313ad346bdb80dff4a560a080edfca9a998f620b64da2a1aba6bcf6782e"
+}

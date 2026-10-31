@@ -1,0 +1,49 @@
+[
+  {
+    "state": "supervising",
+    "pid": 11479,
+    "timeoutSeconds": 720
+  },
+  {
+    "state": "stopped",
+    "reason": "backend_exited",
+    "servicesUnchanged": true,
+    "web": [
+      {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.138412
+      },
+      {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.140227
+      },
+      {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.04718
+      },
+      {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.155594
+      },
+      {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.069916
+      },
+      {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.057186
+      },
+      {
+        "label": "api",
+        "code": "403",
+        "seconds": 0.037053
+      }
+    ]
+  }
+]

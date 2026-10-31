@@ -1,0 +1,12 @@
+﻿{
+    "date":  "2026-10-31",
+    "commit":  "a77a90970f068a56800885d2f07ee6b964d5d4d2",
+    "script":  "backend/scripts/pilot-preflight.ps1",
+    "scriptSha256":  "a575bd9365007bf139a78fc6fae036a96b49285e3fa73c23e324b3d12d6bfd12",
+    "remoteDestination":  "127.0.0.1:3400",
+    "exit":  1,
+    "result":  "SSH_FORWARDING_DENIED",
+    "backendTransferred":  false,
+    "backendStarted":  false,
+    "sshModified":  false
+}

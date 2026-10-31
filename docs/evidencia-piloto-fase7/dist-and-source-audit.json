@@ -1,0 +1,12 @@
+{
+  "publicFiles": 24,
+  "publicBytes": 252939,
+  "allManifestHashesMatch": true,
+  "sourceModuleCount": 19,
+  "sourceModulesEqualWorkspace": true,
+  "sourceOrigin": "git archive a77a90970f068a56800885d2f07ee6b964d5d4d2",
+  "diagnosticDrivers": {
+    "browser.mjs": "8a3cf18ed718312343273bfde67b7b733ff9833df8ee82cb1ee1b84e33cd6617",
+    "expiry.mjs": "5fec327fc6d4baedc45a8810063f1d65a5c5adaffe241ddfca77c3079f1af3a5"
+  }
+}

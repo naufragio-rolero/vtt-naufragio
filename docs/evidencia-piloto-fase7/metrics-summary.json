@@ -1,0 +1,80 @@
+﻿{
+  "samples": 432,
+  "monitorSeconds": 539.829,
+  "processGenerations": 3,
+  "rssMaxMiB": 104.08203125,
+  "rssLastMiB": 63.2109375,
+  "availableMinMiB": 406.09765625,
+  "tempMinC": 59.072,
+  "tempMaxC": 64.452,
+  "cpuUserSeconds": 68.58,
+  "cpuSystemSeconds": 3.9299999999999997,
+  "allServicesUnchanged": true,
+  "serviceChecks": 87,
+  "web": {
+    "heavensgate": {
+      "samples": 87,
+      "codes": [
+        "200"
+      ],
+      "medianMs": 142.38500000000002,
+      "p95Ms": 170.53799999999998,
+      "maxMs": 522.471
+    },
+    "forum": {
+      "samples": 87,
+      "codes": [
+        "200"
+      ],
+      "medianMs": 142.829,
+      "p95Ms": 175.294,
+      "maxMs": 188.689
+    },
+    "proxy": {
+      "samples": 87,
+      "codes": [
+        "404"
+      ],
+      "medianMs": 47.646,
+      "p95Ms": 57.115,
+      "maxMs": 69.089
+    },
+    "bibprof": {
+      "samples": 87,
+      "codes": [
+        "200"
+      ],
+      "medianMs": 161.417,
+      "p95Ms": 188.595,
+      "maxMs": 287.584
+    },
+    "ordenanthia": {
+      "samples": 87,
+      "codes": [
+        "200"
+      ],
+      "medianMs": 68.994,
+      "p95Ms": 79.829,
+      "maxMs": 92.481
+    },
+    "gallery": {
+      "samples": 87,
+      "codes": [
+        "200"
+      ],
+      "medianMs": 53.659,
+      "p95Ms": 66.733,
+      "maxMs": 82.552
+    },
+    "api": {
+      "samples": 87,
+      "codes": [
+        "403"
+      ],
+      "medianMs": 37.156,
+      "p95Ms": 48.078,
+      "maxMs": 61.269999999999996
+    }
+  },
+  "cpuMeanOneCorePercent": 13.432031254341652
+}

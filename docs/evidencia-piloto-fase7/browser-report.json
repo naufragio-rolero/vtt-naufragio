@@ -1,0 +1,92 @@
+{
+  "result": "pass",
+  "backend": "SSH tunnel to ARMv7",
+  "frontend": "Windows dist",
+  "checks": [
+    "login",
+    "user_cannot_create_room_or_upload",
+    "account_invitation_signup_and_reuse_denied",
+    "QR_decoded_exact_link",
+    "three_guests_approved",
+    "pending_reload",
+    "unapproved_and_repeated_claim_denied",
+    "request_rejected",
+    "guest_cannot_create_room",
+    "guest_token_assignments",
+    "initial_illustrated_map",
+    "public_portrait",
+    "names_colors_sizes",
+    "map_change",
+    "exact_12MiB_two_players_sha256",
+    "mid_transfer_disconnect_keeps_director_and_other_player",
+    "player_reconnection_media",
+    "cross_room_access_denied",
+    "convergence",
+    "unassigned_move_denied",
+    "revoked_permission_backend_denied",
+    "director_move",
+    "waiting_on_logout",
+    "same_browser_login_recovery",
+    "indexeddb_reload_recovery",
+    "backend_restart_sqlite_and_authority_recovery",
+    "map_and_portrait_after_backend_restart",
+    "three_clients_stable_for_five_minutes",
+    "QR_revocation_denies_new_requests_but_keeps_admitted",
+    "guest_expulsion_disconnects_and_invalidates_session",
+    "original_local_board_preserved"
+  ],
+  "steadyMoves": 30,
+  "browsers": {
+    "edge": "156.0.4314.50",
+    "firefox": "142.0.1"
+  },
+  "media": {
+    "bytes": 12582912,
+    "sha256": "a2c122b6a6a1c9c85c79dd7aff9fb93cb0db313679ff38965bdb5b86112a3bb1",
+    "twoPlayerTransferMs": 49923.3786,
+    "threeDecoded": true,
+    "interruption": {
+      "secondPlayerCompleteMs": 33466.33510000001,
+      "sha256": "c80b77c69b4850301dbd59b4fe497e99c43cb825dec1ff0613feb68e2d606899",
+      "directorConnected": true,
+      "reconnectedPlayerDecoded": true
+    }
+  },
+  "steadySeconds": 306.71743999999995,
+  "finalTokenVersions": [
+    21,
+    11,
+    0,
+    0
+  ],
+  "clients": 4,
+  "guests": 3,
+  "unhandledRejections": 0,
+  "wireErrorCodes": [
+    "TRANSFER_NOT_FOUND",
+    "DIRECTOR_NOT_READY"
+  ],
+  "latency": {
+    "login": {
+      "samples": 5,
+      "minMs": 1629.3482999999997,
+      "medianMs": 1678.050000000001,
+      "p95Ms": 1723.614,
+      "maxMs": 1723.614
+    },
+    "health": {
+      "samples": 60,
+      "minMs": 5.8127000000094995,
+      "medianMs": 7.690100000007078,
+      "p95Ms": 15.70240000000922,
+      "maxMs": 68.09990000003017
+    },
+    "movementWire": {
+      "samples": 32,
+      "minMs": 28.105199999990873,
+      "medianMs": 42.146200000017416,
+      "p95Ms": 54.37579999997979,
+      "maxMs": 61.163799999980256
+    }
+  }
+}

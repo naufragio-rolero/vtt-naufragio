@@ -1,0 +1,14 @@
+﻿{
+  "onlyLoopback3400": true,
+  "privateHomeAndTmpVerified": true,
+  "uvThreadpoolSize": "1",
+  "heap64MiB": true,
+  "runtimeExecutableSha256": "407b390f1667066e55cb36c8622e79d6d488aed417d072487bfbe92f47829d6b",
+  "configFiles": {
+    "/boot/firmware/config.txt": [],
+    "/boot/config.txt": []
+  },
+  "deviceTreeMemoryFlags": [
+    "cgroup_disable=memory"
+  ]
+}

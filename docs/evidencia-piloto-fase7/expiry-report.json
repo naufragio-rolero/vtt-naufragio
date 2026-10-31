@@ -1,0 +1,17 @@
+{
+  "result": "pass",
+  "clock": "real wall clock, no clock injection",
+  "guestCannotInviteUploadOrOpenAdmission": true,
+  "sessionTtlMs": 59960,
+  "pendingRequestExpiry": true,
+  "disconnect": [
+    {
+      "event": "disconnect",
+      "reason": "io server disconnect",
+      "time": 1793457404034
+    }
+  ],
+  "sessionExpired": true,
+  "qrExpired": true,
+  "cleanupTriggered": true
+}

@@ -1,0 +1,8 @@
+{
+  "state": "ready",
+  "node": "v22.23.4",
+  "arch": "arm",
+  "port": 3400,
+  "maxMessageBytes": 65536,
+  "guestSessionTtlSeconds": 1800
+}

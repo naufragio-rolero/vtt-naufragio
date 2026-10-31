@@ -1,0 +1,8 @@
+﻿{
+    "stagingRemoved":  true,
+    "associatedProcesses":  0,
+    "testBrowserProcesses":  0,
+    "listener8080Or13400":  0,
+    "unrelatedSshSessionsPreserved":  true,
+    "cleanupNote":  "Deletion retried in creating sandbox context after Windows denied access to a Python cache file from elevated context; final removal verified."
+}

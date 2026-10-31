@@ -1,0 +1,221 @@
+﻿{
+  "scope": "read-only audit and uninstalled template checks; backend not staged or started",
+  "before": {
+    "utc": "2026-10-31T13:26:11Z",
+    "memoryKiB": {
+      "MemTotal": 942116,
+      "MemAvailable": 521824,
+      "SwapTotal": 942076,
+      "SwapFree": 620368
+    },
+    "temperatureC": 59.072,
+    "loadavg": [
+      "0.09",
+      "0.10",
+      "0.09"
+    ],
+    "services": {
+      "exit": 0,
+      "stdout": "MainPID=31389\nId=apache2.service\nActiveState=active\n\nMainPID=868\nId=mariadb.service\nActiveState=active\n\nMainPID=803\nId=ssh.service\nActiveState=active\n\nMainPID=1029\nId=smbd.service\nActiveState=active",
+      "stderr": ""
+    },
+    "nodePids": {
+      "exit": 1,
+      "stdout": "",
+      "stderr": ""
+    },
+    "listenerPorts": [
+      22,
+      80,
+      139,
+      443,
+      445,
+      3306,
+      8787,
+      9090
+    ]
+  },
+  "probesBefore": [
+    {
+      "site": "Heavens Gate",
+      "exit": 0,
+      "stdout": "200 0.215188 0",
+      "stderr": ""
+    },
+    {
+      "site": "Foro",
+      "exit": 0,
+      "stdout": "200 0.190343 0",
+      "stderr": ""
+    },
+    {
+      "site": "autonaufragio",
+      "exit": 0,
+      "stdout": "404 0.101286 0",
+      "stderr": ""
+    },
+    {
+      "site": "bibprof",
+      "exit": 0,
+      "stdout": "200 0.197358 0",
+      "stderr": ""
+    },
+    {
+      "site": "ordenanthia",
+      "exit": 0,
+      "stdout": "200 0.151822 0",
+      "stderr": ""
+    },
+    {
+      "site": "Galeria",
+      "exit": 0,
+      "stdout": "200 0.104415 0",
+      "stderr": ""
+    },
+    {
+      "site": "API",
+      "exit": 0,
+      "stdout": "403 0.132997 0",
+      "stderr": ""
+    }
+  ],
+  "ssd": {
+    "exit": 0,
+    "stdout": "/dev/sdb1 ext4 rw,noatime",
+    "stderr": ""
+  },
+  "disk": {
+    "exit": 0,
+    "stdout": "Filesystem     1024-blocks     Used Available Capacity Mounted on\n/dev/sdb1        114792580 22349968  86565264      21% /mnt/ssd\n/dev/mmcblk0p2    60809268  3746408  54552896       7% /",
+    "stderr": ""
+  },
+  "inodes": {
+    "exit": 0,
+    "stdout": "Filesystem      Inodes  IUsed   IFree IUse% Mounted on\n/dev/sdb1      7331840 249810 7082030    4% /mnt/ssd",
+    "stderr": ""
+  },
+  "cpuSamples": {
+    "exit": 0,
+    "stdout": "procs -----------memory---------- ---swap-- -----io---- -system-- -------cpu-------\n r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st gu\n 0  0 321708  46916 208612 359132    0    1    17    13  249    0  2  0 97  0  0  0\n 0  0 321708  46864 208624 359124    0    0     0    68  215  171  0  0 100  0  0  0\n 0  0 321708  46864 208624 359136    0    0     0     0  147  107  0  0 100  0  0  0",
+    "stderr": ""
+  },
+  "systemdVersion": {
+    "exit": 0,
+    "stdout": "systemd 257 (257.9-1~deb13u1+rpi1)\n+PAM +AUDIT +SELINUX +APPARMOR +IMA +IPE +SMACK +SECCOMP +GCRYPT -GNUTLS +OPENSSL +ACL +BLKID +CURL +ELFUTILS +FIDO2 +IDN2 -IDN +IPTC +KMOD +LIBCRYPTSETUP +LIBCRYPTSETUP_PLUGINS +LIBFDISK +PCRE2 +PWQUALITY +P11KIT +QRENCODE +TPM2 +BZIP2 +LZ4 +XZ +ZLIB +ZSTD -BPF_FRAMEWORK -BTF -XKBCOMMON -UTMP +SYSVINIT +LIBARCHIVE",
+    "stderr": ""
+  },
+  "controllers": "cpuset cpu io pids",
+  "procCgroups": "#subsys_name\thierarchy\tnum_cgroups\tenabled\ncpuset\t0\t61\t1\ncpu\t0\t61\t1\ncpuacct\t0\t61\t1\nblkio\t0\t61\t1\ndevices\t0\t61\t1\nfreezer\t0\t61\t1\nnet_cls\t0\t61\t1\nperf_event\t0\t61\t1\nnet_prio\t0\t61\t1\npids\t0\t61\t1",
+  "memoryControllerPresent": false,
+  "systemMemoryAccounting": {
+    "exit": 0,
+    "stdout": "DefaultMemoryAccounting=yes",
+    "stderr": ""
+  },
+  "apacheVersion": {
+    "exit": 0,
+    "stdout": "Server version: Apache/2.4.69 (Raspbian)\nServer built:   2026-10-01T16:54:08",
+    "stderr": ""
+  },
+  "modulesEnabled": {
+    "proxy": true,
+    "proxy_http": true,
+    "headers": true,
+    "ssl": true
+  },
+  "unitSha256": "8bcbe8007e8d25a870428467483eea223221f13f72fcf5786f241c2919a2845d",
+  "fragmentSha256": "771617d2b150856716e5f041d3988e946a5dcb1ab173b46fb57d87ac3528d824",
+  "systemdVerify": {
+    "exit": 1,
+    "stdout": "",
+    "stderr": "naufragio-vtt.service: Command /opt/naufragio-vtt/runtime/bin/node is not executable: No such file or directory"
+  },
+  "templateTemporaryRemoved": true,
+  "apacheIsolatedSyntax": {
+    "exit": 1,
+    "stdout": "",
+    "stderr": "[Sat Oct 31 14:26:15.869074 2026] [core:error] [pid 8126:tid 8126] AH00554: Access to file /dev/stdin denied by server: not a regular file\napache2: Could not open configuration file /dev/stdin: Bad file descriptor"
+  },
+  "apacheCheckScope": "Minimal uninstalled config, real proxy/headers modules; future secret Include replaced with synthetic token. No SSL integration or active configtest.",
+  "probesAfter": [
+    {
+      "site": "Heavens Gate",
+      "exit": 0,
+      "stdout": "200 0.193548 0",
+      "stderr": ""
+    },
+    {
+      "site": "Foro",
+      "exit": 0,
+      "stdout": "200 0.182191 0",
+      "stderr": ""
+    },
+    {
+      "site": "autonaufragio",
+      "exit": 0,
+      "stdout": "404 0.101652 0",
+      "stderr": ""
+    },
+    {
+      "site": "bibprof",
+      "exit": 0,
+      "stdout": "200 0.237544 0",
+      "stderr": ""
+    },
+    {
+      "site": "ordenanthia",
+      "exit": 0,
+      "stdout": "200 0.120169 0",
+      "stderr": ""
+    },
+    {
+      "site": "Galeria",
+      "exit": 0,
+      "stdout": "200 0.120712 0",
+      "stderr": ""
+    },
+    {
+      "site": "API",
+      "exit": 0,
+      "stdout": "403 0.133094 0",
+      "stderr": ""
+    }
+  ],
+  "after": {
+    "utc": "2026-10-31T13:26:17Z",
+    "memoryKiB": {
+      "MemTotal": 942116,
+      "MemAvailable": 514784,
+      "SwapTotal": 942076,
+      "SwapFree": 620368
+    },
+    "temperatureC": 59.072,
+    "loadavg": [
+      "0.16",
+      "0.11",
+      "0.09"
+    ],
+    "services": {
+      "exit": 0,
+      "stdout": "MainPID=31389\nId=apache2.service\nActiveState=active\n\nMainPID=868\nId=mariadb.service\nActiveState=active\n\nMainPID=803\nId=ssh.service\nActiveState=active\n\nMainPID=1029\nId=smbd.service\nActiveState=active",
+      "stderr": ""
+    },
+    "nodePids": {
+      "exit": 1,
+      "stdout": "",
+      "stderr": ""
+    },
+    "listenerPorts": [
+      22,
+      80,
+      139,
+      443,
+      445,
+      3306,
+      8787,
+      9090
+    ]
+  },
+  "servicesUnchanged": true,
+  "listenersUnchanged": true
+}

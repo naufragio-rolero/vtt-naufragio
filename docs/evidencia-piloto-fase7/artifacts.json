@@ -1,0 +1,15 @@
+{
+  "commit": "a77a90970f068a56800885d2f07ee6b964d5d4d2",
+  "runtimeVersion": "22.23.4",
+  "runtimeArchiveSha256": "c9057c6a3b8fbb9651ed115c1e96d4a7281b7b9c9ca89fa05865c98ed7ffd437",
+  "runtimeExecutableSha256": "407b390f1667066e55cb36c8622e79d6d488aed417d072487bfbe92f47829d6b",
+  "runtimeArchiveBytes": 26362452,
+  "bundleBytes": 39412428,
+  "bundleSha256": "5c44217c931446f7fde82080cbc5e427ed617b57a53f937b3e7b97de43e3b6e2",
+  "maxMessageBytes": 65536,
+  "httpRateLimit": 600,
+  "instrumentedFiles": [
+    "backend/scripts/pilot-server.js"
+  ],
+  "source": "git archive exact commit; production npm ci --omit=dev --ignore-scripts; no remote npm"
+}

@@ -1,0 +1,8 @@
+﻿{
+  "exit": 0,
+  "stdout": "",
+  "stderr": "Syntax OK",
+  "scope": "Real Apache parser and proxy/headers modules, minimal uninstalled config; secret Include replaced by synthetic value; no SSL or active vhost integration",
+  "temporaryRemoved": true,
+  "pilotListenerAbsent": true
+}
