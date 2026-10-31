@@ -1,105 +1,123 @@
-# Naufragio VTT — Validación DNS y preparación HTTPS/WSS
+# Naufragio VTT — Activación controlada de HTTPS
 
-Actualización: **31 de octubre de 2026, consultas desde 09:29 UTC**. Rama `feat/backend-multijugador`, código local inspeccionado `5d5eee58`. Este informe sustituye la recomendación anterior de CNAME. La [versión histórica](https://github.com/naufragio-rolero/vtt-naufragio/blob/cc467ab0379c497871c1aa54db6bb1619293a5a3/docs/PLAN-DNS-HTTPS-VTT.md) conserva el inventario previo y el diagnóstico del trayecto mediante DuckDNS.
+Fecha: **31 de octubre de 2026**. Rama `feat/backend-multijugador`; código VTT local conservado en `5d5eee58`. Auditoría e instalación aproximadamente 09:45–09:52 UTC. El [plan anterior](https://github.com/naufragio-rolero/vtt-naufragio/blob/ea1f96be70293f7e2d91fae0ca5a8da1a87bccd2/docs/PLAN-DNS-HTTPS-VTT.md) conserva el historial de validación DNS y la propuesta previa a la autorización.
 
-## 1. Veredicto y alcance
+## 1. Veredicto: HTTPS OPERATIVO
 
-**DNS / CAA: APTO. El bloqueo CAA/SERVFAIL ha desaparecido para `api.naufragio.net`.**
+**`https://api.naufragio.net/` presenta un certificado válido de Let's Encrypt, exclusivo para ese nombre, y responde HTTP 403 controlado.** Se comprobó desde Raspberry con SNI y desde Windows contra la IP pública, usando validación TLS normal, sin `-k` ni excepciones de certificados.
 
-**Comenzar la instalación HTTPS: BLOQUEADO actualmente por falta de sudo autorizado para validar la configuración global de Apache antes de modificarla.** Las consultas sin privilegios tropiezan con un include protegido; no demuestran que la configuración sea inválida. No queda ningún cambio DNS que pedir al propietario ni ninguna consulta a soporte que realizar.
+El usuario autorizó expresamente la instalación HTTPS, las pruebas ACME staging/producción, renovación y recuperación. **No se ha instalado ni iniciado Node, habilitado proxy HTTP/WebSocket, abierto 3400, modificado DNS/STRATO/DuckDNS/router/firewall/SSH/Pages, reiniciado Apache o Raspberry, ni fusionado `main`.** No se han modificado vhosts, renovaciones o certificados de otros sitios.
 
-La conectividad exterior del challenge sigue pendiente: se comprobará después de autorizar y habilitar el vhost HTTP, **antes de ejecutar ACME staging**. No se declara que HTTP-01 vaya a funcionar desde Internet basándose en consultas locales. La respuesta 403 actual y la falta de certificado para `api` son estados esperables antes de instalar su vhost, no nuevos defectos DNS.
+Las seis sedes existentes conservan sus códigos HTTP y certificados. Los 242 archivos/enlaces de configuración ajenos vigilados coinciden con el baseline. Apache, MariaDB, SSH y SMB siguen activos con sus mismos PIDs principales. La renovación simulada con ejecución del hook ha pasado. No fue necesario revertir cambios de infraestructura.
 
-**Auditoría exclusivamente de lectura en Raspberry.** No se han modificado Apache, certificados, DNS, SSH, firewall, router ni servicios; no se ha ejecutado Certbot para emitir, renovar o realizar staging. No se ha instalado ni arrancado el backend, modificado Pages, contactado con STRATO ni fusionado `main`. Solo se actualiza este informe en GitHub; se conservan los cambios locales anteriores.
+## 2. DNS y certificado
 
-## 2. DNS actual, comprobado
+Al inicio se revalidó mediante Cloudflare `1.1.1.1` y Google `8.8.8.8`:
 
-El propietario ha sustituido el CNAME por un A directo. Se consultaron Cloudflare, Google y ambos NS autoritativos de STRATO, evitando las entradas `hosts` de Windows.
-
-| Fuente | A de `api.naufragio.net` | CNAME | AAAA | CAA |
-| --- | --- | --- | --- | --- |
-| Cloudflare `1.1.1.1` | `188.78.105.221` | Sin datos | Sin datos | Sin datos, sin SERVFAIL |
-| Google `8.8.8.8` | `188.78.105.221` | Sin datos | Sin datos | Sin datos, sin SERVFAIL |
-| `docks02.rzone.de`, `217.160.80.129` | `188.78.105.221` | Sin datos | Sin datos | Sin datos, sin SERVFAIL |
-| `shades04.rzone.de`, `185.132.34.131` | `188.78.105.221` | Sin datos | Sin datos | Sin datos, sin SERVFAIL |
-
-Una consulta HTTPS de IP de salida desde Raspberry devuelve **`188.78.105.221`**, idéntica al A actual. No se ha copiado una dirección privada ni inferido la IP únicamente de DuckDNS. El nombre existente de Heaven's Gate también resuelve a esa IP, pero **ya no interviene como CNAME en la resolución de `api`**.
-
-Las respuestas «sin datos» de la tabla fueron `ENODATA`, no timeout, SERVFAIL ni NXDOMAIN. Google DNS sobre HTTPS confirma CAA **Status 0 / NOERROR**, sin Answer y con SOA de `naufragio.net`; serial observado **`2020061961`**. CAA de `naufragio.net` y de `.net` también respondió NOERROR sin registros CAA. No aparece una política CAA heredada que restrinja Let's Encrypt en las consultas realizadas.
-
-No hay que crear un CAA para corregir un error inexistente: la ausencia válida de CAA permite la emisión si se cumplen la validación de control y los demás requisitos de la CA. [Let's Encrypt: CAA](https://letsencrypt.org/docs/caa/).
-
-### Otros registros y conflictos
-
-- MX efectivo: prioridad 5, `smtp.rzone.de`, en las cuatro fuentes. **Un MX puede coexistir con un A y no bloquea HTTP-01 ni HTTPS.** No retirarlo.
-- TXT y NS en `api`: sin datos. No se observó una delegación del subdominio ni un CNAME incompatible.
-- Sin AAAA final: no existe en las muestras una ruta IPv6 alternativa que lleve el challenge a otro servidor.
-- No se propone tocar A/AAAA/MX del dominio raíz, nombres DuckDNS ni sus actualizadores. No se ha accedido al panel STRATO.
-
-### Continuidad de la IP, separada de la emisión inicial
-
-El A es correcto **hoy**. No se ha demostrado que tenga actualización automática. La actualización DuckDNS existente no actualiza este A de STRATO; tras un cambio de IP habría que mantenerlo para evitar interrupciones y fallos de renovación.
-
-Esto **no bloquea una primera emisión mientras la IP siga coincidiendo**. Antes de dar la instalación por operativa a largo plazo debe acordarse su mantenimiento. DynDNS nativo de STRATO es una posibilidad ya documentada, no activada en esta tarea; no se cambia ahora el registro ni se depende de soporte. [STRATO: actualización dinámica](https://www.strato.es/faq/hosting/como-configurar-dyndns-para-tus-dominios/).
-
-## 3. Apache, Certbot y disponibilidad actual
-
-### Lecturas actuales
-
-| Comprobación | Resultado |
+| Registro de `api.naufragio.net` | Resultado |
 | --- | --- |
-| Host | ARMv7; Apache **2.4.69 Raspbian**, Certbot **4.0.0**. |
-| Módulos habilitados en disco | `ssl`, `proxy`, `proxy_http`, `headers`, `rewrite`: presentes. |
-| `api.naufragio.net` en vhosts legibles | No aparece. Un vhost nuevo con ese `ServerName` puede prepararse de forma independiente; falta validación global privilegiada de aliases/includes. |
-| `sudo -n true` | No autorizado en esta sesión. No se solicitaron contraseñas ni se alteró SSH. |
-| `apache2ctl configtest`, `-S`, `-M` | Salida 1 por `Permission denied` al leer un include privado de otro sitio. No atribuirlo a una configuración defectuosa ejecutada por root. |
-| Lineage `api.naufragio.net` | No existe su archivo de renovación en la ruta estándar comprobada. |
-| Puerto 3400 | Sin listener. No se arrancó Node. |
-| HTTP local con Host `api.naufragio.net` | 403, respuesta del ámbito predeterminado; no hay challenge preparado. |
-| TLS local con SNI `api.naufragio.net` | Verificación falla por hostname mismatch; no hay certificado que cubra el nombre. |
+| A | `188.78.105.221`, dirección pública usada por Windows para la comprobación HTTPS. |
+| CNAME | Sin datos; no hay salto a DuckDNS. |
+| AAAA | Sin datos. |
+| CAA | Sin datos (`ENODATA`), sin SERVFAIL ni timeout. |
 
-**Requisito previo a cualquier escritura:** disponer de sudo autorizado y ejecutar con privilegios `apache2ctl configtest`, `apache2ctl -S` y `apache2ctl -M`. Revisar el resultado filtrado, sin volcar includes privados, claves ni configuraciones sensibles al informe. Confirmar también que `api` no aparece como alias, que los archivos nuevos no colisionan y que las rutas futuras no existen o están libres para este fin.
+La validación previa contra los dos autoritativos de STRATO también había confirmado esos resultados y NOERROR con SOA para CAA. El MX efectivo de STRATO puede coexistir con el A y no se modificó. La emisión real y las pruebas ACME posteriores pasaron sin errores CAA. No fue necesario contactar con ningún proveedor ni cambiar DNS.
 
-### Renovación y hooks comprobados
+| Certificado API | Valor comprobado |
+| --- | --- |
+| Subject y único SAN | `api.naufragio.net` |
+| Emisor | Let's Encrypt **YE1** |
+| Válido desde, UTC | **2026-10-31 08:49:11** |
+| Vencimiento, UTC | **2027-01-29 08:49:10** |
+| SHA-256 del certificado DER servido | `4b82450af3a39196d4b5046646530bb6ea6bf79c888b327520846df712076c54` |
+| Lineage | `/etc/letsencrypt/live/api.naufragio.net/` |
+| Renovación | `/etc/letsencrypt/renewal/api.naufragio.net.conf`, webroot y hook específicos comprobados. |
 
-Las seis configuraciones actuales de renovación accesibles usan `authenticator=apache`, `installer=apache`, sin hooks definidos en esos archivos. El archivo global de Certbot accesible no presenta directivas de pre/post/deploy hook. Los directorios estándar `renewal-hooks/pre`, `post` y `deploy` se pudieron listar y estaban vacíos. No se ejecutaron hooks.
+La validez del certificado se verificó mediante cadena y hostname; no se leyó ni publicó su clave privada. La ausencia válida de CAA es distinta del error anterior del destino DuckDNS. [Let's Encrypt: CAA](https://letsencrypt.org/docs/caa/).
 
-`certbot.timer` está activo, con `OnCalendar=*-*-* 00,12:00:00`, `RandomizedDelaySec=43200` y `Persistent=true`. `certbot.service` informa última salida 0 y estado inactivo, normal entre ejecuciones. Esto no prueba una emisión ni renovación nueva. Se reutilizará ese timer; no crear otro cron o servicio de renovación.
+## 3. Auditoría privilegiada y controles de aislamiento
 
-La revisión privilegiada previa deberá confirmar configuración efectiva de Certbot, cuenta ACME existente, posibles overrides de unidad/CLI y ausencia de hooks nuevos desde esta auditoría. No publicar identificadores privados ni ejecutar `certbot certificates`/`renew` como si fueran necesarios para esta lectura.
+1. Se ejecutó **`sudo -n true` mediante la identidad/conexión SSH de instalación: salida 0**, sin introducir ni almacenar contraseña.
+2. Se mantuvo una sesión administrativa para el controlador secuencial, con límite de duración de 30 minutos y recuperación ante fallo/EOF. No se modificó sudoers, SSH ni ningún permiso global. La sesión/controlador terminaron al cerrar la instalación.
+3. `apache2ctl configtest`, `apache2ctl -S` y `apache2ctl -M`: **salida 0**, sintaxis global correcta. Apache **2.4.69 Raspbian**; módulos requeridos presentes. Los includes privados se pudieron procesar con privilegios, sin volcarlos al informe.
+4. Se comprobó que `api` no figuraba en el mapa efectivo de vhosts y que no existían los archivos, enlaces, hook, webroot ni lineage nuevos. No hubo que sobrescribir ni respaldar archivos anteriores de esos nombres.
+5. Se registraron hashes de **242 configuraciones/enlaces existentes** de Apache y renovaciones Certbot. La comparación excluyó únicamente los nuevos vhosts/enlaces y la nueva renovación de API; los archivos de otras aplicaciones, incluidos los protegidos, permanecieron idénticos.
+6. Certbot **4.0.0**. Se revisaron configuración global, configuración de root, unidad/timer, seis renovaciones existentes y directorios de hooks. Sin overrides globales que interfirieran con el procedimiento ni hooks globales. Las seis renovaciones actuales conservan el autenticador/instalador Apache; no se invocó ese plugin para el certificado nuevo.
+7. Se registraron estado/PID principal de los cuatro servicios y huella de certificado, código HTTP y tiempo de los seis sitios. Antes de cada fase y después de cada reload se comparó con el baseline.
 
-### Servicios existentes, baseline comprobado
+El controlador inicial se cerró tras la auditoría, **antes de cualquier escritura**, para ajustar en local la comparación del nuevo lineage; se repitió la auditoría antes de instalar. No fue un fallo de Apache o ACME ni un rollback de infraestructura.
 
-Se hicieron sondas HTTPS **por loopback con SNI/Host correcto y verificación TLS**, sin `-k`, login ni lectura de archivos de aplicaciones.
+## 4. Secuencia exacta ejecutada
 
-| Sitio | HTTP HTTPS | Tiempo de una muestra | Certificado válido hasta, UTC |
-| --- | ---: | ---: | --- |
-| Heaven's Gate | 200 | 193 ms | 2027-01-06 16:35:59 |
-| Foro | 200 | 207 ms | 2026-12-16 20:19:54 |
-| `autonaufragio` | 404, baseline existente | 107 ms | 2027-01-08 07:38:50 |
-| `bibprof` | 200 | 205 ms | 2027-01-18 22:10:02 |
-| `ordenanthia` | 200 | 133 ms | 2026-12-22 16:23:25 |
-| Galería existente | 200 | 132 ms | 2026-12-20 08:31:56 |
+Las acciones se realizaron en orden; cada fase dependió del éxito anterior. Los comandos administrativos indicados se ejecutaron como root dentro de la sesión ya autorizada, sin requerir otro prompt de sudo.
 
-Apache, MariaDB, SSH y SMB estuvieron activos, con **los mismos PIDs principales antes/después** de las consultas. No se guardan sus PIDs ni direcciones privadas en el informe. Estas sondas acreditan disponibilidad anónima local, no todos los flujos internos ni el acceso por Internet. Los servicios han permanecido intactos durante esta auditoría; el efecto de una instalación futura se verificará antes/después, no se garantiza por anticipado.
+| Paso | Acción y resultado real |
+| --- | --- |
+| 1 | Crear webroot independiente y dos subdirectorios; crear únicamente el archivo HTTP y su enlace en `sites-enabled`. Archivos nuevos, sin sobrescrituras. |
+| 2 | `apache2ctl configtest` → 0; `systemctl reload apache2` → 0. Primera recarga, sin restart. Los seis sitios y certificados permanecen iguales. |
+| 3 | Crear `/.well-known/acme-challenge/naufragio-install-probe` con contenido sintético; lectura HTTP local mediante Host correcto y comparación exacta → aprobada. Fichero eliminado inmediatamente. |
+| 4 | ACME staging: `certonly --webroot --dry-run --non-interactive` → **0**, «The dry run was successful», **11,403 s**. Acredita validación HTTP-01 desde la infraestructura externa de Let's Encrypt. |
+| 5 | Crear el hook específico, root:root 0750; emisión de producción `certonly --webroot --deploy-hook ... --non-interactive` → **0**, **11,147 s**, «Successfully received certificate». SAN exclusivo, emisor y fechas verificados. |
+| 6 | Crear únicamente el archivo HTTPS y su enlace. `apache2ctl configtest` → 0; `systemctl reload apache2` → 0. Segunda recarga. Seis sitios sin cambios; API → **403 con TLS válido**. |
+| 7 | Renovación simulada del nuevo lineage con `--dry-run --run-deploy-hooks --non-interactive` → **0**, **75,681 s**, «all simulated renewals succeeded». El hook ejecutó configtest y el tercer reload. Seis sitios y API verificados de nuevo. |
+| 8 | Configtest y ronda final de salud → aprobados; timer existente activo, directorio de challenges vacío, ningún listener 3400 ni directivas ProxyPass en los vhosts nuevos. Controlador y temporales eliminados. |
 
-## 4. Acceso exterior y HTTP-01
+Comandos ACME efectivamente ejecutados, sin dominios ajenos:
 
-El servicio web externo disponible volvió a devolver «not accessible via this tool» al intentar HTTP/HTTPS de `api`; no produjo una respuesta utilizable y el intento HTTP se mostró normalizado a HTTPS. **No permite confirmar ni descartar el acceso exterior a TCP 80.** Las pruebas desde Windows o Raspberry no sustituyen una red independiente y pueden verse afectadas por NAT loopback u overrides locales.
+```sh
+certbot certonly --webroot \
+  --webroot-path /var/lib/naufragio-vtt-acme \
+  --cert-name api.naufragio.net -d api.naufragio.net \
+  --non-interactive --dry-run
 
-No se revisaron reglas efectivas de UFW/router con privilegios porque no hay sudo disponible. No se presume necesario cambiar ninguna regla: los sitios actuales ya utilizan Apache en 80/443. Si, después de habilitar el vhost HTTP autorizado, el challenge no llega desde fuera, **detenerse antes de staging** y diagnosticar el trayecto; no abrir puertos, alterar firewall/router o contactar soporte por inferencia.
+certbot certonly --webroot \
+  --webroot-path /var/lib/naufragio-vtt-acme \
+  --cert-name api.naufragio.net -d api.naufragio.net \
+  --non-interactive --deploy-hook /usr/local/sbin/naufragio-vtt-cert-deploy
 
-HTTP-01 exige que la CA pueda leer el challenge del nombre solicitado en **puerto 80**; un certificado HTTPS válido previo no es necesario. [Let's Encrypt: HTTP-01](https://letsencrypt.org/docs/challenge-types/).
+certbot renew --cert-name api.naufragio.net \
+  --dry-run --run-deploy-hooks --non-interactive
+```
 
-## 5. Plan concreto de instalación, pendiente de autorización
+No se ejecutó `certbot --apache`, standalone, renovación forzada, ni emisión/ampliación para otro nombre. Staging no instaló un certificado de prueba. El hook de la emisión inicial salió sin recargar porque aún no estaba habilitado el vhost SSL; en la renovación simulada sí ejecutó la recarga.
 
-**Ningún comando de instalación de esta sección se ha ejecutado.** El primer paso actual es desbloquear la lectura privilegiada; después se podrá autorizar el ámbito de cambios que sigue. No hace falta desplegar VTT para obtener y comprobar su certificado.
+Se realizaron **tres reloads** en total: HTTP, HTTPS y hook de renovación. Todos precedidos por configtest correcto. El último reload registrado por systemd terminó con estado 0 a las **10:49:46 CET / 09:49:46 UTC**. No hubo restart.
 
-### A. Validación, respaldo y vhost HTTP exclusivo
+## 5. Archivos y directorios creados
 
-1. Verificar sudo autorizado, sintaxis global, mapa de vhosts y módulos. Registrar otra vez servicios, certificados y sondas anteriores. Guardar copia privada de los archivos/enlaces concretos que se vayan a cambiar; no copiar claves al repositorio ni restaurar árboles completos sobre cambios concurrentes.
-2. Crear el webroot dedicado `/var/lib/naufragio-vtt-acme/.well-known/acme-challenge/`, con permisos de lectura mínimos para Apache. No usar el DocumentRoot de Heaven's Gate ni de otro sitio.
-3. Crear únicamente `/etc/apache2/sites-available/api-naufragio.conf` y su enlace mediante `a2ensite api-naufragio.conf`, inicialmente con este contenido HTTP, **sin redirección a HTTPS y sin proxy**:
+Todos son exclusivos de API. Propietario root; no se cambiaron permisos de rutas globales existentes.
+
+| Recurso persistente | Permisos / finalidad |
+| --- | --- |
+| `/var/lib/naufragio-vtt-acme/` | 0755, nuevo webroot. |
+| `/var/lib/naufragio-vtt-acme/.well-known/` | 0755, nuevo subdirectorio. |
+| `/var/lib/naufragio-vtt-acme/.well-known/acme-challenge/` | 0755, nuevo subdirectorio, vacío al finalizar. |
+| `/etc/apache2/sites-available/api-naufragio.conf` | 0644, vhost HTTP, solo lectura pública de challenges. |
+| `/etc/apache2/sites-enabled/api-naufragio.conf` | Enlace al archivo anterior; creado directamente mediante symlink, no mediante edición de otro vhost. |
+| `/etc/apache2/sites-available/api-naufragio-ssl.conf` | 0644, TLS independiente, raíz denegada. |
+| `/etc/apache2/sites-enabled/api-naufragio-ssl.conf` | Enlace al archivo anterior. |
+| `/usr/local/sbin/naufragio-vtt-cert-deploy` | 0750, hook exclusivo de este lineage. |
+| `/etc/letsencrypt/renewal/api.naufragio.net.conf` | 0600, configuración generada por Certbot. |
+| `/etc/letsencrypt/live/api.naufragio.net/` | Enlaces Certbot de cert, chain, fullchain y privkey. La clave de destino conserva 0600. |
+| `/etc/letsencrypt/archive/api.naufragio.net/` | Archivos de la primera emisión del nuevo lineage, gestionados por Certbot. No se publican claves ni contenidos de este directorio. |
+| `/var/log/apache2/naufragio-vtt-access.log` y `naufragio-vtt-error.log` | Logs propios declarados en ambos vhosts. El formato no registra query, Authorization, Cookie ni cuerpos. |
+
+Certbot utilizó sus directorios habituales de trabajo/logs/estado ACME. No se volcaron cuentas, URLs de autorización, tokens de challenge ni logs ACME completos al repositorio. No se afirma que una ejecución de Certbot sea una operación sin escrituras auxiliares.
+
+Recursos temporales retirados: fichero sintético de challenge, raíz privada `/var/tmp/naufragio-https.*` con salidas del controlador y scripts locales auxiliares. Verificación final: **cero raíces temporales de ese prefijo y cero ficheros en el directorio de challenges**. El controlador terminó con salida 0; no queda una sesión administrativa de esta instalación ni proceso de piloto.
+
+Huellas SHA-256 comprobadas de los archivos nuevos, sin contenido sensible:
+
+```text
+api-naufragio.conf       64974171b58fa709235e7ccb80f7d09377ef2844be6d67dc26605950db539785
+api-naufragio-ssl.conf   2bb7a45c31f59fda96c6ddaa6035830328be43e74822ad071fe96b8a0b652d1d
+hook de renovación      dc6fd503281e8e8b07372d1310ede9c9bf78a0ddc2ce35b15625ad90fb48fef2
+renewal API             28ff2db774d05f3c46b2da7f0a1454015c6d05a256e40beca9cde5137ccf6fce
+```
+
+## 6. Configuración instalada
+
+### `/etc/apache2/sites-available/api-naufragio.conf`
 
 ```apache
 <VirtualHost *:80>
@@ -119,57 +137,7 @@ HTTP-01 exige que la CA pueda leer el challenge del nombre solicitado en **puert
 </VirtualHost>
 ```
 
-4. Validar y realizar **reload, sin restart**, solo si la validación termina con salida 0:
-
-```sh
-sudo apache2ctl configtest
-sudo apache2ctl -S
-sudo systemctl reload apache2
-```
-
-5. Crear un fichero sintético de prueba dentro del directorio de challenges y comprobar su contenido exacto desde una red independiente, sin `hosts`, VPN hacia la LAN ni redirección forzada a HTTPS. Eliminar solo ese fichero al terminar. Comparar todos los sitios del baseline. Si falla, detenerse sin ejecutar ACME.
-
-### B. ACME staging y certificado exclusivo
-
-Revisar primero configuración global de Certbot y hooks, incluida cualquier diferencia desde la lectura actual. Usar la cuenta ACME existente conforme a sus condiciones; no introducir credenciales por argumentos/URLs/logs. `certonly --webroot` evita el instalador Apache y standalone; no ampliar ni reemitir el certificado de Heaven's Gate.
-
-Primera prueba autorizada, **staging mediante dry-run**:
-
-```sh
-sudo certbot certonly --webroot \
-  --webroot-path /var/lib/naufragio-vtt-acme \
-  --cert-name api.naufragio.net -d api.naufragio.net --dry-run
-```
-
-Aunque sea dry-run, hace solicitudes ACME y escribe datos temporales/logs; requiere autorización y **no se ha ejecutado**. No utilizar `--staging` de forma que se active en Apache un certificado de prueba.
-
-Para renovación, preparar un hook privado independiente `/usr/local/sbin/naufragio-vtt-cert-deploy`, propiedad de root, sin escritura para la cuenta del VTT. Contenido propuesto:
-
-```sh
-#!/bin/sh
-set -eu
-[ "${RENEWED_LINEAGE:-}" = "/etc/letsencrypt/live/api.naufragio.net" ] || exit 0
-[ -L /etc/apache2/sites-enabled/api-naufragio-ssl.conf ] || exit 0
-/usr/sbin/apache2ctl configtest
-/usr/bin/systemctl reload apache2
-```
-
-El hook solo recarga si se renueva ese lineage y su vhost SSL ya está habilitado. Evita un reload innecesario en la emisión inicial, antes de crear el vhost 443. No instalarlo en el directorio de hooks globales ni añadirlo a certificados existentes.
-
-Después de staging satisfactorio, emisión de producción autorizada:
-
-```sh
-sudo certbot certonly --webroot \
-  --webroot-path /var/lib/naufragio-vtt-acme \
-  --cert-name api.naufragio.net -d api.naufragio.net \
-  --deploy-hook /usr/local/sbin/naufragio-vtt-cert-deploy
-```
-
-Comprobar SAN exclusivo `api.naufragio.net`, emisor, fechas y cadena. Las rutas esperadas son `/etc/letsencrypt/live/api.naufragio.net/fullchain.pem` y `privkey.pem`; no leer/publicar la clave. Revisar que la configuración nueva de renovación conserva webroot y hook, sin alterar las seis renovaciones actuales. [Certbot: webroot y renovación](https://eff-certbot.readthedocs.io/en/stable/using.html).
-
-### C. HTTPS independiente, todavía sin backend
-
-Crear `/etc/apache2/sites-available/api-naufragio-ssl.conf` **solo después de emitir el certificado válido**:
+### `/etc/apache2/sites-available/api-naufragio-ssl.conf`
 
 ```apache
 <VirtualHost *:443>
@@ -180,6 +148,8 @@ Crear `/etc/apache2/sites-available/api-naufragio-ssl.conf` **solo después de e
     SSLCertificateKeyFile /etc/letsencrypt/live/api.naufragio.net/privkey.pem
     DocumentRoot /var/lib/naufragio-vtt-acme
     <Directory /var/lib/naufragio-vtt-acme>
+        Options None
+        AllowOverride None
         Require all denied
     </Directory>
     ErrorLog ${APACHE_LOG_DIR}/naufragio-vtt-error.log
@@ -187,81 +157,71 @@ Crear `/etc/apache2/sites-available/api-naufragio-ssl.conf` **solo después de e
 </VirtualHost>
 ```
 
-Revisar la política TLS heredada antes de aplicar el ejemplo. Habilitar únicamente este vhost, validar configuración global y hacer reload autorizado. La raíz HTTPS respondería **403 con certificado válido**: es intencionado mientras no exista backend. No hay que arrancar Node para convertir ese 403 en 200.
-
-Si se autoriza redirección HTTP, añadir al vhost de puerto 80:
-
-```apache
-RewriteEngine On
-RewriteCond %{REQUEST_URI} !^/\.well-known/acme-challenge/
-RewriteRule ^ https://api.naufragio.net%{REQUEST_URI} [R=301,L,NE]
-```
-
-Mantener el challenge fuera de la redirección. Validar conservación de ruta/consulta, TLS público desde otra red y todos los sitios del baseline tras el reload. No añadir HSTS global o `includeSubDomains`, ni alterar vhosts/certificados de otros sitios.
-
-### D. Renovación automática y prueba del hook
-
-Reutilizar `certbot.timer`. Probar únicamente el nuevo lineage en una ventana autorizada:
+### `/usr/local/sbin/naufragio-vtt-cert-deploy`
 
 ```sh
-sudo certbot renew --cert-name api.naufragio.net --dry-run
-# Autorización adicional explícita para ejecutar también el reload del hook:
-sudo certbot renew --cert-name api.naufragio.net --dry-run --run-deploy-hooks
+#!/bin/sh
+set -eu
+[ "${RENEWED_LINEAGE:-}" = "/etc/letsencrypt/live/api.naufragio.net" ] || exit 0
+[ -L /etc/apache2/sites-enabled/api-naufragio-ssl.conf ] || exit 0
+/usr/sbin/apache2ctl configtest
+/usr/bin/systemctl reload apache2
 ```
 
-Comprobar salida de ACME, resultado del hook, certificado servido y sitios existentes. No ejecutar renovación forzada ni renovar todos los certificados para probar este. Supervisar vencimiento **del certificado servido**, timer y errores; una salida 0 de `renew` puede significar que no había nada que renovar. [Referencia de Certbot: dry-run y deploy hooks](https://eff-certbot.readthedocs.io/en/stable/man/certbot.html).
+No se añadieron redirecciones HTTP→HTTPS, HSTS global, módulos, ProxyPass ni reglas de WebSocket. La raíz HTTP también devuelve 403; solo la ruta HTTP-01 está concedida. La raíz HTTPS devuelve 403 de forma intencionada mientras el backend siga fuera de alcance.
 
-## 6. HTTP/WSS para VTT: propuesta posterior, no parte de activar el certificado
+## 7. Pruebas de conservación de los servicios
 
-La capacidad está disponible por versión/módulos, pero no se ha instalado ni probado un trayecto público WSS. Cuando se autorice por separado el backend, estas directivas sustituirían el ámbito estático denegado del vhost SSL; no incorporarlas aún:
+El controlador completó **11 rondas de seis sitios, 66 sondas HTTP**, además de comprobar sus certificados mediante TLS con SNI. Incluyen baseline, antes/después de fases y después de cada reload. Todas conservaron código y huella del certificado; no hubo regresiones observadas. La comparación de 242 archivos/enlaces ajenos pasó en todas las rondas. Se omitió únicamente el ámbito nuevo autorizado de API.
 
-```apache
-ProxyRequests Off
-ProxyPreserveHost On
-ProxyAddHeaders On
-RequestHeader unset Forwarded
-RequestHeader unset X-Forwarded-For
-RequestHeader unset X-Forwarded-Host
-RequestHeader unset X-Forwarded-Server
-RequestHeader set X-Forwarded-Proto "https"
-RequestHeader set X-Forwarded-Port "443"
-LimitRequestBody 131072
-ProxyPass "/socket.io/" "http://127.0.0.1:3400/socket.io/" upgrade=websocket connectiontimeout=5 timeout=120
-ProxyPassReverse "/socket.io/" "http://127.0.0.1:3400/socket.io/"
-ProxyPass "/" "http://127.0.0.1:3400/" connectiontimeout=5 timeout=120
-ProxyPassReverse "/" "http://127.0.0.1:3400/"
-```
+| Sitio | Código en todas las rondas | Baseline → final | Certificado final |
+| --- | ---: | ---: | --- |
+| Heaven's Gate | 200 | 182,921 → 184,663 ms | Idéntico al inicial. |
+| Foro | 200 | 202,552 → 191,427 ms | Idéntico al inicial. |
+| `autonaufragio` | 404, igual al baseline | 101,201 → 102,230 ms | Idéntico al inicial. |
+| `bibprof` | 200 | 195,838 → 196,953 ms | Idéntico al inicial. |
+| `ordenanthia` | 200 | 116,948 → 141,303 ms | Idéntico al inicial. |
+| Galería existente | 200 | 104,427 → 104,787 ms | Idéntico al inicial. |
 
-La regla específica precede a la raíz, conserva polling y permite upgrade únicamente en la ruta Socket.IO. No forzar encabezados Upgrade globalmente. Apache 2.4.47+ permite este upgrade con `proxy_http`. [Apache: proxy y WebSocket](https://httpd.apache.org/docs/2.4/mod/mod_proxy.html#examples).
+Apache, MariaDB, SSH y SMB: activos y mismos PIDs principales en todas las comparaciones. Las sondas son lecturas anónimas de la raíz; no prueban todos los recorridos autenticados o funciones privadas de esas aplicaciones, ni equivalen a monitorización continua durante cada milisegundo del reload.
 
-Configuración futura: `HOST=127.0.0.1`, `PORT=3400`, `NODE_ENV=production`, `ALLOWED_ORIGINS=https://naufragio-rolero.github.io`, `SOCKET_PATH=/socket.io`, `MAX_MESSAGE_BYTES=65536`, diagnósticos desactivados y SQLite privada de metadatos. No abrir 3400 ni modificar Pages en esta fase.
+### Validación de la API
 
-El backend actual agrupa límites por dirección de socket; detrás de Apache todos los clientes compartirán loopback. Esto requiere una política probada antes de publicar el **backend**, pero **no bloquea obtener el certificado o comprobar TLS sin backend**. Las pruebas futuras WSS incluirán tres clientes, permisos, reconexiones y PNG de 12 MiB. Ninguna se declara superada por instalar solo HTTPS.
+- TLS local con SNI correcto: cadena y hostname válidos, SAN exclusivo. Tras la segunda recarga: 403, **141,677 ms**. Tras renovación: 403, **144,020 ms**. Ronda final: 403, **148,671 ms**. Misma huella del certificado de producción.
+- Windows: `curl.exe https://api.naufragio.net/` con verificación normal → salida **0**, HTTP **403**, IP destino `188.78.105.221`, `ssl_verify_result=0`, **153,468 ms**.
+- Windows HTTP → 403, **28,613 ms**. No se habilitó redirección.
+- Las tres operaciones ACME satisfactorias acreditan que Let's Encrypt pudo validar HTTP-01 desde su infraestructura exterior. No se atribuye a Windows una red externa independiente.
+- La herramienta web externa siguió sin devolver una respuesta utilizable a HTTPS. No se usa ese resultado como prueba de fallo del servicio ni como validación externa independiente de TCP 443. El certificado servido sí está comprobado desde Raspberry y Windows.
 
-## 7. Aislamiento y rollback de la futura instalación HTTPS
+## 8. Renovación automática
 
-El ámbito autorizado debería limitarse a dos archivos/enlaces de vhost, webroot nuevo, lineage nuevo, hook específico, logs propios y reloads validados. No modificar `ports.conf`, el vhost predeterminado, módulos globales, certificados de otros nombres, rutas de aplicaciones, MariaDB, firewall, SSH, router, DNS o Pages.
+Se conserva el **`certbot.timer` existente**, activo; `OnCalendar=*-*-* 00,12:00:00`, `RandomizedDelaySec=43200`, `Persistent=true`. No se creó otro timer, cron ni servicio. El nuevo archivo de renovación contiene autenticador webroot, webroot dedicado y hook propio; se verificó su contenido sin publicar datos privados de cuenta.
 
-Apache es compartido: **no se puede garantizar impacto cero por adelantado**. Confirmar baseline, validar sintaxis global antes de cada reload y detenerse si cambia la salud de cualquier sitio. No reiniciar Apache, Raspberry ni otros servicios.
+La prueba `renew --cert-name api.naufragio.net --dry-run --run-deploy-hooks` pasó con salida 0. La revisión filtrada del log confirmó **ejecución del deploy hook, `Syntax OK`, ausencia de error no cero del hook y éxito de la renovación simulada**. systemd confirmó último reload con estado 0. No se sustituyó el certificado de producción por uno staging.
 
-Rollback propuesto, solo si se autoriza la instalación:
+Mantener la ruta HTTP-01 y vigilar el vencimiento **del certificado servido**, el timer y errores ACME/hook. Las renovaciones futuras dependen también de que el A siga apuntando a la IP vigente; no se ha implementado su actualización automática. [Certbot: renovación y hooks](https://eff-certbot.readthedocs.io/en/stable/using.html).
 
-1. Deshabilitar exclusivamente `api-naufragio-ssl.conf` y `api-naufragio.conf`; restaurar cualquier versión previa de esos archivos si existía, sin sobrescribir cambios concurrentes. Validar y recargar Apache. Confirmar nuevamente todos los sitios y servicios del baseline.
-2. No revertir el A directo del propietario ni tocar DuckDNS: no forman parte de estos cambios.
-3. Mantener temporalmente el lineage nuevo o, si se autoriza su retirada y no tiene referencias, usar `certbot delete --cert-name api.naufragio.net` tras revisar su ámbito. No borrar lineages manualmente ni revocar los existentes.
-4. Retirar hook/webroot propios solo después de eliminar sus referencias y su renovación. Borrar exclusivamente recursos creados y registrados para esta instalación; no usar comodines sobre certificados o directorios compartidos. Mantener los logs según la política operativa.
-5. Verificar ausencia de listener 3400, sin backend instalado ni cambios en Pages. La limpieza no necesita modificaciones SSH, firewall, DNS ni reinicios.
+## 9. Incidencias y recuperación
 
-## 8. Operaciones que necesitan autorización
+**Sin errores de validación Apache/ACME ni regresiones observadas. No se ejecutó rollback de infraestructura.** La renovación simulada duró más que las emisiones iniciales, pero terminó correctamente; no se trató esa espera como un fallo ni se alteraron límites o servicios para acelerarla.
 
-| Operación | Estado / condición |
-| --- | --- |
-| Sudo para lecturas de validación global | **No disponible ahora**. Es el impedimento actual antes de comenzar las escrituras. |
-| Crear webroot y vhost HTTP exclusivo; configtest y reload | Pendiente de autorización tras validación privilegiada satisfactoria. |
-| Fichero sintético de challenge y comprobación exterior | Pendiente; debe pasar antes de ACME. Si falla, diagnosticar sin cambiar red. |
-| Ejecutar dry-run ACME staging | Pendiente de autorización; no ejecutado. |
-| Emitir certificado exclusivo y crear hook específico | Pendiente de autorización y staging satisfactorio. |
-| Crear/habilitar vhost TLS, redirección y reload | Pendiente de certificado válido, autorización y validación global. |
-| Probar renovación y hook/reload; ejecutar rollback si falla | Debe incluirse expresamente en el ámbito autorizado. |
+Rollback preparado, no ejecutado:
 
-**No son obstáculos actuales:** CAA, el MX coexistente, ausencia de un certificado previo para `api`, ni que Node esté detenido. **No forman parte de esta autorización:** actualizar DNS automáticamente, publicar backend, abrir puertos o cambiar Pages. No hay gestiones de soporte que encargar al propietario.
+1. Deshabilitar únicamente los dos enlaces nuevos de API; comprobar que sus destinos siguen siendo los registrados. Validar configuración global y recargar Apache, sin restart. Comparar otra vez los seis sitios, certificados y procesos principales.
+2. Retirar solo los archivos HTTP/HTTPS y hook nuevos tras comprobar su huella/propiedad. No restaurar un árbol completo de Apache ni sobrescribir cambios concurrentes.
+3. Si se retira el lineage nuevo, verificar antes que no tiene referencias activas y ejecutar exclusivamente `certbot delete --cert-name api.naufragio.net --non-interactive`. No borrar otros certificados, revocarlos ni tocar cuentas compartidas.
+4. Retirar el webroot solo después de eliminar sus referencias de vhost y renovación. Conservar logs según la política operativa. No usar comodines destructivos sobre certificados/directorios compartidos.
+5. Validar de nuevo Apache y los servicios originales. No necesita revertir DNS, SSH, firewall, router o Pages porque no se modificaron. No hay bases de datos o contenido VTT que borrar.
+
+## 10. Pendientes exclusivos de la siguiente fase
+
+No se ha publicado el multijugador. Quedan registrados, **sin implementar**:
+
+1. Corregir límites por IP detrás de Apache con un modelo de proxy de confianza que no acepte cabeceras falsificadas.
+2. Actualizar `backend/.env.example` a `MAX_MESSAGE_BYTES=65536`.
+3. Autorizar y configurar posteriormente Node solo en `127.0.0.1:3400` y el proxy independiente. Ahora el puerto sigue sin listener y no se ha abierto.
+4. Probar Socket.IO mediante HTTPS/WSS y HTTP polling, con cuentas, pertenencias y permisos reales del backend.
+5. Repetir PNG/mapas válidos de 12 MiB con varios jugadores, SHA-256, interrupciones y reconexiones por el trayecto público.
+6. Resolver el mantenimiento automático del A cuando cambie la IP pública, sin modificar ahora STRATO/DuckDNS.
+
+GitHub Pages permanece intacto. Solo se versiona esta actualización documental en la rama de trabajo, sin merge con `main`, código VTT, scripts de control temporales, credenciales o claves.
