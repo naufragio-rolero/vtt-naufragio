@@ -1,0 +1,136 @@
+﻿{
+  "timestamp": "2026-10-31T18:48:12.560785+00:00",
+  "readOnly": true,
+  "mounts": {
+    "/": {
+      "code": 0,
+      "stdout": "/dev/mmcblk0p2 ext4 /",
+      "stderr": ""
+    },
+    "/boot/firmware": {
+      "code": 0,
+      "stdout": "/dev/mmcblk0p1 vfat /boot/firmware",
+      "stderr": ""
+    },
+    "/mnt/ssd": {
+      "code": 0,
+      "stdout": "/dev/sdb1 ext4 /mnt/ssd",
+      "stderr": ""
+    }
+  },
+  "devices": {
+    "code": 0,
+    "stdout": "NAME        TYPE FSTYPE MOUNTPOINTS    PARTUUID\nloop0       loop swap                  \nsdb         disk                       \n\u2514\u2500sdb1      part ext4   /mnt/ssd       44c6f286-2ec5-44ab-96fd-6cefd07c20ac\nmmcblk0     disk                       \n\u251c\u2500mmcblk0p1 part vfat   /boot/firmware c8bcfc97-01\n\u2514\u2500mmcblk0p2 part ext4   /              c8bcfc97-02\nzram0       disk swap   [SWAP]",
+    "stderr": ""
+  },
+  "model": "Raspberry Pi 3 Model B Plus Rev 1.3",
+  "cmdline": "coherent_pool=1M 8250.nr_uarts=0 snd_bcm2835.enable_headphones=0 cgroup_disable=memory snd_bcm2835.enable_headphones=1 snd_bcm2835.enable_hdmi=1 snd_bcm2835.enable_hdmi=0  vc_mem.mem_base=0x3ec00000 vc_mem.mem_size=0x40000000  console=ttyS0,115200 console=tty1 root=PARTUUID=c8bcfc97-02 rootfstype=ext4 fsck.repair=yes rootwait cfg80211.ieee80211_regdom=ES ds=nocloud;i=rpi-imager-1791806180607",
+  "controllers": "cpuset cpu io pids",
+  "chosen": {
+    "/proc/device-tree/chosen/bootargs": {
+      "hex": "636f686572656e745f706f6f6c3d314d20383235302e6e725f75617274733d3020736e645f62636d323833352e656e61626c655f6865616470686f6e65733d30206367726f75705f64697361626c653d6d656d6f727920736e645f62636d323833352e656e61626c655f6865616470686f6e65733d3120736e645f62636d323833352e656e61626c655f68646d693d3120736e645f62636d323833352e656e61626c655f68646d693d30202076635f6d656d2e6d656d5f626173653d307833656330303030302076635f6d656d2e6d656d5f73697a653d307834303030303030302020636f6e736f6c653d74747953302c31313532303020636f6e736f6c653d7474793120726f6f743d50415254555549443d63386263666339372d303220726f6f746673747970653d65787434206673636b2e7265706169723d79657320726f6f74776169742063666738303231312e6965656538303231315f726567646f6d3d45532064733d6e6f636c6f75643b693d7270692d696d616765722d3137393138303631383036303700",
+      "text": "coherent_pool=1M 8250.nr_uarts=0 snd_bcm2835.enable_headphones=0 cgroup_disable=memory snd_bcm2835.enable_headphones=1 snd_bcm2835.enable_hdmi=1 snd_bcm2835.enable_hdmi=0  vc_mem.mem_base=0x3ec00000 vc_mem.mem_size=0x40000000  console=ttyS0,115200 console=tty1 root=PARTUUID=c8bcfc97-02 rootfstype=ext4 fsck.repair=yes rootwait cfg80211.ieee80211_regdom=ES ds=nocloud;i=rpi-imager-1791806180607"
+    },
+    "/proc/device-tree/chosen/os_prefix": {
+      "hex": "00",
+      "text": ""
+    },
+    "/proc/device-tree/chosen/overlay_prefix": {
+      "hex": "6f7665726c6179732f00",
+      "text": "overlays/"
+    },
+    "/proc/device-tree/chosen/name": {
+      "hex": "63686f73656e00",
+      "text": "chosen"
+    },
+    "/proc/device-tree/chosen/bootloader/boot-mode": {
+      "hex": "00000001",
+      "bigEndian": 1
+    },
+    "/proc/device-tree/chosen/bootloader/partition": {
+      "hex": "00000000",
+      "bigEndian": 0
+    },
+    "/proc/device-tree/chosen/bootloader/tryboot": {
+      "hex": "00000000",
+      "bigEndian": 0
+    },
+    "/proc/device-tree/chosen/bootloader/name": {
+      "hex": "626f6f746c6f6164657200",
+      "text": "bootloader"
+    }
+  },
+  "firmware": {
+    "version": {
+      "code": 0,
+      "stdout": "Sep 14 2026 14:50:41 \nCopyright (c) 2012 Broadcom\nversion a86983925695a7e63166327d7c002d64040ed31d (clean) (release) (start)",
+      "stderr": ""
+    },
+    "get_config str": {
+      "code": 0,
+      "stdout": "device_tree=-\noverlay_prefix=overlays/\nhdmi_cvt:0=\nhdmi_cvt:1=\nhdmi_edid_filename:0=\nhdmi_edid_filename:1=\nhdmi_timings:0=\nhdmi_timings:1=",
+      "stderr": ""
+    },
+    "get_config int": {
+      "code": 0,
+      "stdout": "aphy_params_current=819\narm_boost=1\narm_freq=1400\narm_freq_min=600\naudio_pwm_mode=514\nauto_initramfs=1\ncamera_auto_detect=1\nconfig_hdmi_boost=5\ncore_freq=400\ndesired_osc_freq=0x331df0\ndesired_osc_freq_boost=0x3c45b0\ndisable_commandline_tags=2\ndisable_fw_kms_setup=1\ndisable_l2cache=1\ndisable_overscan=1\ndisplay_auto_detect=1\ndisplay_hdmi_rotate=-1\ndisplay_lcd_rotate=-1\ndphy_params_current=547\ndvfs=3\nenable_tvout=1\nforce_eeprom_read=1\nforce_ethernet_phy_address=-1\nforce_pwm_open=1\nframebuffer_ignore_alpha=1\nframebuffer_swap=1\ngpu_freq=300\nhdmi_enable_4kp60=-1\ninit_uart_clock=0x2dc6c00\ninitial_turbo=60\nlcd_framerate=60\nmask_gpu_interrupt0=3072\nmask_gpu_interrupt1=26370\nmax_framebuffers=2\nover_voltage_avs=0x16e36\nover_voltage_avs_boost=0x30d40\npause_burst_frames=1\npciex4_reset=1\npmic_turbo_threshold=600\nprogram_serial_random=1\nsdram_freq=450\ntotal_mem=1024\nhdmi_force_cec_address:0=65535\nhdmi_force_cec_address:1=65535\nhdmi_pixel_freq_limit:0=0x9a7ec80",
+      "stderr": ""
+    }
+  },
+  "bootFiles": {
+    "/boot/config.txt": {
+      "resolved": "/boot/config.txt",
+      "sha256": "c39b0866eec314a741f6cba65f10937b914408d6660d5a81f6b3a9ce81471010",
+      "text": "DO NOT EDIT THIS FILE\n\nThe file you are looking for has moved to /boot/firmware/config.txt\n"
+    },
+    "/boot/firmware/config.txt": {
+      "resolved": "/boot/firmware/config.txt",
+      "sha256": "1a312a2c82554d6d9bb49b09c66f1e137284c0676e84ec6501e9a013c27aa928",
+      "text": "# For more options and information see\n# http://rptl.io/configtxt\n# Some settings may impact device functionality. See link above for details\n\n# Uncomment some or all of these to enable the optional hardware interfaces\n#dtparam=i2c_arm=on\n#dtparam=i2s=on\n#dtparam=spi=on\n\n# Enable audio (loads snd_bcm2835)\ndtparam=audio=on\n\n# Additional overlays and parameters are documented\n# /boot/firmware/overlays/README\n\n# Automatically load overlays for detected cameras\ncamera_auto_detect=1\n\n# Automatically load overlays for detected DSI displays\ndisplay_auto_detect=1\n\n# Automatically load initramfs files, if found\nauto_initramfs=1\n\n# Enable DRM VC4 V3D driver\ndtoverlay=vc4-kms-v3d\nmax_framebuffers=2\n\n# Don't have the firmware create an initial video= setting in cmdline.txt.\n# Use the kernel's default instead.\ndisable_fw_kms_setup=1\n\n# Disable compensation for displays with overscan\ndisable_overscan=1\n\n# Run as fast as firmware / board allows\narm_boost=1\n\n[cm4]\n# Enable host mode on the 2711 built-in XHCI USB controller.\n# This line should be removed if the legacy DWC2 controller is required\n# (e.g. for USB device mode) or if USB support is not required.\notg_mode=1\n\n[cm5]\ndtoverlay=dwc2,dr_mode=host\n\n[pi5]\ndtoverlay=nospi10\n\n[all]\n"
+    },
+    "/boot/cmdline.txt": {
+      "resolved": "/boot/cmdline.txt",
+      "sha256": "a29f2146c694ced6ee370e6c8827b68defef2a6bafb3270df87d1eba5df1aa07",
+      "text": "DO NOT EDIT THIS FILE\n\nThe file you are looking for has moved to /boot/firmware/cmdline.txt\n"
+    },
+    "/boot/firmware/cmdline.txt": {
+      "resolved": "/boot/firmware/cmdline.txt",
+      "sha256": "e2f8de434d83b3e0c4f7f027fa7acca636d7c4eea80ab747ef865dbaab5260c8",
+      "text": "console=serial0,115200 console=tty1 root=PARTUUID=c8bcfc97-02 rootfstype=ext4 fsck.repair=yes rootwait cfg80211.ieee80211_regdom=ES ds=nocloud;i=rpi-imager-1791806180607"
+    }
+  },
+  "deviceTrees": {
+    "/boot/firmware/bcm2710-rpi-3-b-plus.dtb": {
+      "sha256": "d41256bdc25b09dbba0bcdb27592560561d39752ebb09c64e82a449e3271807d",
+      "chosenBootargs": "coherent_pool=1M 8250.nr_uarts=1 snd_bcm2835.enable_headphones=0 cgroup_disable=memory"
+    }
+  },
+  "firmwareLogRelevant": [],
+  "tools": {
+    "vclog": {
+      "code": 0,
+      "stdout": "/usr/bin/vclog",
+      "stderr": ""
+    },
+    "dtc": {
+      "code": 0,
+      "stdout": "/usr/bin/dtc",
+      "stderr": ""
+    },
+    "rpi-eeprom-config": {
+      "code": 0,
+      "stdout": "/usr/bin/rpi-eeprom-config",
+      "stderr": ""
+    }
+  },
+  "unit": {
+    "code": 0,
+    "stdout": "ActiveState=inactive\nSubState=dead\nUnitFileState=disabled",
+    "stderr": ""
+  },
+  "listener3400": {
+    "code": 0,
+    "stdout": "",
+    "stderr": ""
+  }
+}

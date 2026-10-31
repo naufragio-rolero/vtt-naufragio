@@ -1,0 +1,39 @@
+﻿{
+  "independentDtcChosen": {
+    "code": 0,
+    "stdout": "chosen {\n\t\tstdout-path = \"serial0:115200n8\";\n\t\tbootargs = \"coherent_pool=1M 8250.nr_uarts=1 snd_bcm2835.enable_headphones=0 cgroup_disable=memory\";\n\t\tphandle = <0x37>;\n\t};",
+    "stderr": ""
+  },
+  "bootPartition": {
+    "code": 0,
+    "stdout": "NAME        PARTN PARTTYPE PARTFLAGS FSTYPE\nmmcblk0                              \n\u251c\u2500mmcblk0p1     1 0xc                vfat\n\u2514\u2500mmcblk0p2     2 0x83               ext4",
+    "stderr": ""
+  },
+  "firmwareLogAccess": {
+    "code": 1,
+    "stdout": "",
+    "stderr": "Could not map VC memory: Permission denied\nFatal error: Cannot access logs"
+  },
+  "kernelConfig": [
+    "CONFIG_CGROUPS=y",
+    "CONFIG_MEMCG=y",
+    "CONFIG_MEMCG_NMI_SAFETY_REQUIRES_ATOMIC=y",
+    "# CONFIG_MEMCG_V1 is not set",
+    "CONFIG_CMDLINE=\"console=ttyAMA0,115200 kgdboc=ttyAMA0,115200 root=/dev/mmcblk0p2 rootfstype=ext4 rootwait\"",
+    "CONFIG_CMDLINE_FROM_BOOTLOADER=y",
+    "# CONFIG_CMDLINE_EXTEND is not set",
+    "# CONFIG_CMDLINE_FORCE is not set",
+    "# CONFIG_CMDLINE_PARTITION is not set"
+  ],
+  "dtbPackagedCopies": [
+    {
+      "path": "/usr/lib/linux-image-6.18.50+rpt-rpi-v8/broadcom/bcm2710-rpi-3-b-plus.dtb",
+      "sha256": "d41256bdc25b09dbba0bcdb27592560561d39752ebb09c64e82a449e3271807d",
+      "owner": {
+        "code": 1,
+        "stdout": "",
+        "stderr": "dpkg-query: no path found matching pattern /usr/lib/linux-image-6.18.50+rpt-rpi-v8/broadcom/bcm2710-rpi-3-b-plus.dtb"
+      }
+    }
+  ]
+}
