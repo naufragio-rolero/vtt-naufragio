@@ -12,6 +12,18 @@ async function fixture(t) {
   t.after(() => rm(root, { recursive: true, force: true }));
   return root;
 }
+
+test('beta build isolates prototype browser storage and rejects unsafe namespace values', async t => {
+  const root = await fixture(t);
+  await buildFrontend({ outputRoot: root, storageNamespace: 'phase9-beta' });
+  const script = await readFile(join(root, 'dist/app.js'), 'utf8');
+  assert.match(script, /"naufragio-vtt-mvp-v1:phase9-beta"/);
+  assert.match(script, /"naufragio-vtt-local-assets:phase9-beta"/);
+  assert.equal(JSON.parse(await readFile(join(root, 'dist/manifest.json'), 'utf8')).storageNamespace, 'phase9-beta');
+  for (const storageNamespace of ['', '../main', 'a'.repeat(41), null, 0]) {
+    await assert.rejects(buildFrontend({ outputRoot: root, storageNamespace }), /INVALID_STORAGE_NAMESPACE/);
+  }
+});
 test('dist contains only allowlisted browser files with reproducible hashes and no backend directory', async t => {
   const root = await fixture(t);
   await writeFile(join(root, '.env'), 'SYNTHETIC_NOT_PUBLIC=true');

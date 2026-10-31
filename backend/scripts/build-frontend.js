@@ -7,6 +7,7 @@ import { validateSiteConfig } from '../public/site-config.js';
 const sourceRoot = fileURLToPath(new URL('../../', import.meta.url));
 export const publicFiles = Object.freeze([
   ['index.html', 'index.html'], ['app.js', 'app.js'], ['styles.css', 'styles.css'],
+  ['backend/public/network-check.html', 'network-check.html'],
   ['frontend/multiplayer.js', 'frontend/multiplayer.js'], ['frontend/board-model.js', 'frontend/board-model.js'],
   ['frontend/room-media-store.js', 'frontend/room-media-store.js'],
   ['join.html','join.html'], ['frontend/join.js','frontend/join.js'], ['frontend/join.css','frontend/join.css'], ['frontend/qr.js','frontend/qr.js'],
@@ -21,7 +22,8 @@ export const publicFiles = Object.freeze([
     .map(name => [`backend/public/${name}`, `settings/${name}`])
 ]);
 const generator = 'naufragio-public-frontend-v1';
-export async function buildFrontend({ outputRoot = sourceRoot, configPath } = {}) {
+export async function buildFrontend({ outputRoot = sourceRoot, configPath, storageNamespace } = {}) {
+  if (storageNamespace !== undefined && (typeof storageNamespace !== 'string' || !/^[a-z0-9-]{1,40}$/.test(storageNamespace))) throw new Error('INVALID_STORAGE_NAMESPACE');
   const parent = await realpath(outputRoot);
   const target = join(parent, 'dist');
   // Only replace our own generated directory; never traverse a junction/symlink.
@@ -45,6 +47,15 @@ export async function buildFrontend({ outputRoot = sourceRoot, configPath } = {}
   try {
     for (const [from, to] of publicFiles) {
       let bytes = await readFile(resolve(sourceRoot, from));
+      if (to === 'app.js' && storageNamespace) {
+        let script = bytes.toString('utf8');
+        for (const key of ['naufragio-vtt-mvp-v1', 'naufragio-vtt-local-assets']) {
+          const literal = JSON.stringify(key);
+          if (script.split(literal).length !== 2) throw new Error('STORAGE_NAMESPACE_TARGET_CHANGED');
+          script = script.replace(literal, JSON.stringify(`${key}:${storageNamespace}`));
+        }
+        bytes = script;
+      }
       if (['index.html', 'frontend/multiplayer.js', 'frontend/board-model.js', 'frontend/join.js'].includes(to)) {
         bytes = bytes.toString('utf8').replaceAll('./backend/public/', './settings/')
           .replaceAll('../backend/public/', '../settings/').replaceAll('../backend/client/', '../client/').replaceAll('../backend/shared/', '../shared/');
@@ -54,7 +65,7 @@ export async function buildFrontend({ outputRoot = sourceRoot, configPath } = {}
     }
     if (config) await put('site.config.json', `${JSON.stringify(config, null, 2)}\n`);
     files.sort((a, b) => a.path.localeCompare(b.path, 'en'));
-    await writeFile(join(stage, 'manifest.json'), `${JSON.stringify({ generator, files }, null, 2)}\n`);
+    await writeFile(join(stage, 'manifest.json'), `${JSON.stringify({ generator, ...(storageNamespace ? { storageNamespace } : {}), files }, null, 2)}\n`);
     // target and stage are fixed children of the resolved parent, verified above.
     if (existing) await rm(target, { recursive: true });
     await rename(stage, target);
