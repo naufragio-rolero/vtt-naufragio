@@ -1,8 +1,8 @@
 "use strict";
 
 (() => {
-  const STORAGE_KEY = "naufragio-vtt-mvp-v1";
-  const ASSET_DB = "naufragio-vtt-local-assets";
+  const STORAGE_KEY = "naufragio-vtt-mvp-v1:phase9-beta";
+  const ASSET_DB = "naufragio-vtt-local-assets:phase9-beta";
   const ASSET_STORE = "media";
   const MAP_BLOB_KEY = "active-map-image";
   const MAX_MAP_BYTES = 12 * 1024 * 1024;

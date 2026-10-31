@@ -1,10 +1,11 @@
 {
   "generator": "naufragio-public-frontend-v1",
+  "storageNamespace": "phase9-beta",
   "files": [
     {
       "path": "app.js",
-      "bytes": 43700,
-      "sha256": "320f024e1eea05e09fef352abbd79dce34bf841e7990d57984db874a8b0e4c0a"
+      "bytes": 43724,
+      "sha256": "d9da45ea2a16c4d878c2f8f8a7e77ce2d9d0fb0a9320c2af8dc9def5f62ca053"
     },
     {
       "path": "client/asset-client.js",
