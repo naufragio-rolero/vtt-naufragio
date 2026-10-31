@@ -1,0 +1,11 @@
+test_finite_window (supervisor_test.SupervisorTests.test_finite_window) ... ok
+test_four_and_half_hours_of_metrics_have_bounded_files_and_descriptors (supervisor_test.SupervisorTests.test_four_and_half_hours_of_metrics_have_bounded_files_and_descriptors) ... ok
+test_health_verifies_identity_and_does_not_use_environment_proxy (supervisor_test.SupervisorTests.test_health_verifies_identity_and_does_not_use_environment_proxy) ... ok
+test_only_six_independent_services_before_backend_start (supervisor_test.SupervisorTests.test_only_six_independent_services_before_backend_start) ... ok
+test_proxy_health_headers_are_private_and_direct_mode_has_none (supervisor_test.SupervisorTests.test_proxy_health_headers_are_private_and_direct_mode_has_none) ... ok
+test_resource_guards_keep_limits_and_report_the_triggering_sample (supervisor_test.SupervisorTests.test_resource_guards_keep_limits_and_report_the_triggering_sample) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 3.483s
+
+OK

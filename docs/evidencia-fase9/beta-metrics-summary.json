@@ -1,0 +1,74 @@
+{
+  "scope": "Entire corrected VTT process lifetime, including setup and map transfer; CPU percentage relative to one core, Node only",
+  "summary": {
+    "samples": 8486,
+    "maxCombinedRssMiB": 128.890625,
+    "maxNodeRssMiB": 109.97265625,
+    "maxSupervisorRssMiB": 19.359375,
+    "minAvailableMiB": 480.9296875,
+    "maxTemperatureC": 63.376,
+    "elapsedSeconds": 10939.232,
+    "nodeUserCpuSeconds": 210.29,
+    "nodeSystemCpuSeconds": 9.66
+  },
+  "nodeAverageCpuPercentOneCore": 2.010653033046561,
+  "servicePidChecks": 1698,
+  "allRecordedServicePidChecksUnchanged": true,
+  "samplesWithoutServicePidField": 6788,
+  "sites": {
+    "bibprof": {
+      "samples": 1414,
+      "codes": {
+        "200": 1414
+      },
+      "medianMs": 241.49200000000002,
+      "p95Ms": 262.24399999999997,
+      "maxMs": 429.999
+    },
+    "forum": {
+      "samples": 1415,
+      "codes": {
+        "200": 1415
+      },
+      "medianMs": 227.03300000000002,
+      "p95Ms": 248.04899999999998,
+      "maxMs": 357.21599999999995
+    },
+    "gallery": {
+      "samples": 1414,
+      "codes": {
+        "200": 1414
+      },
+      "medianMs": 138.5675,
+      "p95Ms": 156.112,
+      "maxMs": 257.40000000000003
+    },
+    "heavensgate": {
+      "samples": 1415,
+      "codes": {
+        "200": 1415
+      },
+      "medianMs": 229.652,
+      "p95Ms": 247.271,
+      "maxMs": 449.488
+    },
+    "ordenanthia": {
+      "samples": 1414,
+      "codes": {
+        "200": 1414
+      },
+      "medianMs": 152.10449999999997,
+      "p95Ms": 170.39399999999998,
+      "maxMs": 368.771
+    },
+    "proxy": {
+      "samples": 1414,
+      "codes": {
+        "404": 1414
+      },
+      "medianMs": 133.2715,
+      "p95Ms": 150.685,
+      "maxMs": 293.59200000000004
+    }
+  }
+}

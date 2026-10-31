@@ -1,0 +1,14 @@
+{
+  "originalRelease": "/opt/naufragio-vtt/releases/fb6b0a1-f8",
+  "release": "/opt/naufragio-vtt/releases/phase9-beta",
+  "apiOriginalSha256": "2bb7a45c31f59fda96c6ddaa6035830328be43e74822ad071fe96b8a0b652d1d",
+  "apiProxySha256": "60c274873735c32c29258382e2d75b323798c7180136d55e3a4eeb985915a4c6",
+  "files": {
+    "src/config.js": "533e5c492dffd4a556a3208e9690b5d8a0ccd36e5ecc0a2d307cb967f38132d6",
+    "deploy/supervisor.py": "24fd221af75178d78c6ce70c4a5ce458b1dd6386dbca2f028849848705fb32a5"
+  },
+  "window": 16200,
+  "directorSession": 16200,
+  "guestSession": 14400,
+  "independentSites": 6
+}

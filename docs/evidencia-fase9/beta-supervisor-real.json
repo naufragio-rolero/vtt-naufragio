@@ -1,0 +1,11 @@
+{
+  "shortRealDeadline": {
+    "secondsObserved": 18.694,
+    "state": "Result=success\nActiveState=inactive\nUnitFileState=disabled"
+  },
+  "watchdogWithLongWindow": {
+    "secondsObserved": 14.112,
+    "state": "Result=watchdog\nActiveState=failed\nUnitFileState=disabled"
+  },
+  "result": "pass"
+}

@@ -1,0 +1,26 @@
+{
+  "result": "functional-pass",
+  "scope": "Windows clients through public API hostname and Apache; no claim of independent external network",
+  "clients": 4,
+  "players": 3,
+  "authenticationAndQrApproval": true,
+  "transports": [
+    "websocket",
+    "websocket",
+    "polling",
+    "websocket"
+  ],
+  "permissionsAndConvergence": true,
+  "transferMs": 52360.9155,
+  "bytes": 12582912,
+  "sha256": "34a12415bba67c3339e3d626967995a8a388154ee0d14136828b1a9397598215",
+  "playerReconnect": true,
+  "duration": "pending",
+  "revocation": true,
+  "clientPeakRssMiB": 342.84765625,
+  "errors": [],
+  "health": {
+    "samples": 0,
+    "maxMs": null
+  }
+}

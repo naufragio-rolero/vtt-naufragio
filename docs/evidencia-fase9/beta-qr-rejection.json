@@ -1,0 +1,5 @@
+{
+  "result": "pass",
+  "scope": "Windows via public hostname and Apache",
+  "rejectionPreventsSession": true
+}

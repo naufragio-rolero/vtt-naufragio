@@ -1,0 +1,6496 @@
+﻿{
+  "at": "2026-10-31T19:29:16.897914+00:00",
+  "samples": [
+    {
+      "availableKiB": 554248,
+      "temperatureC": 60.148,
+      "backendRssKiB": 4088,
+      "supervisorRssKiB": 17276,
+      "rssKiB": 21364,
+      "elapsedSeconds": 1.446,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 0.0,
+      "systemCpuSeconds": 0.0,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.371976
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 540944,
+      "temperatureC": 60.686,
+      "backendRssKiB": 59924,
+      "supervisorRssKiB": 19304,
+      "rssKiB": 79228,
+      "elapsedSeconds": 3.273,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 1.43,
+      "systemCpuSeconds": 0.06,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.41479
+      }
+    },
+    {
+      "availableKiB": 537712,
+      "temperatureC": 60.686,
+      "backendRssKiB": 65840,
+      "supervisorRssKiB": 19856,
+      "rssKiB": 85696,
+      "elapsedSeconds": 4.961,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 1.79,
+      "systemCpuSeconds": 0.09,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.154942
+      }
+    },
+    {
+      "availableKiB": 534860,
+      "temperatureC": 60.148,
+      "backendRssKiB": 65840,
+      "supervisorRssKiB": 19868,
+      "rssKiB": 85708,
+      "elapsedSeconds": 6.172,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 1.79,
+      "systemCpuSeconds": 0.09,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.247301
+      }
+    },
+    {
+      "availableKiB": 543412,
+      "temperatureC": 59.61,
+      "backendRssKiB": 65840,
+      "supervisorRssKiB": 19868,
+      "rssKiB": 85708,
+      "elapsedSeconds": 7.498,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 1.79,
+      "systemCpuSeconds": 0.09,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.150602
+      }
+    },
+    {
+      "availableKiB": 543564,
+      "temperatureC": 60.148,
+      "backendRssKiB": 65844,
+      "supervisorRssKiB": 19876,
+      "rssKiB": 85720,
+      "elapsedSeconds": 8.736,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 1.79,
+      "systemCpuSeconds": 0.09,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.135987
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 544380,
+      "temperatureC": 59.072,
+      "backendRssKiB": 65916,
+      "supervisorRssKiB": 20524,
+      "rssKiB": 86440,
+      "elapsedSeconds": 10.15,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 1.81,
+      "systemCpuSeconds": 0.09,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.230973
+      }
+    },
+    {
+      "availableKiB": 545608,
+      "temperatureC": 59.072,
+      "backendRssKiB": 65920,
+      "supervisorRssKiB": 20536,
+      "rssKiB": 86456,
+      "elapsedSeconds": 11.46,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 1.81,
+      "systemCpuSeconds": 0.09,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.223292
+      }
+    },
+    {
+      "availableKiB": 545608,
+      "temperatureC": 59.61,
+      "backendRssKiB": 65944,
+      "supervisorRssKiB": 20536,
+      "rssKiB": 86480,
+      "elapsedSeconds": 12.763,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 1.81,
+      "systemCpuSeconds": 0.09,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.103857
+      }
+    },
+    {
+      "availableKiB": 542852,
+      "temperatureC": 59.072,
+      "backendRssKiB": 65944,
+      "supervisorRssKiB": 20544,
+      "rssKiB": 86488,
+      "elapsedSeconds": 13.953,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 1.81,
+      "systemCpuSeconds": 0.09,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.214413
+      }
+    },
+    {
+      "availableKiB": 542344,
+      "temperatureC": 60.148,
+      "backendRssKiB": 65944,
+      "supervisorRssKiB": 20548,
+      "rssKiB": 86492,
+      "elapsedSeconds": 15.254,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 1.81,
+      "systemCpuSeconds": 0.09,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.13388
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 542352,
+      "temperatureC": 59.61,
+      "backendRssKiB": 65972,
+      "supervisorRssKiB": 21192,
+      "rssKiB": 87164,
+      "elapsedSeconds": 16.648,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 1.82,
+      "systemCpuSeconds": 0.09,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.128661
+      }
+    },
+    {
+      "availableKiB": 539832,
+      "temperatureC": 59.61,
+      "backendRssKiB": 65972,
+      "supervisorRssKiB": 21204,
+      "rssKiB": 87176,
+      "elapsedSeconds": 17.865,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 1.82,
+      "systemCpuSeconds": 0.09,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.192364
+      }
+    },
+    {
+      "availableKiB": 539832,
+      "temperatureC": 60.148,
+      "backendRssKiB": 65972,
+      "supervisorRssKiB": 21204,
+      "rssKiB": 87176,
+      "elapsedSeconds": 19.144,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 1.82,
+      "systemCpuSeconds": 0.09,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.220671
+      }
+    },
+    {
+      "availableKiB": 539940,
+      "temperatureC": 60.148,
+      "backendRssKiB": 64184,
+      "supervisorRssKiB": 21204,
+      "rssKiB": 85388,
+      "elapsedSeconds": 20.441,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 1.96,
+      "systemCpuSeconds": 0.1,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.13964
+      }
+    },
+    {
+      "availableKiB": 539940,
+      "temperatureC": 59.61,
+      "backendRssKiB": 64184,
+      "supervisorRssKiB": 21204,
+      "rssKiB": 85388,
+      "elapsedSeconds": 21.66,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 1.96,
+      "systemCpuSeconds": 0.1,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.235898
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 539940,
+      "temperatureC": 59.072,
+      "backendRssKiB": 64200,
+      "supervisorRssKiB": 21860,
+      "rssKiB": 86060,
+      "elapsedSeconds": 23.15,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 1.97,
+      "systemCpuSeconds": 0.1,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.160588
+      }
+    },
+    {
+      "availableKiB": 539932,
+      "temperatureC": 60.148,
+      "backendRssKiB": 64200,
+      "supervisorRssKiB": 21872,
+      "rssKiB": 86072,
+      "elapsedSeconds": 24.391,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 1.97,
+      "systemCpuSeconds": 0.1,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.180154
+      }
+    },
+    {
+      "availableKiB": 508396,
+      "temperatureC": 60.686,
+      "backendRssKiB": 97088,
+      "supervisorRssKiB": 21872,
+      "rssKiB": 118960,
+      "elapsedSeconds": 25.661,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 2.94,
+      "systemCpuSeconds": 0.17,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.359977
+      }
+    },
+    {
+      "availableKiB": 523076,
+      "temperatureC": 61.224,
+      "backendRssKiB": 65468,
+      "supervisorRssKiB": 21876,
+      "rssKiB": 87344,
+      "elapsedSeconds": 27.078,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 3.79,
+      "systemCpuSeconds": 0.18,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.338433
+      }
+    },
+    {
+      "availableKiB": 522388,
+      "temperatureC": 60.686,
+      "backendRssKiB": 69436,
+      "supervisorRssKiB": 21876,
+      "rssKiB": 91312,
+      "elapsedSeconds": 28.506,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 4.37,
+      "systemCpuSeconds": 0.26,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.116923
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 520788,
+      "temperatureC": 60.148,
+      "backendRssKiB": 71052,
+      "supervisorRssKiB": 22536,
+      "rssKiB": 93588,
+      "elapsedSeconds": 29.871,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 4.69,
+      "systemCpuSeconds": 0.27,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.301011
+      }
+    },
+    {
+      "availableKiB": 517416,
+      "temperatureC": 60.686,
+      "backendRssKiB": 74704,
+      "supervisorRssKiB": 22548,
+      "rssKiB": 97252,
+      "elapsedSeconds": 31.234,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 5.28,
+      "systemCpuSeconds": 0.3,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.268956
+      }
+    },
+    {
+      "availableKiB": 523676,
+      "temperatureC": 60.148,
+      "backendRssKiB": 74832,
+      "supervisorRssKiB": 22548,
+      "rssKiB": 97380,
+      "elapsedSeconds": 32.568,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 5.84,
+      "systemCpuSeconds": 0.33,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.248411
+      }
+    },
+    {
+      "availableKiB": 525724,
+      "temperatureC": 60.686,
+      "backendRssKiB": 74912,
+      "supervisorRssKiB": 22552,
+      "rssKiB": 97464,
+      "elapsedSeconds": 33.949,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 6.41,
+      "systemCpuSeconds": 0.39,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.315319
+      }
+    },
+    {
+      "availableKiB": 522724,
+      "temperatureC": 61.224,
+      "backendRssKiB": 75376,
+      "supervisorRssKiB": 22552,
+      "rssKiB": 97928,
+      "elapsedSeconds": 35.322,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 7.02,
+      "systemCpuSeconds": 0.43,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.4286
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 521920,
+      "temperatureC": 61.224,
+      "backendRssKiB": 75484,
+      "supervisorRssKiB": 23208,
+      "rssKiB": 98692,
+      "elapsedSeconds": 37.163,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 7.82,
+      "systemCpuSeconds": 0.52,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.241078
+      }
+    },
+    {
+      "availableKiB": 530556,
+      "temperatureC": 61.224,
+      "backendRssKiB": 75548,
+      "supervisorRssKiB": 23220,
+      "rssKiB": 98768,
+      "elapsedSeconds": 38.492,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 8.34,
+      "systemCpuSeconds": 0.59,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.289795
+      }
+    },
+    {
+      "availableKiB": 529808,
+      "temperatureC": 61.762,
+      "backendRssKiB": 75696,
+      "supervisorRssKiB": 23220,
+      "rssKiB": 98916,
+      "elapsedSeconds": 39.845,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 8.95,
+      "systemCpuSeconds": 0.63,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.236033
+      }
+    },
+    {
+      "availableKiB": 527584,
+      "temperatureC": 61.224,
+      "backendRssKiB": 75712,
+      "supervisorRssKiB": 23220,
+      "rssKiB": 98932,
+      "elapsedSeconds": 41.158,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 9.45,
+      "systemCpuSeconds": 0.68,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.188911
+      }
+    },
+    {
+      "availableKiB": 527360,
+      "temperatureC": 61.762,
+      "backendRssKiB": 75728,
+      "supervisorRssKiB": 23220,
+      "rssKiB": 98948,
+      "elapsedSeconds": 42.444,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 9.96,
+      "systemCpuSeconds": 0.7,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.374211
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 525372,
+      "temperatureC": 61.762,
+      "backendRssKiB": 75788,
+      "supervisorRssKiB": 23880,
+      "rssKiB": 99668,
+      "elapsedSeconds": 44.106,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 10.64,
+      "systemCpuSeconds": 0.79,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.350207
+      }
+    },
+    {
+      "availableKiB": 524472,
+      "temperatureC": 62.3,
+      "backendRssKiB": 75808,
+      "supervisorRssKiB": 23892,
+      "rssKiB": 99700,
+      "elapsedSeconds": 45.526,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 11.18,
+      "systemCpuSeconds": 0.85,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.283578
+      }
+    },
+    {
+      "availableKiB": 527604,
+      "temperatureC": 62.3,
+      "backendRssKiB": 75836,
+      "supervisorRssKiB": 23892,
+      "rssKiB": 99728,
+      "elapsedSeconds": 46.898,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 11.73,
+      "systemCpuSeconds": 0.94,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.341769
+      }
+    },
+    {
+      "availableKiB": 523688,
+      "temperatureC": 61.224,
+      "backendRssKiB": 75756,
+      "supervisorRssKiB": 23892,
+      "rssKiB": 99648,
+      "elapsedSeconds": 48.314,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 12.29,
+      "systemCpuSeconds": 0.99,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.335658
+      }
+    },
+    {
+      "availableKiB": 523692,
+      "temperatureC": 61.224,
+      "backendRssKiB": 75984,
+      "supervisorRssKiB": 23892,
+      "rssKiB": 99876,
+      "elapsedSeconds": 49.741,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 12.9,
+      "systemCpuSeconds": 1.04,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.218225
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 523488,
+      "temperatureC": 61.762,
+      "backendRssKiB": 76272,
+      "supervisorRssKiB": 24544,
+      "rssKiB": 100816,
+      "elapsedSeconds": 51.372,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 13.55,
+      "systemCpuSeconds": 1.11,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.330019
+      }
+    },
+    {
+      "availableKiB": 524220,
+      "temperatureC": 61.224,
+      "backendRssKiB": 76308,
+      "supervisorRssKiB": 24556,
+      "rssKiB": 100864,
+      "elapsedSeconds": 52.795,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 14.12,
+      "systemCpuSeconds": 1.14,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.311091
+      }
+    },
+    {
+      "availableKiB": 524228,
+      "temperatureC": 62.3,
+      "backendRssKiB": 76328,
+      "supervisorRssKiB": 24556,
+      "rssKiB": 100884,
+      "elapsedSeconds": 54.178,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 14.65,
+      "systemCpuSeconds": 1.2,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.162741
+      }
+    },
+    {
+      "availableKiB": 523308,
+      "temperatureC": 62.3,
+      "backendRssKiB": 76068,
+      "supervisorRssKiB": 24556,
+      "rssKiB": 100624,
+      "elapsedSeconds": 55.403,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 15.15,
+      "systemCpuSeconds": 1.26,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.334551
+      }
+    },
+    {
+      "availableKiB": 520068,
+      "temperatureC": 61.762,
+      "backendRssKiB": 75788,
+      "supervisorRssKiB": 24556,
+      "rssKiB": 100344,
+      "elapsedSeconds": 56.798,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 15.77,
+      "systemCpuSeconds": 1.28,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.224781
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 519572,
+      "temperatureC": 62.3,
+      "backendRssKiB": 75848,
+      "supervisorRssKiB": 25208,
+      "rssKiB": 101056,
+      "elapsedSeconds": 58.372,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 16.35,
+      "systemCpuSeconds": 1.35,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.23986
+      }
+    },
+    {
+      "availableKiB": 520556,
+      "temperatureC": 62.3,
+      "backendRssKiB": 75924,
+      "supervisorRssKiB": 25220,
+      "rssKiB": 101144,
+      "elapsedSeconds": 59.676,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 16.87,
+      "systemCpuSeconds": 1.41,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.377284
+      }
+    },
+    {
+      "availableKiB": 518736,
+      "temperatureC": 61.762,
+      "backendRssKiB": 76392,
+      "supervisorRssKiB": 25224,
+      "rssKiB": 101616,
+      "elapsedSeconds": 61.122,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 17.65,
+      "systemCpuSeconds": 1.46,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.313365
+      }
+    },
+    {
+      "availableKiB": 521348,
+      "temperatureC": 62.3,
+      "backendRssKiB": 76420,
+      "supervisorRssKiB": 25224,
+      "rssKiB": 101644,
+      "elapsedSeconds": 62.505,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 18.14,
+      "systemCpuSeconds": 1.5,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.160852
+      }
+    },
+    {
+      "availableKiB": 520932,
+      "temperatureC": 62.3,
+      "backendRssKiB": 76524,
+      "supervisorRssKiB": 25224,
+      "rssKiB": 101748,
+      "elapsedSeconds": 63.755,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 18.58,
+      "systemCpuSeconds": 1.55,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.362661
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 523488,
+      "temperatureC": 62.838,
+      "backendRssKiB": 76560,
+      "supervisorRssKiB": 25884,
+      "rssKiB": 102444,
+      "elapsedSeconds": 65.461,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 19.25,
+      "systemCpuSeconds": 1.61,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.18745
+      }
+    },
+    {
+      "availableKiB": 521240,
+      "temperatureC": 62.3,
+      "backendRssKiB": 76604,
+      "supervisorRssKiB": 25896,
+      "rssKiB": 102500,
+      "elapsedSeconds": 66.754,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 19.68,
+      "systemCpuSeconds": 1.65,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.226479
+      }
+    },
+    {
+      "availableKiB": 519464,
+      "temperatureC": 62.3,
+      "backendRssKiB": 76624,
+      "supervisorRssKiB": 25896,
+      "rssKiB": 102520,
+      "elapsedSeconds": 68.096,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 20.15,
+      "systemCpuSeconds": 1.71,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.286886
+      }
+    },
+    {
+      "availableKiB": 516612,
+      "temperatureC": 62.3,
+      "backendRssKiB": 76688,
+      "supervisorRssKiB": 25896,
+      "rssKiB": 102584,
+      "elapsedSeconds": 69.442,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 20.71,
+      "systemCpuSeconds": 1.74,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.324747
+      }
+    },
+    {
+      "availableKiB": 515112,
+      "temperatureC": 62.3,
+      "backendRssKiB": 76668,
+      "supervisorRssKiB": 25896,
+      "rssKiB": 102564,
+      "elapsedSeconds": 70.838,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 21.27,
+      "systemCpuSeconds": 1.79,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.192181
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 514864,
+      "temperatureC": 61.762,
+      "backendRssKiB": 76692,
+      "supervisorRssKiB": 26552,
+      "rssKiB": 103244,
+      "elapsedSeconds": 72.373,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 21.84,
+      "systemCpuSeconds": 1.8,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.298536
+      }
+    },
+    {
+      "availableKiB": 512796,
+      "temperatureC": 62.838,
+      "backendRssKiB": 77152,
+      "supervisorRssKiB": 26564,
+      "rssKiB": 103716,
+      "elapsedSeconds": 73.735,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 22.46,
+      "systemCpuSeconds": 1.83,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.251855
+      }
+    },
+    {
+      "availableKiB": 512576,
+      "temperatureC": 62.3,
+      "backendRssKiB": 77300,
+      "supervisorRssKiB": 26564,
+      "rssKiB": 103864,
+      "elapsedSeconds": 75.061,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 22.73,
+      "systemCpuSeconds": 1.92,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.172757
+      }
+    },
+    {
+      "availableKiB": 516120,
+      "temperatureC": 62.3,
+      "backendRssKiB": 77316,
+      "supervisorRssKiB": 26564,
+      "rssKiB": 103880,
+      "elapsedSeconds": 76.306,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 22.95,
+      "systemCpuSeconds": 1.97,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.229927
+      }
+    },
+    {
+      "availableKiB": 513868,
+      "temperatureC": 62.3,
+      "backendRssKiB": 77272,
+      "supervisorRssKiB": 26568,
+      "rssKiB": 103840,
+      "elapsedSeconds": 77.608,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 23.15,
+      "systemCpuSeconds": 1.98,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.286705
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 516844,
+      "temperatureC": 61.762,
+      "backendRssKiB": 77288,
+      "supervisorRssKiB": 27220,
+      "rssKiB": 104508,
+      "elapsedSeconds": 79.175,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 23.4,
+      "systemCpuSeconds": 2.01,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.133107
+      }
+    },
+    {
+      "availableKiB": 517756,
+      "temperatureC": 62.3,
+      "backendRssKiB": 77296,
+      "supervisorRssKiB": 27232,
+      "rssKiB": 104528,
+      "elapsedSeconds": 80.394,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 23.5,
+      "systemCpuSeconds": 2.02,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.24169
+      }
+    },
+    {
+      "availableKiB": 513984,
+      "temperatureC": 61.224,
+      "backendRssKiB": 77300,
+      "supervisorRssKiB": 27232,
+      "rssKiB": 104532,
+      "elapsedSeconds": 81.704,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 23.6,
+      "systemCpuSeconds": 2.03,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.153606
+      }
+    },
+    {
+      "availableKiB": 513988,
+      "temperatureC": 62.3,
+      "backendRssKiB": 77552,
+      "supervisorRssKiB": 27232,
+      "rssKiB": 104784,
+      "elapsedSeconds": 82.93,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 23.84,
+      "systemCpuSeconds": 2.03,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.177262
+      }
+    },
+    {
+      "availableKiB": 511980,
+      "temperatureC": 61.762,
+      "backendRssKiB": 77568,
+      "supervisorRssKiB": 27236,
+      "rssKiB": 104804,
+      "elapsedSeconds": 84.173,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 24.14,
+      "systemCpuSeconds": 2.06,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.257236
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 511980,
+      "temperatureC": 62.3,
+      "backendRssKiB": 77580,
+      "supervisorRssKiB": 27896,
+      "rssKiB": 105476,
+      "elapsedSeconds": 85.697,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 24.56,
+      "systemCpuSeconds": 2.08,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.256369
+      }
+    },
+    {
+      "availableKiB": 511628,
+      "temperatureC": 62.3,
+      "backendRssKiB": 77592,
+      "supervisorRssKiB": 27908,
+      "rssKiB": 105500,
+      "elapsedSeconds": 87.025,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 24.93,
+      "systemCpuSeconds": 2.12,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.196104
+      }
+    },
+    {
+      "availableKiB": 512264,
+      "temperatureC": 62.3,
+      "backendRssKiB": 77608,
+      "supervisorRssKiB": 27908,
+      "rssKiB": 105516,
+      "elapsedSeconds": 88.293,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 25.28,
+      "systemCpuSeconds": 2.17,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.281342
+      }
+    },
+    {
+      "availableKiB": 513572,
+      "temperatureC": 62.3,
+      "backendRssKiB": 77792,
+      "supervisorRssKiB": 27908,
+      "rssKiB": 105700,
+      "elapsedSeconds": 89.644,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 25.76,
+      "systemCpuSeconds": 2.18,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.195053
+      }
+    },
+    {
+      "availableKiB": 511112,
+      "temperatureC": 62.3,
+      "backendRssKiB": 77808,
+      "supervisorRssKiB": 27908,
+      "rssKiB": 105716,
+      "elapsedSeconds": 90.897,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 26.1,
+      "systemCpuSeconds": 2.21,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.170385
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 514104,
+      "temperatureC": 62.3,
+      "backendRssKiB": 77832,
+      "supervisorRssKiB": 28564,
+      "rssKiB": 106396,
+      "elapsedSeconds": 92.401,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 26.45,
+      "systemCpuSeconds": 2.26,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.25438
+      }
+    },
+    {
+      "availableKiB": 516360,
+      "temperatureC": 62.3,
+      "backendRssKiB": 77848,
+      "supervisorRssKiB": 28576,
+      "rssKiB": 106424,
+      "elapsedSeconds": 93.733,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 26.83,
+      "systemCpuSeconds": 2.31,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.310835
+      }
+    },
+    {
+      "availableKiB": 516144,
+      "temperatureC": 62.3,
+      "backendRssKiB": 77864,
+      "supervisorRssKiB": 28576,
+      "rssKiB": 106440,
+      "elapsedSeconds": 95.119,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 27.25,
+      "systemCpuSeconds": 2.33,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.186028
+      }
+    },
+    {
+      "availableKiB": 515088,
+      "temperatureC": 62.3,
+      "backendRssKiB": 78000,
+      "supervisorRssKiB": 28576,
+      "rssKiB": 106576,
+      "elapsedSeconds": 96.38,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 27.63,
+      "systemCpuSeconds": 2.37,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.282817
+      }
+    },
+    {
+      "availableKiB": 510552,
+      "temperatureC": 62.3,
+      "backendRssKiB": 78012,
+      "supervisorRssKiB": 28576,
+      "rssKiB": 106588,
+      "elapsedSeconds": 97.739,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 27.99,
+      "systemCpuSeconds": 2.39,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.194334
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 512924,
+      "temperatureC": 62.3,
+      "backendRssKiB": 77996,
+      "supervisorRssKiB": 29228,
+      "rssKiB": 107224,
+      "elapsedSeconds": 99.255,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 28.48,
+      "systemCpuSeconds": 2.43,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.190761
+      }
+    },
+    {
+      "availableKiB": 516052,
+      "temperatureC": 62.3,
+      "backendRssKiB": 78008,
+      "supervisorRssKiB": 29240,
+      "rssKiB": 107248,
+      "elapsedSeconds": 100.515,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 28.78,
+      "systemCpuSeconds": 2.44,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.273397
+      }
+    },
+    {
+      "availableKiB": 516564,
+      "temperatureC": 62.3,
+      "backendRssKiB": 78016,
+      "supervisorRssKiB": 29240,
+      "rssKiB": 107256,
+      "elapsedSeconds": 101.866,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 28.89,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.259567
+      }
+    },
+    {
+      "availableKiB": 515932,
+      "temperatureC": 62.3,
+      "backendRssKiB": 78052,
+      "supervisorRssKiB": 29240,
+      "rssKiB": 107292,
+      "elapsedSeconds": 103.203,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.02,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.14167
+      }
+    },
+    {
+      "availableKiB": 515932,
+      "temperatureC": 61.762,
+      "backendRssKiB": 78052,
+      "supervisorRssKiB": 29240,
+      "rssKiB": 107292,
+      "elapsedSeconds": 104.426,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.02,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.247298
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 511792,
+      "temperatureC": 62.3,
+      "backendRssKiB": 78052,
+      "supervisorRssKiB": 29904,
+      "rssKiB": 107956,
+      "elapsedSeconds": 105.946,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.02,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.142127
+      }
+    },
+    {
+      "availableKiB": 517900,
+      "temperatureC": 62.3,
+      "backendRssKiB": 78052,
+      "supervisorRssKiB": 29920,
+      "rssKiB": 107972,
+      "elapsedSeconds": 107.156,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.02,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.121298
+      }
+    },
+    {
+      "availableKiB": 517900,
+      "temperatureC": 61.762,
+      "backendRssKiB": 78052,
+      "supervisorRssKiB": 29920,
+      "rssKiB": 107972,
+      "elapsedSeconds": 108.365,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.02,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.226578
+      }
+    },
+    {
+      "availableKiB": 519680,
+      "temperatureC": 61.762,
+      "backendRssKiB": 78052,
+      "supervisorRssKiB": 29920,
+      "rssKiB": 107972,
+      "elapsedSeconds": 109.679,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.03,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.228572
+      }
+    },
+    {
+      "availableKiB": 517180,
+      "temperatureC": 61.762,
+      "backendRssKiB": 78052,
+      "supervisorRssKiB": 29920,
+      "rssKiB": 107972,
+      "elapsedSeconds": 110.988,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.03,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.130259
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 516928,
+      "temperatureC": 61.762,
+      "backendRssKiB": 78052,
+      "supervisorRssKiB": 30572,
+      "rssKiB": 108624,
+      "elapsedSeconds": 112.384,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.03,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.247818
+      }
+    },
+    {
+      "availableKiB": 514412,
+      "temperatureC": 61.224,
+      "backendRssKiB": 78052,
+      "supervisorRssKiB": 30584,
+      "rssKiB": 108636,
+      "elapsedSeconds": 113.712,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.03,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.158269
+      }
+    },
+    {
+      "availableKiB": 514412,
+      "temperatureC": 61.224,
+      "backendRssKiB": 78052,
+      "supervisorRssKiB": 30584,
+      "rssKiB": 108636,
+      "elapsedSeconds": 114.951,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.03,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.136376
+      }
+    },
+    {
+      "availableKiB": 514416,
+      "temperatureC": 61.762,
+      "backendRssKiB": 78052,
+      "supervisorRssKiB": 30584,
+      "rssKiB": 108636,
+      "elapsedSeconds": 116.175,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.03,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.225028
+      }
+    },
+    {
+      "availableKiB": 514424,
+      "temperatureC": 61.224,
+      "backendRssKiB": 78052,
+      "supervisorRssKiB": 30584,
+      "rssKiB": 108636,
+      "elapsedSeconds": 117.484,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.03,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.229215
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 514432,
+      "temperatureC": 61.224,
+      "backendRssKiB": 78052,
+      "supervisorRssKiB": 31236,
+      "rssKiB": 109288,
+      "elapsedSeconds": 118.978,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.03,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.134957
+      }
+    },
+    {
+      "availableKiB": 513676,
+      "temperatureC": 61.224,
+      "backendRssKiB": 78052,
+      "supervisorRssKiB": 31248,
+      "rssKiB": 109300,
+      "elapsedSeconds": 120.2,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.03,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.246591
+      }
+    },
+    {
+      "availableKiB": 513676,
+      "temperatureC": 61.224,
+      "backendRssKiB": 78052,
+      "supervisorRssKiB": 31248,
+      "rssKiB": 109300,
+      "elapsedSeconds": 121.523,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.03,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.149094
+      }
+    },
+    {
+      "availableKiB": 515876,
+      "temperatureC": 61.224,
+      "backendRssKiB": 78052,
+      "supervisorRssKiB": 31248,
+      "rssKiB": 109300,
+      "elapsedSeconds": 122.756,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.04,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.149225
+      }
+    },
+    {
+      "availableKiB": 515924,
+      "temperatureC": 61.224,
+      "backendRssKiB": 78052,
+      "supervisorRssKiB": 31248,
+      "rssKiB": 109300,
+      "elapsedSeconds": 123.985,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.04,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.225224
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 516256,
+      "temperatureC": 61.224,
+      "backendRssKiB": 78052,
+      "supervisorRssKiB": 31900,
+      "rssKiB": 109952,
+      "elapsedSeconds": 125.474,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.04,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.224353
+      }
+    },
+    {
+      "availableKiB": 516076,
+      "temperatureC": 61.762,
+      "backendRssKiB": 73080,
+      "supervisorRssKiB": 31912,
+      "rssKiB": 104992,
+      "elapsedSeconds": 126.79,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.15,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.136181
+      }
+    },
+    {
+      "availableKiB": 515012,
+      "temperatureC": 61.762,
+      "backendRssKiB": 73080,
+      "supervisorRssKiB": 31912,
+      "rssKiB": 104992,
+      "elapsedSeconds": 128.007,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.15,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.254637
+      }
+    },
+    {
+      "availableKiB": 518728,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73080,
+      "supervisorRssKiB": 31912,
+      "rssKiB": 104992,
+      "elapsedSeconds": 129.336,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.15,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.154005
+      }
+    },
+    {
+      "availableKiB": 518736,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73080,
+      "supervisorRssKiB": 31916,
+      "rssKiB": 104996,
+      "elapsedSeconds": 130.577,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.15,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.139518
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 518748,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73080,
+      "supervisorRssKiB": 32572,
+      "rssKiB": 105652,
+      "elapsedSeconds": 131.992,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.16,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.242971
+      }
+    },
+    {
+      "availableKiB": 519076,
+      "temperatureC": 61.762,
+      "backendRssKiB": 73080,
+      "supervisorRssKiB": 32584,
+      "rssKiB": 105664,
+      "elapsedSeconds": 133.318,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.16,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.230317
+      }
+    },
+    {
+      "availableKiB": 516812,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73080,
+      "supervisorRssKiB": 32584,
+      "rssKiB": 105664,
+      "elapsedSeconds": 134.612,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.16,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.140737
+      }
+    },
+    {
+      "availableKiB": 516816,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73080,
+      "supervisorRssKiB": 32584,
+      "rssKiB": 105664,
+      "elapsedSeconds": 135.833,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.16,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.229247
+      }
+    },
+    {
+      "availableKiB": 516564,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73080,
+      "supervisorRssKiB": 32584,
+      "rssKiB": 105664,
+      "elapsedSeconds": 137.15,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.16,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.152233
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 515204,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33244,
+      "rssKiB": 106328,
+      "elapsedSeconds": 138.569,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.17,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.244823
+      }
+    },
+    {
+      "availableKiB": 518712,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 139.972,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.17,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.226502
+      }
+    },
+    {
+      "availableKiB": 518712,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 141.285,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.17,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.224232
+      }
+    },
+    {
+      "availableKiB": 518720,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 142.576,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.17,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.142693
+      }
+    },
+    {
+      "availableKiB": 518720,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 143.796,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.17,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.249008
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 514696,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 145.306,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.18,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.136385
+      }
+    },
+    {
+      "availableKiB": 515084,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 146.525,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.18,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.140371
+      }
+    },
+    {
+      "availableKiB": 515840,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 147.753,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.18,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.211199
+      }
+    },
+    {
+      "availableKiB": 517796,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 149.048,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.18,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.224287
+      }
+    },
+    {
+      "availableKiB": 517312,
+      "temperatureC": 60.686,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 150.36,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.18,
+      "systemCpuSeconds": 2.47,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.143861
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 517080,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 151.766,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.18,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.247555
+      }
+    },
+    {
+      "availableKiB": 514336,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 153.094,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.18,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.154747
+      }
+    },
+    {
+      "availableKiB": 514340,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 154.336,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.18,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.143857
+      }
+    },
+    {
+      "availableKiB": 517088,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 155.56,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.18,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.237719
+      }
+    },
+    {
+      "availableKiB": 517096,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 156.876,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.18,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.236394
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 520384,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 158.376,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.18,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.129329
+      }
+    },
+    {
+      "availableKiB": 518660,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 159.584,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.18,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.229703
+      }
+    },
+    {
+      "availableKiB": 516644,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 160.902,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.18,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.141519
+      }
+    },
+    {
+      "availableKiB": 516648,
+      "temperatureC": 60.686,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 162.13,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.18,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.141071
+      }
+    },
+    {
+      "availableKiB": 514132,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 163.352,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.18,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.212105
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 516600,
+      "temperatureC": 60.686,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 164.839,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.18,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.264457
+      }
+    },
+    {
+      "availableKiB": 512644,
+      "temperatureC": 61.762,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 166.187,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.19,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.147508
+      }
+    },
+    {
+      "availableKiB": 505116,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 167.394,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.19,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.250395
+      }
+    },
+    {
+      "availableKiB": 503648,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 168.709,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.19,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.156021
+      }
+    },
+    {
+      "availableKiB": 502388,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 169.945,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.19,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.140797
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 502976,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 171.346,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.19,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.229808
+      }
+    },
+    {
+      "availableKiB": 505384,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 172.664,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.19,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.222805
+      }
+    },
+    {
+      "availableKiB": 505676,
+      "temperatureC": 61.762,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 173.975,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.19,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.118509
+      }
+    },
+    {
+      "availableKiB": 505916,
+      "temperatureC": 60.686,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 175.181,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.19,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.245748
+      }
+    },
+    {
+      "availableKiB": 504656,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 176.509,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.19,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.160865
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 504416,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 177.941,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.2,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.136469
+      }
+    },
+    {
+      "availableKiB": 504416,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 179.166,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.2,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.230805
+      }
+    },
+    {
+      "availableKiB": 504416,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 180.479,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.2,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.222736
+      }
+    },
+    {
+      "availableKiB": 504432,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 181.789,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.2,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.133954
+      }
+    },
+    {
+      "availableKiB": 504432,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 182.99,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.2,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.248494
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 505016,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 184.503,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.2,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.139309
+      }
+    },
+    {
+      "availableKiB": 508744,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 185.733,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.2,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.131785
+      }
+    },
+    {
+      "availableKiB": 506052,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 186.954,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.2,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.232721
+      }
+    },
+    {
+      "availableKiB": 503520,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 188.258,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.2,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.253652
+      }
+    },
+    {
+      "availableKiB": 508644,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 189.582,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.2,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.137546
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 508652,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 190.986,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.21,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.239884
+      }
+    },
+    {
+      "availableKiB": 508664,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 192.313,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.21,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.151524
+      }
+    },
+    {
+      "availableKiB": 508668,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 193.552,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.21,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.131492
+      }
+    },
+    {
+      "availableKiB": 512936,
+      "temperatureC": 60.686,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 194.772,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.21,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.217986
+      }
+    },
+    {
+      "availableKiB": 514736,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 196.078,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.21,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.235204
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 512232,
+      "temperatureC": 60.686,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 197.579,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.21,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.127524
+      }
+    },
+    {
+      "availableKiB": 509324,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 198.764,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.21,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.256001
+      }
+    },
+    {
+      "availableKiB": 507560,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 200.075,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.21,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.150598
+      }
+    },
+    {
+      "availableKiB": 510424,
+      "temperatureC": 60.686,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 201.309,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.21,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.141599
+      }
+    },
+    {
+      "availableKiB": 510424,
+      "temperatureC": 60.686,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 202.53,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.22,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.23373
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 510424,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 204.027,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.22,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.219495
+      }
+    },
+    {
+      "availableKiB": 510440,
+      "temperatureC": 60.686,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 205.335,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.22,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.128119
+      }
+    },
+    {
+      "availableKiB": 510440,
+      "temperatureC": 60.686,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 206.552,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.22,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.235807
+      }
+    },
+    {
+      "availableKiB": 510448,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 207.879,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.22,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.151699
+      }
+    },
+    {
+      "availableKiB": 510452,
+      "temperatureC": 60.686,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 209.12,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.22,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.145325
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 514264,
+      "temperatureC": 60.686,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 210.531,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.23,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.226624
+      }
+    },
+    {
+      "availableKiB": 514264,
+      "temperatureC": 60.686,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 211.839,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.23,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.231431
+      }
+    },
+    {
+      "availableKiB": 509528,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 213.158,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.23,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.117809
+      }
+    },
+    {
+      "availableKiB": 509528,
+      "temperatureC": 61.762,
+      "backendRssKiB": 73084,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106392,
+      "elapsedSeconds": 214.332,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 29.23,
+      "systemCpuSeconds": 2.48,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.232911
+      }
+    },
+    {
+      "availableKiB": 472120,
+      "temperatureC": 61.762,
+      "backendRssKiB": 105908,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 139216,
+      "elapsedSeconds": 215.652,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 30.28,
+      "systemCpuSeconds": 2.52,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.282864
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 496684,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73668,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106976,
+      "elapsedSeconds": 217.354,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 31.15,
+      "systemCpuSeconds": 2.54,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.226321
+      }
+    },
+    {
+      "availableKiB": 498344,
+      "temperatureC": 62.3,
+      "backendRssKiB": 73480,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106788,
+      "elapsedSeconds": 218.694,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 31.64,
+      "systemCpuSeconds": 2.58,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.211837
+      }
+    },
+    {
+      "availableKiB": 499540,
+      "temperatureC": 61.224,
+      "backendRssKiB": 73480,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 106788,
+      "elapsedSeconds": 219.961,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 31.65,
+      "systemCpuSeconds": 2.58,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.221661
+      }
+    },
+    {
+      "availableKiB": 500312,
+      "temperatureC": 62.3,
+      "backendRssKiB": 75352,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 108660,
+      "elapsedSeconds": 221.271,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 32.01,
+      "systemCpuSeconds": 2.63,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.189566
+      }
+    },
+    {
+      "availableKiB": 498080,
+      "temperatureC": 62.3,
+      "backendRssKiB": 77416,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 110724,
+      "elapsedSeconds": 222.554,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 32.57,
+      "systemCpuSeconds": 2.68,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.345428
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 499136,
+      "temperatureC": 62.3,
+      "backendRssKiB": 78180,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 111488,
+      "elapsedSeconds": 224.294,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 33.39,
+      "systemCpuSeconds": 2.76,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.172299
+      }
+    },
+    {
+      "availableKiB": 501672,
+      "temperatureC": 62.3,
+      "backendRssKiB": 78388,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 111696,
+      "elapsedSeconds": 225.559,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 33.98,
+      "systemCpuSeconds": 2.86,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.224246
+      }
+    },
+    {
+      "availableKiB": 501144,
+      "temperatureC": 62.3,
+      "backendRssKiB": 78656,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 111964,
+      "elapsedSeconds": 226.867,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 34.61,
+      "systemCpuSeconds": 2.89,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.309265
+      }
+    },
+    {
+      "availableKiB": 499084,
+      "temperatureC": 62.838,
+      "backendRssKiB": 78736,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 112044,
+      "elapsedSeconds": 228.248,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 35.19,
+      "systemCpuSeconds": 2.95,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.388221
+      }
+    },
+    {
+      "availableKiB": 501644,
+      "temperatureC": 62.3,
+      "backendRssKiB": 78960,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 112268,
+      "elapsedSeconds": 229.701,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 35.74,
+      "systemCpuSeconds": 3.04,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.154338
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 503672,
+      "temperatureC": 62.838,
+      "backendRssKiB": 79200,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 112508,
+      "elapsedSeconds": 231.273,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 36.42,
+      "systemCpuSeconds": 3.08,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.371878
+      }
+    },
+    {
+      "availableKiB": 503892,
+      "temperatureC": 62.3,
+      "backendRssKiB": 79272,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 112580,
+      "elapsedSeconds": 232.709,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 37.12,
+      "systemCpuSeconds": 3.13,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.191376
+      }
+    },
+    {
+      "availableKiB": 501124,
+      "temperatureC": 63.376,
+      "backendRssKiB": 78924,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 112232,
+      "elapsedSeconds": 233.965,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 37.61,
+      "systemCpuSeconds": 3.17,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.243178
+      }
+    },
+    {
+      "availableKiB": 502404,
+      "temperatureC": 63.376,
+      "backendRssKiB": 78592,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 111900,
+      "elapsedSeconds": 235.269,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 38.03,
+      "systemCpuSeconds": 3.25,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.365914
+      }
+    },
+    {
+      "availableKiB": 503016,
+      "temperatureC": 62.838,
+      "backendRssKiB": 78684,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 111992,
+      "elapsedSeconds": 236.698,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 38.7,
+      "systemCpuSeconds": 3.31,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.271468
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 502524,
+      "temperatureC": 62.3,
+      "backendRssKiB": 78704,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 112012,
+      "elapsedSeconds": 238.263,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 39.22,
+      "systemCpuSeconds": 3.35,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.184718
+      }
+    },
+    {
+      "availableKiB": 502864,
+      "temperatureC": 62.838,
+      "backendRssKiB": 78740,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 112048,
+      "elapsedSeconds": 239.506,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 39.73,
+      "systemCpuSeconds": 3.37,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.322434
+      }
+    },
+    {
+      "availableKiB": 501100,
+      "temperatureC": 63.376,
+      "backendRssKiB": 78756,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 112064,
+      "elapsedSeconds": 240.888,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 40.22,
+      "systemCpuSeconds": 3.4,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.170736
+      }
+    },
+    {
+      "availableKiB": 500612,
+      "temperatureC": 63.376,
+      "backendRssKiB": 78776,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 112084,
+      "elapsedSeconds": 242.155,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 40.64,
+      "systemCpuSeconds": 3.44,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.185411
+      }
+    },
+    {
+      "availableKiB": 500572,
+      "temperatureC": 62.838,
+      "backendRssKiB": 78848,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 112156,
+      "elapsedSeconds": 243.457,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 41.06,
+      "systemCpuSeconds": 3.53,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.288117
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 502852,
+      "temperatureC": 62.838,
+      "backendRssKiB": 78944,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 112252,
+      "elapsedSeconds": 245.06,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 41.58,
+      "systemCpuSeconds": 3.58,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.280586
+      }
+    },
+    {
+      "availableKiB": 501596,
+      "temperatureC": 62.3,
+      "backendRssKiB": 79072,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 112380,
+      "elapsedSeconds": 246.419,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 42.09,
+      "systemCpuSeconds": 3.63,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.170189
+      }
+    },
+    {
+      "availableKiB": 465592,
+      "temperatureC": 63.376,
+      "backendRssKiB": 79116,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 112424,
+      "elapsedSeconds": 247.664,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 42.5,
+      "systemCpuSeconds": 3.68,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.310814
+      }
+    },
+    {
+      "availableKiB": 485984,
+      "temperatureC": 63.914,
+      "backendRssKiB": 79168,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 112476,
+      "elapsedSeconds": 249.052,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 42.96,
+      "systemCpuSeconds": 3.72,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.22231
+      }
+    },
+    {
+      "availableKiB": 495812,
+      "temperatureC": 63.376,
+      "backendRssKiB": 79188,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 112496,
+      "elapsedSeconds": 250.365,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 43.42,
+      "systemCpuSeconds": 3.75,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.177825
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 499072,
+      "temperatureC": 63.376,
+      "backendRssKiB": 79248,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 112556,
+      "elapsedSeconds": 251.864,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 43.86,
+      "systemCpuSeconds": 3.8,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.28312
+      }
+    },
+    {
+      "availableKiB": 499832,
+      "temperatureC": 63.376,
+      "backendRssKiB": 79356,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 112664,
+      "elapsedSeconds": 253.207,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 44.28,
+      "systemCpuSeconds": 3.84,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.258051
+      }
+    },
+    {
+      "availableKiB": 502708,
+      "temperatureC": 62.838,
+      "backendRssKiB": 79516,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 112824,
+      "elapsedSeconds": 254.527,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 44.75,
+      "systemCpuSeconds": 3.84,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.198381
+      }
+    },
+    {
+      "availableKiB": 504100,
+      "temperatureC": 63.376,
+      "backendRssKiB": 79776,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 113084,
+      "elapsedSeconds": 255.786,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 45.15,
+      "systemCpuSeconds": 3.93,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.246632
+      }
+    },
+    {
+      "availableKiB": 506176,
+      "temperatureC": 62.3,
+      "backendRssKiB": 79948,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 113256,
+      "elapsedSeconds": 257.108,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 45.45,
+      "systemCpuSeconds": 3.95,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.181908
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 507016,
+      "temperatureC": 63.376,
+      "backendRssKiB": 80100,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 113408,
+      "elapsedSeconds": 258.662,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 45.94,
+      "systemCpuSeconds": 3.99,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.166695
+      }
+    },
+    {
+      "availableKiB": 506540,
+      "temperatureC": 63.376,
+      "backendRssKiB": 80156,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 113464,
+      "elapsedSeconds": 259.887,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 46.29,
+      "systemCpuSeconds": 4.04,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.272467
+      }
+    },
+    {
+      "availableKiB": 508596,
+      "temperatureC": 63.376,
+      "backendRssKiB": 80236,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 113544,
+      "elapsedSeconds": 261.225,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 46.82,
+      "systemCpuSeconds": 4.07,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.337703
+      }
+    },
+    {
+      "availableKiB": 508612,
+      "temperatureC": 63.376,
+      "backendRssKiB": 80280,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 113588,
+      "elapsedSeconds": 262.636,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 47.27,
+      "systemCpuSeconds": 4.17,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.194876
+      }
+    },
+    {
+      "availableKiB": 508164,
+      "temperatureC": 62.838,
+      "backendRssKiB": 80316,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 113624,
+      "elapsedSeconds": 263.892,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 47.69,
+      "systemCpuSeconds": 4.2,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.346454
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 507168,
+      "temperatureC": 63.376,
+      "backendRssKiB": 80340,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 113648,
+      "elapsedSeconds": 265.53,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 48.2,
+      "systemCpuSeconds": 4.31,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.168296
+      }
+    },
+    {
+      "availableKiB": 506416,
+      "temperatureC": 63.376,
+      "backendRssKiB": 80272,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 113580,
+      "elapsedSeconds": 266.757,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 48.52,
+      "systemCpuSeconds": 4.34,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.169758
+      }
+    },
+    {
+      "availableKiB": 506416,
+      "temperatureC": 63.376,
+      "backendRssKiB": 80276,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 113584,
+      "elapsedSeconds": 268.001,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 48.7,
+      "systemCpuSeconds": 4.34,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.258516
+      }
+    },
+    {
+      "availableKiB": 507872,
+      "temperatureC": 62.3,
+      "backendRssKiB": 80296,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 113604,
+      "elapsedSeconds": 269.316,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 48.98,
+      "systemCpuSeconds": 4.36,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.248171
+      }
+    },
+    {
+      "availableKiB": 507784,
+      "temperatureC": 62.838,
+      "backendRssKiB": 80308,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 113616,
+      "elapsedSeconds": 270.626,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 49.28,
+      "systemCpuSeconds": 4.36,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.168274
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 507564,
+      "temperatureC": 63.376,
+      "backendRssKiB": 80324,
+      "supervisorRssKiB": 33308,
+      "rssKiB": 113632,
+      "elapsedSeconds": 272.074,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 49.52,
+      "systemCpuSeconds": 4.4,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.228843
+      }
+    },
+    {
+      "availableKiB": 507568,
+      "temperatureC": 62.838,
+      "backendRssKiB": 80348,
+      "supervisorRssKiB": 33312,
+      "rssKiB": 113660,
+      "elapsedSeconds": 273.381,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 49.79,
+      "systemCpuSeconds": 4.42,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.168407
+      }
+    },
+    {
+      "availableKiB": 506100,
+      "temperatureC": 63.376,
+      "backendRssKiB": 80360,
+      "supervisorRssKiB": 33312,
+      "rssKiB": 113672,
+      "elapsedSeconds": 274.608,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 50.05,
+      "systemCpuSeconds": 4.45,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.228907
+      }
+    },
+    {
+      "availableKiB": 499956,
+      "temperatureC": 63.914,
+      "backendRssKiB": 80384,
+      "supervisorRssKiB": 33312,
+      "rssKiB": 113696,
+      "elapsedSeconds": 275.94,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 50.4,
+      "systemCpuSeconds": 4.53,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.346641
+      }
+    },
+    {
+      "availableKiB": 509004,
+      "temperatureC": 63.376,
+      "backendRssKiB": 80396,
+      "supervisorRssKiB": 33312,
+      "rssKiB": 113708,
+      "elapsedSeconds": 277.356,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 50.78,
+      "systemCpuSeconds": 4.55,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.283533
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 507140,
+      "temperatureC": 63.376,
+      "backendRssKiB": 80424,
+      "supervisorRssKiB": 33312,
+      "rssKiB": 113736,
+      "elapsedSeconds": 278.942,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 51.22,
+      "systemCpuSeconds": 4.6,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.182917
+      }
+    },
+    {
+      "availableKiB": 507388,
+      "temperatureC": 63.376,
+      "backendRssKiB": 80452,
+      "supervisorRssKiB": 33312,
+      "rssKiB": 113764,
+      "elapsedSeconds": 280.196,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 51.62,
+      "systemCpuSeconds": 4.66,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.328944
+      }
+    },
+    {
+      "availableKiB": 509856,
+      "temperatureC": 63.376,
+      "backendRssKiB": 80476,
+      "supervisorRssKiB": 33312,
+      "rssKiB": 113788,
+      "elapsedSeconds": 281.604,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 52.05,
+      "systemCpuSeconds": 4.68,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.230439
+      }
+    },
+    {
+      "availableKiB": 512444,
+      "temperatureC": 63.376,
+      "backendRssKiB": 80616,
+      "supervisorRssKiB": 33312,
+      "rssKiB": 113928,
+      "elapsedSeconds": 282.894,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 52.46,
+      "systemCpuSeconds": 4.69,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.203981
+      }
+    },
+    {
+      "availableKiB": 510428,
+      "temperatureC": 62.838,
+      "backendRssKiB": 80616,
+      "supervisorRssKiB": 33312,
+      "rssKiB": 113928,
+      "elapsedSeconds": 284.17,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 52.8,
+      "systemCpuSeconds": 4.75,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.282918
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 509420,
+      "temperatureC": 63.376,
+      "backendRssKiB": 80648,
+      "supervisorRssKiB": 33312,
+      "rssKiB": 113960,
+      "elapsedSeconds": 285.743,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 53.31,
+      "systemCpuSeconds": 4.8,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.306556
+      }
+    },
+    {
+      "availableKiB": 504956,
+      "temperatureC": 63.376,
+      "backendRssKiB": 80680,
+      "supervisorRssKiB": 33320,
+      "rssKiB": 114000,
+      "elapsedSeconds": 287.13,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 53.76,
+      "systemCpuSeconds": 4.83,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.202552
+      }
+    },
+    {
+      "availableKiB": 507400,
+      "temperatureC": 63.376,
+      "backendRssKiB": 80688,
+      "supervisorRssKiB": 33320,
+      "rssKiB": 114008,
+      "elapsedSeconds": 288.462,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 54.2,
+      "systemCpuSeconds": 4.89,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.27795
+      }
+    },
+    {
+      "availableKiB": 508420,
+      "temperatureC": 62.838,
+      "backendRssKiB": 80700,
+      "supervisorRssKiB": 33320,
+      "rssKiB": 114020,
+      "elapsedSeconds": 289.802,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 54.55,
+      "systemCpuSeconds": 4.91,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.169966
+      }
+    },
+    {
+      "availableKiB": 508328,
+      "temperatureC": 63.376,
+      "backendRssKiB": 80704,
+      "supervisorRssKiB": 33320,
+      "rssKiB": 114024,
+      "elapsedSeconds": 291.053,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 54.64,
+      "systemCpuSeconds": 4.93,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.120284
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 508092,
+      "temperatureC": 62.3,
+      "backendRssKiB": 80708,
+      "supervisorRssKiB": 33972,
+      "rssKiB": 114680,
+      "elapsedSeconds": 292.449,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 54.67,
+      "systemCpuSeconds": 4.93,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.225875
+      }
+    },
+    {
+      "availableKiB": 507092,
+      "temperatureC": 62.3,
+      "backendRssKiB": 80712,
+      "supervisorRssKiB": 33988,
+      "rssKiB": 114700,
+      "elapsedSeconds": 293.753,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 54.69,
+      "systemCpuSeconds": 4.93,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.208821
+      }
+    },
+    {
+      "availableKiB": 507092,
+      "temperatureC": 62.838,
+      "backendRssKiB": 80712,
+      "supervisorRssKiB": 33988,
+      "rssKiB": 114700,
+      "elapsedSeconds": 295.048,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 54.7,
+      "systemCpuSeconds": 4.93,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.117125
+      }
+    },
+    {
+      "availableKiB": 507092,
+      "temperatureC": 63.376,
+      "backendRssKiB": 80712,
+      "supervisorRssKiB": 33988,
+      "rssKiB": 114700,
+      "elapsedSeconds": 296.245,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 54.71,
+      "systemCpuSeconds": 4.93,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.238329
+      }
+    },
+    {
+      "availableKiB": 505328,
+      "temperatureC": 62.838,
+      "backendRssKiB": 80716,
+      "supervisorRssKiB": 33988,
+      "rssKiB": 114704,
+      "elapsedSeconds": 297.561,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 54.74,
+      "systemCpuSeconds": 4.93,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.158452
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 505344,
+      "temperatureC": 62.3,
+      "backendRssKiB": 80716,
+      "supervisorRssKiB": 34640,
+      "rssKiB": 115356,
+      "elapsedSeconds": 298.983,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 54.76,
+      "systemCpuSeconds": 4.93,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.1314
+      }
+    },
+    {
+      "availableKiB": 505348,
+      "temperatureC": 62.3,
+      "backendRssKiB": 80716,
+      "supervisorRssKiB": 34652,
+      "rssKiB": 115368,
+      "elapsedSeconds": 300.202,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 54.77,
+      "systemCpuSeconds": 4.93,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.244498
+      }
+    },
+    {
+      "availableKiB": 505116,
+      "temperatureC": 62.3,
+      "backendRssKiB": 81108,
+      "supervisorRssKiB": 34656,
+      "rssKiB": 115764,
+      "elapsedSeconds": 301.526,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 54.82,
+      "systemCpuSeconds": 4.94,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.224427
+      }
+    },
+    {
+      "availableKiB": 505124,
+      "temperatureC": 62.3,
+      "backendRssKiB": 81276,
+      "supervisorRssKiB": 34656,
+      "rssKiB": 115932,
+      "elapsedSeconds": 302.838,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 54.83,
+      "systemCpuSeconds": 4.94,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.132621
+      }
+    },
+    {
+      "availableKiB": 505128,
+      "temperatureC": 62.3,
+      "backendRssKiB": 81440,
+      "supervisorRssKiB": 34656,
+      "rssKiB": 116096,
+      "elapsedSeconds": 304.058,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 54.83,
+      "systemCpuSeconds": 4.95,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.226026
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 505132,
+      "temperatureC": 62.3,
+      "backendRssKiB": 81768,
+      "supervisorRssKiB": 35308,
+      "rssKiB": 117076,
+      "elapsedSeconds": 305.549,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 54.87,
+      "systemCpuSeconds": 4.95,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.150809
+      }
+    },
+    {
+      "availableKiB": 504384,
+      "temperatureC": 62.3,
+      "backendRssKiB": 81932,
+      "supervisorRssKiB": 35324,
+      "rssKiB": 117256,
+      "elapsedSeconds": 306.776,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 54.88,
+      "systemCpuSeconds": 4.95,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.13637
+      }
+    },
+    {
+      "availableKiB": 502624,
+      "temperatureC": 62.3,
+      "backendRssKiB": 82096,
+      "supervisorRssKiB": 35324,
+      "rssKiB": 117420,
+      "elapsedSeconds": 307.999,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 54.89,
+      "systemCpuSeconds": 4.95,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.235846
+      }
+    },
+    {
+      "availableKiB": 501116,
+      "temperatureC": 62.3,
+      "backendRssKiB": 82260,
+      "supervisorRssKiB": 35324,
+      "rssKiB": 117584,
+      "elapsedSeconds": 309.308,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 54.91,
+      "systemCpuSeconds": 4.95,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.238661
+      }
+    },
+    {
+      "availableKiB": 508624,
+      "temperatureC": 62.3,
+      "backendRssKiB": 82592,
+      "supervisorRssKiB": 35324,
+      "rssKiB": 117916,
+      "elapsedSeconds": 310.62,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 54.94,
+      "systemCpuSeconds": 4.95,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.126368
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 506384,
+      "temperatureC": 62.3,
+      "backendRssKiB": 82752,
+      "supervisorRssKiB": 35980,
+      "rssKiB": 118732,
+      "elapsedSeconds": 312.009,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 54.96,
+      "systemCpuSeconds": 4.95,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.22784
+      }
+    },
+    {
+      "availableKiB": 505684,
+      "temperatureC": 62.3,
+      "backendRssKiB": 82924,
+      "supervisorRssKiB": 35992,
+      "rssKiB": 118916,
+      "elapsedSeconds": 313.324,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 54.97,
+      "systemCpuSeconds": 4.95,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.154568
+      }
+    },
+    {
+      "availableKiB": 504644,
+      "temperatureC": 61.762,
+      "backendRssKiB": 83252,
+      "supervisorRssKiB": 35996,
+      "rssKiB": 119248,
+      "elapsedSeconds": 314.569,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.0,
+      "systemCpuSeconds": 4.95,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.137811
+      }
+    },
+    {
+      "availableKiB": 504148,
+      "temperatureC": 62.3,
+      "backendRssKiB": 83420,
+      "supervisorRssKiB": 35996,
+      "rssKiB": 119416,
+      "elapsedSeconds": 315.786,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.01,
+      "systemCpuSeconds": 4.95,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.231495
+      }
+    },
+    {
+      "availableKiB": 502132,
+      "temperatureC": 62.3,
+      "backendRssKiB": 83580,
+      "supervisorRssKiB": 35996,
+      "rssKiB": 119576,
+      "elapsedSeconds": 317.095,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.02,
+      "systemCpuSeconds": 4.95,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.211784
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 501900,
+      "temperatureC": 62.3,
+      "backendRssKiB": 83908,
+      "supervisorRssKiB": 36652,
+      "rssKiB": 120560,
+      "elapsedSeconds": 318.579,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.06,
+      "systemCpuSeconds": 4.96,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.117436
+      }
+    },
+    {
+      "availableKiB": 501900,
+      "temperatureC": 62.3,
+      "backendRssKiB": 84072,
+      "supervisorRssKiB": 36664,
+      "rssKiB": 120736,
+      "elapsedSeconds": 319.752,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.07,
+      "systemCpuSeconds": 4.97,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.231044
+      }
+    },
+    {
+      "availableKiB": 501908,
+      "temperatureC": 61.762,
+      "backendRssKiB": 84240,
+      "supervisorRssKiB": 36664,
+      "rssKiB": 120904,
+      "elapsedSeconds": 321.071,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.08,
+      "systemCpuSeconds": 4.97,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.151261
+      }
+    },
+    {
+      "availableKiB": 501912,
+      "temperatureC": 61.224,
+      "backendRssKiB": 84400,
+      "supervisorRssKiB": 36664,
+      "rssKiB": 121064,
+      "elapsedSeconds": 322.309,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.09,
+      "systemCpuSeconds": 4.97,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.143948
+      }
+    },
+    {
+      "availableKiB": 501916,
+      "temperatureC": 61.762,
+      "backendRssKiB": 84736,
+      "supervisorRssKiB": 36668,
+      "rssKiB": 121404,
+      "elapsedSeconds": 323.534,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.12,
+      "systemCpuSeconds": 4.97,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.231927
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 501924,
+      "temperatureC": 62.3,
+      "backendRssKiB": 84896,
+      "supervisorRssKiB": 37320,
+      "rssKiB": 122216,
+      "elapsedSeconds": 325.035,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.14,
+      "systemCpuSeconds": 4.97,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.231584
+      }
+    },
+    {
+      "availableKiB": 499664,
+      "temperatureC": 61.762,
+      "backendRssKiB": 85064,
+      "supervisorRssKiB": 37332,
+      "rssKiB": 122396,
+      "elapsedSeconds": 326.345,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.15,
+      "systemCpuSeconds": 4.97,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.135648
+      }
+    },
+    {
+      "availableKiB": 499664,
+      "temperatureC": 61.762,
+      "backendRssKiB": 85392,
+      "supervisorRssKiB": 37332,
+      "rssKiB": 122724,
+      "elapsedSeconds": 327.568,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.18,
+      "systemCpuSeconds": 4.97,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.248528
+      }
+    },
+    {
+      "availableKiB": 501740,
+      "temperatureC": 62.3,
+      "backendRssKiB": 85556,
+      "supervisorRssKiB": 37332,
+      "rssKiB": 122888,
+      "elapsedSeconds": 328.894,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.19,
+      "systemCpuSeconds": 4.97,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.146295
+      }
+    },
+    {
+      "availableKiB": 503252,
+      "temperatureC": 62.3,
+      "backendRssKiB": 85720,
+      "supervisorRssKiB": 37336,
+      "rssKiB": 123056,
+      "elapsedSeconds": 330.127,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.2,
+      "systemCpuSeconds": 4.97,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.134068
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 501144,
+      "temperatureC": 62.3,
+      "backendRssKiB": 86044,
+      "supervisorRssKiB": 37988,
+      "rssKiB": 124032,
+      "elapsedSeconds": 331.553,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.24,
+      "systemCpuSeconds": 4.97,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.211283
+      }
+    },
+    {
+      "availableKiB": 501100,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86212,
+      "supervisorRssKiB": 38000,
+      "rssKiB": 124212,
+      "elapsedSeconds": 332.847,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.25,
+      "systemCpuSeconds": 4.97,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.220378
+      }
+    },
+    {
+      "availableKiB": 499900,
+      "temperatureC": 62.3,
+      "backendRssKiB": 86472,
+      "supervisorRssKiB": 38000,
+      "rssKiB": 124472,
+      "elapsedSeconds": 334.155,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.3,
+      "systemCpuSeconds": 4.97,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.136557
+      }
+    },
+    {
+      "availableKiB": 499844,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86472,
+      "supervisorRssKiB": 38000,
+      "rssKiB": 124472,
+      "elapsedSeconds": 335.369,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.31,
+      "systemCpuSeconds": 4.97,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.236943
+      }
+    },
+    {
+      "availableKiB": 499092,
+      "temperatureC": 62.3,
+      "backendRssKiB": 86476,
+      "supervisorRssKiB": 38000,
+      "rssKiB": 124476,
+      "elapsedSeconds": 336.692,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.34,
+      "systemCpuSeconds": 4.97,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.157264
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 498444,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86476,
+      "supervisorRssKiB": 38652,
+      "rssKiB": 125128,
+      "elapsedSeconds": 338.112,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.36,
+      "systemCpuSeconds": 4.97,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.136977
+      }
+    },
+    {
+      "availableKiB": 496984,
+      "temperatureC": 62.3,
+      "backendRssKiB": 86476,
+      "supervisorRssKiB": 38664,
+      "rssKiB": 125140,
+      "elapsedSeconds": 339.341,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.37,
+      "systemCpuSeconds": 4.97,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.232809
+      }
+    },
+    {
+      "availableKiB": 491896,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86480,
+      "supervisorRssKiB": 38664,
+      "rssKiB": 125144,
+      "elapsedSeconds": 340.653,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.39,
+      "systemCpuSeconds": 4.98,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.233559
+      }
+    },
+    {
+      "availableKiB": 495712,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86480,
+      "supervisorRssKiB": 38664,
+      "rssKiB": 125144,
+      "elapsedSeconds": 341.961,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.41,
+      "systemCpuSeconds": 4.98,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.13203
+      }
+    },
+    {
+      "availableKiB": 495712,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86484,
+      "supervisorRssKiB": 38664,
+      "rssKiB": 125148,
+      "elapsedSeconds": 343.18,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.42,
+      "systemCpuSeconds": 4.99,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.243936
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 493948,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86484,
+      "supervisorRssKiB": 39324,
+      "rssKiB": 125808,
+      "elapsedSeconds": 344.696,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.46,
+      "systemCpuSeconds": 4.99,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.157055
+      }
+    },
+    {
+      "availableKiB": 493952,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86484,
+      "supervisorRssKiB": 39336,
+      "rssKiB": 125820,
+      "elapsedSeconds": 345.928,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.47,
+      "systemCpuSeconds": 4.99,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.166304
+      }
+    },
+    {
+      "availableKiB": 493252,
+      "temperatureC": 62.3,
+      "backendRssKiB": 86488,
+      "supervisorRssKiB": 39336,
+      "rssKiB": 125824,
+      "elapsedSeconds": 347.174,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.48,
+      "systemCpuSeconds": 4.99,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.242528
+      }
+    },
+    {
+      "availableKiB": 489952,
+      "temperatureC": 62.3,
+      "backendRssKiB": 86488,
+      "supervisorRssKiB": 39340,
+      "rssKiB": 125828,
+      "elapsedSeconds": 348.489,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.49,
+      "systemCpuSeconds": 4.99,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.249214
+      }
+    },
+    {
+      "availableKiB": 501380,
+      "temperatureC": 62.3,
+      "backendRssKiB": 86492,
+      "supervisorRssKiB": 39340,
+      "rssKiB": 125832,
+      "elapsedSeconds": 349.803,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.52,
+      "systemCpuSeconds": 4.99,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.133226
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 498848,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86492,
+      "supervisorRssKiB": 39992,
+      "rssKiB": 126484,
+      "elapsedSeconds": 351.202,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.55,
+      "systemCpuSeconds": 4.99,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.225181
+      }
+    },
+    {
+      "availableKiB": 497084,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86492,
+      "supervisorRssKiB": 40004,
+      "rssKiB": 126496,
+      "elapsedSeconds": 352.509,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.56,
+      "systemCpuSeconds": 4.99,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.158462
+      }
+    },
+    {
+      "availableKiB": 496848,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86496,
+      "supervisorRssKiB": 40004,
+      "rssKiB": 126500,
+      "elapsedSeconds": 353.748,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.59,
+      "systemCpuSeconds": 4.99,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.138016
+      }
+    },
+    {
+      "availableKiB": 498852,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86496,
+      "supervisorRssKiB": 40004,
+      "rssKiB": 126500,
+      "elapsedSeconds": 354.974,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.61,
+      "systemCpuSeconds": 4.99,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.22633
+      }
+    },
+    {
+      "availableKiB": 496092,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86496,
+      "supervisorRssKiB": 40004,
+      "rssKiB": 126500,
+      "elapsedSeconds": 356.288,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.62,
+      "systemCpuSeconds": 4.99,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.224487
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 496288,
+      "temperatureC": 62.3,
+      "backendRssKiB": 86500,
+      "supervisorRssKiB": 40656,
+      "rssKiB": 127156,
+      "elapsedSeconds": 357.784,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.65,
+      "systemCpuSeconds": 4.99,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.144595
+      }
+    },
+    {
+      "availableKiB": 496320,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86500,
+      "supervisorRssKiB": 40668,
+      "rssKiB": 127168,
+      "elapsedSeconds": 359.003,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.66,
+      "systemCpuSeconds": 4.99,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.238647
+      }
+    },
+    {
+      "availableKiB": 494556,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86504,
+      "supervisorRssKiB": 40668,
+      "rssKiB": 127172,
+      "elapsedSeconds": 360.332,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.67,
+      "systemCpuSeconds": 4.99,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.155509
+      }
+    },
+    {
+      "availableKiB": 494564,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86504,
+      "supervisorRssKiB": 40668,
+      "rssKiB": 127172,
+      "elapsedSeconds": 361.575,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.68,
+      "systemCpuSeconds": 4.99,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.146958
+      }
+    },
+    {
+      "availableKiB": 494564,
+      "temperatureC": 62.3,
+      "backendRssKiB": 86504,
+      "supervisorRssKiB": 40668,
+      "rssKiB": 127172,
+      "elapsedSeconds": 362.809,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.72,
+      "systemCpuSeconds": 4.99,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.213068
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 493812,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86508,
+      "supervisorRssKiB": 41324,
+      "rssKiB": 127832,
+      "elapsedSeconds": 364.283,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.73,
+      "systemCpuSeconds": 4.99,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.227843
+      }
+    },
+    {
+      "availableKiB": 491552,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86508,
+      "supervisorRssKiB": 41336,
+      "rssKiB": 127844,
+      "elapsedSeconds": 365.582,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.74,
+      "systemCpuSeconds": 4.99,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.149878
+      }
+    },
+    {
+      "availableKiB": 491552,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86512,
+      "supervisorRssKiB": 41336,
+      "rssKiB": 127848,
+      "elapsedSeconds": 366.819,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.8,
+      "systemCpuSeconds": 4.99,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.228279
+      }
+    },
+    {
+      "availableKiB": 492896,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86512,
+      "supervisorRssKiB": 41336,
+      "rssKiB": 127848,
+      "elapsedSeconds": 368.118,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.82,
+      "systemCpuSeconds": 4.99,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.149964
+      }
+    },
+    {
+      "availableKiB": 492160,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86512,
+      "supervisorRssKiB": 41336,
+      "rssKiB": 127848,
+      "elapsedSeconds": 369.354,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.83,
+      "systemCpuSeconds": 4.99,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.129888
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 488644,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86516,
+      "supervisorRssKiB": 41992,
+      "rssKiB": 128508,
+      "elapsedSeconds": 370.743,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.86,
+      "systemCpuSeconds": 4.99,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.221715
+      }
+    },
+    {
+      "availableKiB": 493984,
+      "temperatureC": 62.3,
+      "backendRssKiB": 86516,
+      "supervisorRssKiB": 42004,
+      "rssKiB": 128520,
+      "elapsedSeconds": 372.038,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.88,
+      "systemCpuSeconds": 5.0,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.206871
+      }
+    },
+    {
+      "availableKiB": 493792,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86516,
+      "supervisorRssKiB": 42004,
+      "rssKiB": 128520,
+      "elapsedSeconds": 373.33,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.89,
+      "systemCpuSeconds": 5.0,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.139596
+      }
+    },
+    {
+      "availableKiB": 493796,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86520,
+      "supervisorRssKiB": 42008,
+      "rssKiB": 128528,
+      "elapsedSeconds": 374.55,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.9,
+      "systemCpuSeconds": 5.0,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.259279
+      }
+    },
+    {
+      "availableKiB": 492040,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86520,
+      "supervisorRssKiB": 42008,
+      "rssKiB": 128528,
+      "elapsedSeconds": 375.884,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.93,
+      "systemCpuSeconds": 5.0,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.150591
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 493232,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86524,
+      "supervisorRssKiB": 42656,
+      "rssKiB": 129180,
+      "elapsedSeconds": 377.306,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.94,
+      "systemCpuSeconds": 5.0,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.129756
+      }
+    },
+    {
+      "availableKiB": 493232,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86524,
+      "supervisorRssKiB": 42668,
+      "rssKiB": 129192,
+      "elapsedSeconds": 378.523,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.95,
+      "systemCpuSeconds": 5.0,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.22935
+      }
+    },
+    {
+      "availableKiB": 493232,
+      "temperatureC": 62.3,
+      "backendRssKiB": 86524,
+      "supervisorRssKiB": 42668,
+      "rssKiB": 129192,
+      "elapsedSeconds": 379.839,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.98,
+      "systemCpuSeconds": 5.0,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.225833
+      }
+    },
+    {
+      "availableKiB": 493232,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86528,
+      "supervisorRssKiB": 42672,
+      "rssKiB": 129200,
+      "elapsedSeconds": 381.14,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 55.99,
+      "systemCpuSeconds": 5.0,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.132253
+      }
+    },
+    {
+      "availableKiB": 493232,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86528,
+      "supervisorRssKiB": 42672,
+      "rssKiB": 129200,
+      "elapsedSeconds": 382.36,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 56.0,
+      "systemCpuSeconds": 5.0,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.23207
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 491108,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86532,
+      "supervisorRssKiB": 43332,
+      "rssKiB": 129864,
+      "elapsedSeconds": 383.864,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 56.05,
+      "systemCpuSeconds": 5.01,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.161417
+      }
+    },
+    {
+      "availableKiB": 490860,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86532,
+      "supervisorRssKiB": 43348,
+      "rssKiB": 129880,
+      "elapsedSeconds": 385.1,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 56.06,
+      "systemCpuSeconds": 5.01,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.138009
+      }
+    },
+    {
+      "availableKiB": 490860,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86532,
+      "supervisorRssKiB": 43348,
+      "rssKiB": 129880,
+      "elapsedSeconds": 386.316,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 56.07,
+      "systemCpuSeconds": 5.01,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.211731
+      }
+    },
+    {
+      "availableKiB": 495008,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86536,
+      "supervisorRssKiB": 43348,
+      "rssKiB": 129884,
+      "elapsedSeconds": 387.614,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 56.08,
+      "systemCpuSeconds": 5.01,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.21872
+      }
+    },
+    {
+      "availableKiB": 494532,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86536,
+      "supervisorRssKiB": 43348,
+      "rssKiB": 129884,
+      "elapsedSeconds": 388.919,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 56.11,
+      "systemCpuSeconds": 5.01,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.145208
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 464520,
+      "temperatureC": 61.762,
+      "backendRssKiB": 119316,
+      "supervisorRssKiB": 44000,
+      "rssKiB": 163316,
+      "elapsedSeconds": 390.343,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 57.1,
+      "systemCpuSeconds": 5.03,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.384302
+      }
+    },
+    {
+      "availableKiB": 491192,
+      "temperatureC": 62.3,
+      "backendRssKiB": 86568,
+      "supervisorRssKiB": 44012,
+      "rssKiB": 130580,
+      "elapsedSeconds": 391.784,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 57.87,
+      "systemCpuSeconds": 5.07,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.161805
+      }
+    },
+    {
+      "availableKiB": 491868,
+      "temperatureC": 62.3,
+      "backendRssKiB": 86572,
+      "supervisorRssKiB": 44016,
+      "rssKiB": 130588,
+      "elapsedSeconds": 393.007,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 57.9,
+      "systemCpuSeconds": 5.07,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.143916
+      }
+    },
+    {
+      "availableKiB": 492472,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86572,
+      "supervisorRssKiB": 44016,
+      "rssKiB": 130588,
+      "elapsedSeconds": 394.244,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 57.93,
+      "systemCpuSeconds": 5.07,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.212349
+      }
+    },
+    {
+      "availableKiB": 493624,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86576,
+      "supervisorRssKiB": 44016,
+      "rssKiB": 130592,
+      "elapsedSeconds": 395.539,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 57.95,
+      "systemCpuSeconds": 5.07,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.231751
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 493392,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86580,
+      "supervisorRssKiB": 44672,
+      "rssKiB": 131252,
+      "elapsedSeconds": 397.078,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 57.99,
+      "systemCpuSeconds": 5.07,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.140932
+      }
+    },
+    {
+      "availableKiB": 491192,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86584,
+      "supervisorRssKiB": 44684,
+      "rssKiB": 131268,
+      "elapsedSeconds": 398.298,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 58.01,
+      "systemCpuSeconds": 5.08,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.23239
+      }
+    },
+    {
+      "availableKiB": 491164,
+      "temperatureC": 62.3,
+      "backendRssKiB": 86588,
+      "supervisorRssKiB": 44684,
+      "rssKiB": 131272,
+      "elapsedSeconds": 399.618,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 58.03,
+      "systemCpuSeconds": 5.08,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.149234
+      }
+    },
+    {
+      "availableKiB": 490160,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86592,
+      "supervisorRssKiB": 44688,
+      "rssKiB": 131280,
+      "elapsedSeconds": 400.84,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 58.09,
+      "systemCpuSeconds": 5.09,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.157698
+      }
+    },
+    {
+      "availableKiB": 496308,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86592,
+      "supervisorRssKiB": 44688,
+      "rssKiB": 131280,
+      "elapsedSeconds": 402.06,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 58.14,
+      "systemCpuSeconds": 5.09,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.264461
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 496472,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86604,
+      "supervisorRssKiB": 45340,
+      "rssKiB": 131944,
+      "elapsedSeconds": 403.591,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 58.27,
+      "systemCpuSeconds": 5.1,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.236729
+      }
+    },
+    {
+      "availableKiB": 493520,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86604,
+      "supervisorRssKiB": 45352,
+      "rssKiB": 131956,
+      "elapsedSeconds": 404.919,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 58.36,
+      "systemCpuSeconds": 5.11,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.144614
+      }
+    },
+    {
+      "availableKiB": 491756,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86604,
+      "supervisorRssKiB": 45352,
+      "rssKiB": 131956,
+      "elapsedSeconds": 406.138,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 58.37,
+      "systemCpuSeconds": 5.11,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.269485
+      }
+    },
+    {
+      "availableKiB": 490632,
+      "temperatureC": 62.3,
+      "backendRssKiB": 86612,
+      "supervisorRssKiB": 45352,
+      "rssKiB": 131964,
+      "elapsedSeconds": 407.489,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 58.52,
+      "systemCpuSeconds": 5.13,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.141838
+      }
+    },
+    {
+      "availableKiB": 488608,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86620,
+      "supervisorRssKiB": 45352,
+      "rssKiB": 131972,
+      "elapsedSeconds": 408.689,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 58.56,
+      "systemCpuSeconds": 5.13,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.186148
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 490076,
+      "temperatureC": 62.3,
+      "backendRssKiB": 86620,
+      "supervisorRssKiB": 46012,
+      "rssKiB": 132632,
+      "elapsedSeconds": 410.147,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 58.63,
+      "systemCpuSeconds": 5.13,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.225363
+      }
+    },
+    {
+      "availableKiB": 490156,
+      "temperatureC": 62.3,
+      "backendRssKiB": 86624,
+      "supervisorRssKiB": 46024,
+      "rssKiB": 132648,
+      "elapsedSeconds": 411.454,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 58.76,
+      "systemCpuSeconds": 5.13,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.211699
+      }
+    },
+    {
+      "availableKiB": 487656,
+      "temperatureC": 62.3,
+      "backendRssKiB": 86628,
+      "supervisorRssKiB": 46024,
+      "rssKiB": 132652,
+      "elapsedSeconds": 412.737,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 58.99,
+      "systemCpuSeconds": 5.13,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.182311
+      }
+    },
+    {
+      "availableKiB": 490036,
+      "temperatureC": 62.3,
+      "backendRssKiB": 86628,
+      "supervisorRssKiB": 46024,
+      "rssKiB": 132652,
+      "elapsedSeconds": 413.997,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 59.09,
+      "systemCpuSeconds": 5.13,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.249578
+      }
+    },
+    {
+      "availableKiB": 490036,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86628,
+      "supervisorRssKiB": 46024,
+      "rssKiB": 132652,
+      "elapsedSeconds": 415.327,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 59.12,
+      "systemCpuSeconds": 5.13,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.147361
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 489864,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86628,
+      "supervisorRssKiB": 46680,
+      "rssKiB": 133308,
+      "elapsedSeconds": 416.747,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 59.13,
+      "systemCpuSeconds": 5.14,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.146566
+      }
+    },
+    {
+      "availableKiB": 489864,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86628,
+      "supervisorRssKiB": 46692,
+      "rssKiB": 133320,
+      "elapsedSeconds": 417.984,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 59.2,
+      "systemCpuSeconds": 5.14,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.234467
+      }
+    },
+    {
+      "availableKiB": 491748,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86632,
+      "supervisorRssKiB": 46692,
+      "rssKiB": 133324,
+      "elapsedSeconds": 419.297,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 59.23,
+      "systemCpuSeconds": 5.14,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.22771
+      }
+    },
+    {
+      "availableKiB": 489732,
+      "temperatureC": 62.3,
+      "backendRssKiB": 86632,
+      "supervisorRssKiB": 46692,
+      "rssKiB": 133324,
+      "elapsedSeconds": 420.605,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 59.25,
+      "systemCpuSeconds": 5.14,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.135131
+      }
+    },
+    {
+      "availableKiB": 489732,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86632,
+      "supervisorRssKiB": 46692,
+      "rssKiB": 133324,
+      "elapsedSeconds": 421.827,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 59.3,
+      "systemCpuSeconds": 5.14,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.247791
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 488604,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86632,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133964,
+      "elapsedSeconds": 423.674,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 59.31,
+      "systemCpuSeconds": 5.14,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.155336
+      }
+    },
+    {
+      "availableKiB": 488616,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86632,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133964,
+      "elapsedSeconds": 424.916,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 59.38,
+      "systemCpuSeconds": 5.14,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.135246
+      }
+    },
+    {
+      "availableKiB": 488616,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86632,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133964,
+      "elapsedSeconds": 426.123,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 59.41,
+      "systemCpuSeconds": 5.14,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.233845
+      }
+    },
+    {
+      "availableKiB": 490640,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86632,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133964,
+      "elapsedSeconds": 427.436,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 59.43,
+      "systemCpuSeconds": 5.14,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.228241
+      }
+    },
+    {
+      "availableKiB": 489888,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86632,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133964,
+      "elapsedSeconds": 428.743,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 59.44,
+      "systemCpuSeconds": 5.14,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.148521
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 485860,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86632,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133964,
+      "elapsedSeconds": 430.171,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 59.5,
+      "systemCpuSeconds": 5.14,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.230475
+      }
+    },
+    {
+      "availableKiB": 483852,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86632,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133964,
+      "elapsedSeconds": 431.458,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 59.52,
+      "systemCpuSeconds": 5.14,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.16419
+      }
+    },
+    {
+      "availableKiB": 491540,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86632,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133964,
+      "elapsedSeconds": 432.696,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 59.54,
+      "systemCpuSeconds": 5.14,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.145565
+      }
+    },
+    {
+      "availableKiB": 491076,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86632,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133964,
+      "elapsedSeconds": 433.929,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 59.58,
+      "systemCpuSeconds": 5.14,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.229856
+      }
+    },
+    {
+      "availableKiB": 491704,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86632,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133964,
+      "elapsedSeconds": 435.231,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 59.6,
+      "systemCpuSeconds": 5.14,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.208571
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 491160,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86632,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133964,
+      "elapsedSeconds": 436.698,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 59.64,
+      "systemCpuSeconds": 5.14,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.131487
+      }
+    },
+    {
+      "availableKiB": 491160,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86632,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133964,
+      "elapsedSeconds": 437.916,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 59.68,
+      "systemCpuSeconds": 5.15,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.242431
+      }
+    },
+    {
+      "availableKiB": 489148,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86632,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133964,
+      "elapsedSeconds": 439.231,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 59.7,
+      "systemCpuSeconds": 5.15,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.136691
+      }
+    },
+    {
+      "availableKiB": 489168,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86632,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133964,
+      "elapsedSeconds": 440.451,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 59.72,
+      "systemCpuSeconds": 5.15,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.127137
+      }
+    },
+    {
+      "availableKiB": 489168,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86632,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133964,
+      "elapsedSeconds": 441.645,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 59.73,
+      "systemCpuSeconds": 5.15,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.230572
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 491104,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 443.146,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 59.8,
+      "systemCpuSeconds": 5.16,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.21233
+      }
+    },
+    {
+      "availableKiB": 491112,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 444.445,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 59.87,
+      "systemCpuSeconds": 5.16,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.135922
+      }
+    },
+    {
+      "availableKiB": 490360,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 445.659,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 59.88,
+      "systemCpuSeconds": 5.16,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.227614
+      }
+    },
+    {
+      "availableKiB": 487840,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 446.972,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 59.9,
+      "systemCpuSeconds": 5.16,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.152867
+      }
+    },
+    {
+      "availableKiB": 487844,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 448.214,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 59.92,
+      "systemCpuSeconds": 5.16,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.136374
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 490208,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 449.621,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 59.94,
+      "systemCpuSeconds": 5.16,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.236235
+      }
+    },
+    {
+      "availableKiB": 490208,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 450.935,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 59.96,
+      "systemCpuSeconds": 5.17,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.237327
+      }
+    },
+    {
+      "availableKiB": 490208,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 452.247,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 59.98,
+      "systemCpuSeconds": 5.17,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.11694
+      }
+    },
+    {
+      "availableKiB": 490208,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 453.45,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 59.99,
+      "systemCpuSeconds": 5.17,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.242533
+      }
+    },
+    {
+      "availableKiB": 488460,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 454.779,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.0,
+      "systemCpuSeconds": 5.17,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.170176
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 488212,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 456.22,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.03,
+      "systemCpuSeconds": 5.17,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.127842
+      }
+    },
+    {
+      "availableKiB": 489864,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 457.435,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.04,
+      "systemCpuSeconds": 5.17,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.23116
+      }
+    },
+    {
+      "availableKiB": 492736,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 458.744,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.05,
+      "systemCpuSeconds": 5.17,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.234659
+      }
+    },
+    {
+      "availableKiB": 488784,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 460.059,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.1,
+      "systemCpuSeconds": 5.17,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.141726
+      }
+    },
+    {
+      "availableKiB": 484688,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 461.273,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.11,
+      "systemCpuSeconds": 5.17,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.240491
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 491024,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 462.801,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.13,
+      "systemCpuSeconds": 5.17,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.170901
+      }
+    },
+    {
+      "availableKiB": 489268,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 464.058,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.16,
+      "systemCpuSeconds": 5.17,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.14933
+      }
+    },
+    {
+      "availableKiB": 489276,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 465.283,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.18,
+      "systemCpuSeconds": 5.17,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.233524
+      }
+    },
+    {
+      "availableKiB": 489284,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 466.598,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.19,
+      "systemCpuSeconds": 5.17,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.248624
+      }
+    },
+    {
+      "availableKiB": 489036,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 467.933,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.21,
+      "systemCpuSeconds": 5.17,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.13649
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 486832,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 469.332,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.23,
+      "systemCpuSeconds": 5.17,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.240544
+      }
+    },
+    {
+      "availableKiB": 491052,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 470.652,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.24,
+      "systemCpuSeconds": 5.17,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.157851
+      }
+    },
+    {
+      "availableKiB": 492452,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 471.892,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.28,
+      "systemCpuSeconds": 5.17,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.14304
+      }
+    },
+    {
+      "availableKiB": 492460,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 473.125,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.34,
+      "systemCpuSeconds": 5.17,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.225564
+      }
+    },
+    {
+      "availableKiB": 492208,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 474.439,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.35,
+      "systemCpuSeconds": 5.17,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.230576
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 488692,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 475.932,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.36,
+      "systemCpuSeconds": 5.17,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.146272
+      }
+    },
+    {
+      "availableKiB": 488692,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 477.153,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.4,
+      "systemCpuSeconds": 5.17,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.2273
+      }
+    },
+    {
+      "availableKiB": 489056,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 478.469,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.41,
+      "systemCpuSeconds": 5.17,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.149988
+      }
+    },
+    {
+      "availableKiB": 489072,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 479.706,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.42,
+      "systemCpuSeconds": 5.17,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.142624
+      }
+    },
+    {
+      "availableKiB": 489072,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 480.926,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.43,
+      "systemCpuSeconds": 5.17,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.231866
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 489080,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 482.413,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.47,
+      "systemCpuSeconds": 5.17,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.233935
+      }
+    },
+    {
+      "availableKiB": 489080,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 483.727,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.47,
+      "systemCpuSeconds": 5.17,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.132069
+      }
+    },
+    {
+      "availableKiB": 489088,
+      "temperatureC": 61.762,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 484.946,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.48,
+      "systemCpuSeconds": 5.17,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.251424
+      }
+    },
+    {
+      "availableKiB": 489088,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 486.28,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.52,
+      "systemCpuSeconds": 5.17,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.135106
+      }
+    },
+    {
+      "availableKiB": 489096,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 487.5,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.53,
+      "systemCpuSeconds": 5.17,
+      "web": {
+        "label": "gallery",
+        "code": "200",
+        "seconds": 0.144622
+      },
+      "servicesUnchanged": true
+    },
+    {
+      "availableKiB": 489472,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 488.907,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.56,
+      "systemCpuSeconds": 5.17,
+      "web": {
+        "label": "heavensgate",
+        "code": "200",
+        "seconds": 0.246485
+      }
+    },
+    {
+      "availableKiB": 486732,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 490.235,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.58,
+      "systemCpuSeconds": 5.18,
+      "web": {
+        "label": "forum",
+        "code": "200",
+        "seconds": 0.232464
+      }
+    },
+    {
+      "availableKiB": 483456,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86648,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133980,
+      "elapsedSeconds": 491.539,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.59,
+      "systemCpuSeconds": 5.18,
+      "web": {
+        "label": "proxy",
+        "code": "404",
+        "seconds": 0.151406
+      }
+    },
+    {
+      "availableKiB": 490340,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86656,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133988,
+      "elapsedSeconds": 492.765,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.63,
+      "systemCpuSeconds": 5.18,
+      "web": {
+        "label": "bibprof",
+        "code": "200",
+        "seconds": 0.23036
+      }
+    },
+    {
+      "availableKiB": 488652,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86656,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133988,
+      "elapsedSeconds": 494.083,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.67,
+      "systemCpuSeconds": 5.18,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.165154
+      },
+      "servicesUnchanged": true
+    }
+  ],
+  "summary": {
+    "count": 371,
+    "maxCombinedRssMiB": 159.48828125,
+    "maxBackendRssMiB": 116.51953125,
+    "maxSupervisorRssMiB": 46.22265625,
+    "minAvailableMiB": 453.6328125,
+    "maxTemperatureC": 63.914,
+    "lastSample": {
+      "availableKiB": 488652,
+      "temperatureC": 61.224,
+      "backendRssKiB": 86656,
+      "supervisorRssKiB": 47332,
+      "rssKiB": 133988,
+      "elapsedSeconds": 494.083,
+      "backendPid": 32387,
+      "supervisorPid": 32378,
+      "userCpuSeconds": 60.67,
+      "systemCpuSeconds": 5.18,
+      "web": {
+        "label": "ordenanthia",
+        "code": "200",
+        "seconds": 0.165154
+      },
+      "servicesUnchanged": true
+    }
+  },
+  "journal": {
+    "code": 0,
+    "out": "2026-10-31T20:16:39+01:00 raspberrypi systemd[1]: Starting naufragio-vtt.service - Naufragio VTT isolated backend...\n2026-10-31T20:16:42+01:00 raspberrypi naufragio-vtt[32052]: {\"state\": \"baseline\", \"resources\": {\"availableKiB\": 511692, \"temperatureC\": 60.148, \"backendRssKiB\": 0, \"supervisorRssKiB\": 17144, \"rssKiB\": 17144}, \"web\": [{\"label\": \"heavensgate\", \"code\": \"200\", \"seconds\": 0.211494}, {\"label\": \"forum\", \"code\": \"200\", \"seconds\": 0.215989}, {\"label\": \"proxy\", \"code\": \"404\", \"seconds\": 0.155636}, {\"label\": \"bibprof\", \"code\": \"200\", \"seconds\": 0.231537}, {\"label\": \"ordenanthia\", \"code\": \"200\", \"seconds\": 0.136685}, {\"label\": \"gallery\", \"code\": \"200\", \"seconds\": 0.128461}]}\n2026-10-31T20:16:44+01:00 raspberrypi naufragio-vtt[32077]: STARTUP_FAILED: check configuration\n2026-10-31T20:16:44+01:00 raspberrypi naufragio-vtt[32077]: (node:32077) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n2026-10-31T20:16:44+01:00 raspberrypi naufragio-vtt[32077]: (Use `node --trace-warnings ...` to show where the warning was created)\n2026-10-31T20:16:45+01:00 raspberrypi naufragio-vtt[32052]: {\"state\": \"supervisor_stopped\", \"reason\": \"supervision_window_complete\", \"backendExited\": true}\n2026-10-31T20:16:45+01:00 raspberrypi systemd[1]: naufragio-vtt.service: Failed with result 'protocol'.\n2026-10-31T20:16:45+01:00 raspberrypi systemd[1]: Failed to start naufragio-vtt.service - Naufragio VTT isolated backend.\n2026-10-31T20:16:45+01:00 raspberrypi systemd[1]: naufragio-vtt.service: Consumed 4.307s CPU time.\n2026-10-31T20:17:33+01:00 raspberrypi systemd[1]: Starting naufragio-vtt.service - Naufragio VTT isolated backend...\n2026-10-31T20:17:35+01:00 raspberrypi naufragio-vtt[32158]: {\"state\": \"baseline\", \"resources\": {\"availableKiB\": 556584, \"temperatureC\": 59.072, \"backendRssKiB\": 0, \"supervisorRssKiB\": 17144, \"rssKiB\": 17144}, \"web\": [{\"label\": \"heavensgate\", \"code\": \"200\", \"seconds\": 0.18557}, {\"label\": \"forum\", \"code\": \"200\", \"seconds\": 0.218863}, {\"label\": \"proxy\", \"code\": \"404\", \"seconds\": 0.111487}, {\"label\": \"bibprof\", \"code\": \"200\", \"seconds\": 0.226151}, {\"label\": \"ordenanthia\", \"code\": \"200\", \"seconds\": 0.134983}, {\"label\": \"gallery\", \"code\": \"200\", \"seconds\": 0.140972}]}\n2026-10-31T20:17:38+01:00 raspberrypi naufragio-vtt[32167]: (node:32167) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n2026-10-31T20:17:38+01:00 raspberrypi naufragio-vtt[32167]: (Use `node --trace-warnings ...` to show where the warning was created)\n2026-10-31T20:17:38+01:00 raspberrypi naufragio-vtt[32167]: Naufragio VTT: HTTP ready (phase 4)\n2026-10-31T20:17:38+01:00 raspberrypi systemd[1]: Started naufragio-vtt.service - Naufragio VTT isolated backend.\n2026-10-31T20:17:47+01:00 raspberrypi naufragio-vtt[32158]: {\"state\": \"supervisor_stopped\", \"reason\": \"supervision_window_complete\", \"backendExited\": true}\n2026-10-31T20:17:47+01:00 raspberrypi systemd[1]: naufragio-vtt.service: Deactivated successfully.\n2026-10-31T20:17:47+01:00 raspberrypi systemd[1]: naufragio-vtt.service: Consumed 5.701s CPU time.\n2026-10-31T20:17:52+01:00 raspberrypi systemd[1]: Starting naufragio-vtt.service - Naufragio VTT isolated backend...\n2026-10-31T20:17:54+01:00 raspberrypi naufragio-vtt[32218]: {\"state\": \"baseline\", \"resources\": {\"availableKiB\": 559148, \"temperatureC\": 59.072, \"backendRssKiB\": 0, \"supervisorRssKiB\": 17124, \"rssKiB\": 17124}, \"web\": [{\"label\": \"heavensgate\", \"code\": \"200\", \"seconds\": 0.208032}, {\"label\": \"forum\", \"code\": \"200\", \"seconds\": 0.204935}, {\"label\": \"proxy\", \"code\": \"404\", \"seconds\": 0.11719}, {\"label\": \"bibprof\", \"code\": \"200\", \"seconds\": 0.223399}, {\"label\": \"ordenanthia\", \"code\": \"200\", \"seconds\": 0.12855}, {\"label\": \"gallery\", \"code\": \"200\", \"seconds\": 0.120263}]}\n2026-10-31T20:17:56+01:00 raspberrypi naufragio-vtt[32228]: (node:32228) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n2026-10-31T20:17:56+01:00 raspberrypi naufragio-vtt[32228]: (Use `node --trace-warnings ...` to show where the warning was created)\n2026-10-31T20:17:57+01:00 raspberrypi naufragio-vtt[32228]: Naufragio VTT: HTTP ready (phase 4)\n2026-10-31T20:17:57+01:00 raspberrypi systemd[1]: Started naufragio-vtt.service - Naufragio VTT isolated backend.\n2026-10-31T20:18:07+01:00 raspberrypi systemd[1]: naufragio-vtt.service: Watchdog timeout (limit 10s)!\n2026-10-31T20:18:07+01:00 raspberrypi systemd[1]: naufragio-vtt.service: Killing process 32218 (python3) with signal SIGKILL.\n2026-10-31T20:18:07+01:00 raspberrypi systemd[1]: naufragio-vtt.service: Killing process 32228 (node) with signal SIGKILL.\n2026-10-31T20:18:07+01:00 raspberrypi systemd[1]: naufragio-vtt.service: Killing process 32233 (node) with signal SIGKILL.\n2026-10-31T20:18:07+01:00 raspberrypi systemd[1]: naufragio-vtt.service: Killing process 32235 (node) with signal SIGKILL.\n2026-10-31T20:18:07+01:00 raspberrypi systemd[1]: naufragio-vtt.service: Main process exited, code=killed, status=9/KILL\n2026-10-31T20:18:07+01:00 raspberrypi systemd[1]: naufragio-vtt.service: Killing process 32233 (node) with signal SIGKILL.\n2026-10-31T20:18:07+01:00 raspberrypi systemd[1]: naufragio-vtt.service: Failed with result 'watchdog'.\n2026-10-31T20:18:07+01:00 raspberrypi systemd[1]: naufragio-vtt.service: Consumed 4.330s CPU time.\n2026-10-31T20:19:02+01:00 raspberrypi systemd[1]: Starting naufragio-vtt.service - Naufragio VTT isolated backend...\n2026-10-31T20:19:04+01:00 raspberrypi naufragio-vtt[32378]: {\"state\": \"baseline\", \"resources\": {\"availableKiB\": 559872, \"temperatureC\": 59.61, \"backendRssKiB\": 0, \"supervisorRssKiB\": 17144, \"rssKiB\": 17144}, \"web\": [{\"label\": \"heavensgate\", \"code\": \"200\", \"seconds\": 0.211958}, {\"label\": \"forum\", \"code\": \"200\", \"seconds\": 0.199611}, {\"label\": \"proxy\", \"code\": \"404\", \"seconds\": 0.12073}, {\"label\": \"bibprof\", \"code\": \"200\", \"seconds\": 0.224264}, {\"label\": \"ordenanthia\", \"code\": \"200\", \"seconds\": 0.136021}, {\"label\": \"gallery\", \"code\": \"200\", \"seconds\": 0.122498}]}\n2026-10-31T20:19:07+01:00 raspberrypi naufragio-vtt[32387]: (node:32387) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n2026-10-31T20:19:07+01:00 raspberrypi naufragio-vtt[32387]: (Use `node --trace-warnings ...` to show where the warning was created)\n2026-10-31T20:19:07+01:00 raspberrypi naufragio-vtt[32387]: Naufragio VTT: HTTP ready (phase 4)\n2026-10-31T20:19:07+01:00 raspberrypi systemd[1]: Started naufragio-vtt.service - Naufragio VTT isolated backend.\n2026-10-31T20:27:24+01:00 raspberrypi naufragio-vtt[32378]: {\"state\": \"supervisor_stopped\", \"reason\": \"RESOURCE_GUARD\", \"backendExited\": true}\n2026-10-31T20:27:24+01:00 raspberrypi systemd[1]: naufragio-vtt.service: Main process exited, code=exited, status=1/FAILURE\n2026-10-31T20:27:24+01:00 raspberrypi systemd[1]: naufragio-vtt.service: Failed with result 'exit-code'.\n2026-10-31T20:27:24+01:00 raspberrypi systemd[1]: naufragio-vtt.service: Consumed 2min 39.789s CPU time.",
+    "err": ""
+  },
+  "unit": {
+    "code": 0,
+    "out": "MainPID=0\nResult=exit-code\nActiveState=failed\nUnitFileState=disabled",
+    "err": ""
+  },
+  "currentResources": {
+    "memAvailable": "MemAvailable:     585384 kB",
+    "temperatureC": 59.61
+  },
+  "apiRestored": true,
+  "services": {
+    "code": 0,
+    "out": "MainPID=31389\nId=apache2.service\nActiveState=active\n\nMainPID=868\nId=mariadb.service\nActiveState=active\n\nMainPID=803\nId=ssh.service\nActiveState=active\n\nMainPID=1029\nId=smbd.service\nActiveState=active",
+    "err": ""
+  },
+  "listeners": {
+    "code": 0,
+    "out": "LISTEN 0      80        127.0.0.1:3306 0.0.0.0:*\nLISTEN 0      5         127.0.0.1:8787 0.0.0.0:*\nLISTEN 0      50          0.0.0.0:445  0.0.0.0:*\nLISTEN 0      5      192.168.1.55:9090 0.0.0.0:*\nLISTEN 0      128         0.0.0.0:22   0.0.0.0:*\nLISTEN 0      50          0.0.0.0:139  0.0.0.0:*\nLISTEN 0      50             [::]:445     [::]:*\nLISTEN 0      511               *:443        *:*\nLISTEN 0      511               *:80         *:*\nLISTEN 0      128            [::]:22      [::]:*\nLISTEN 0      50             [::]:139     [::]:*",
+    "err": ""
+  },
+  "sites": [
+    {
+      "label": "heavensgate",
+      "result": {
+        "code": 0,
+        "out": "200 0.213087 0",
+        "err": ""
+      }
+    },
+    {
+      "label": "forum",
+      "result": {
+        "code": 0,
+        "out": "200 0.208768 0",
+        "err": ""
+      }
+    },
+    {
+      "label": "proxy",
+      "result": {
+        "code": 0,
+        "out": "404 0.117549 0",
+        "err": ""
+      }
+    },
+    {
+      "label": "bibprof",
+      "result": {
+        "code": 0,
+        "out": "200 0.225012 0",
+        "err": ""
+      }
+    },
+    {
+      "label": "ordenanthia",
+      "result": {
+        "code": 0,
+        "out": "200 0.136306 0",
+        "err": ""
+      }
+    },
+    {
+      "label": "gallery",
+      "result": {
+        "code": 0,
+        "out": "200 0.120834 0",
+        "err": ""
+      }
+    },
+    {
+      "label": "api",
+      "result": {
+        "code": 0,
+        "out": "403 0.164548 0",
+        "err": ""
+      }
+    }
+  ]
+}

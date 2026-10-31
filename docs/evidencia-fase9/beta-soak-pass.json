@@ -1,0 +1,34 @@
+{
+  "result": "pass",
+  "scope": "Windows clients through public API hostname and Apache; no claim of independent external network",
+  "clients": 4,
+  "players": 3,
+  "authenticationAndQrApproval": true,
+  "transports": [
+    "websocket",
+    "websocket",
+    "polling",
+    "websocket"
+  ],
+  "permissionsAndConvergence": true,
+  "transferMs": 61884.389500000005,
+  "bytes": 12582912,
+  "sha256": "394349187bcd77a63de220c42c8daf5d119cb441db20bc35115e3170931bf5e8",
+  "playerReconnect": true,
+  "duration": "pass",
+  "realSoak": {
+    "wallStart": "2026-10-31T19:36:50.936Z",
+    "wallEnd": "2026-10-31T22:36:58.109Z",
+    "seconds": 10807.165651199999,
+    "moves": 180,
+    "allConnected": true
+  },
+  "revocation": true,
+  "clientPeakRssMiB": 317.171875,
+  "errors": [],
+  "health": {
+    "samples": 1074,
+    "medianMs": 32.442700000014156,
+    "maxMs": 607.2312000002712
+  }
+}

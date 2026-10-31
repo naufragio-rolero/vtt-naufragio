@@ -1,0 +1,181 @@
+{
+  "before": {
+    "checks": 400,
+    "initialKiB": 17060,
+    "peakKiB": 56144,
+    "finalKiB": 56144,
+    "fileDescriptors": 4,
+    "samples": [
+      {
+        "checks": 1,
+        "rssKiB": 18656
+      },
+      {
+        "checks": 21,
+        "rssKiB": 32024
+      },
+      {
+        "checks": 41,
+        "rssKiB": 38096
+      },
+      {
+        "checks": 61,
+        "rssKiB": 39424
+      },
+      {
+        "checks": 81,
+        "rssKiB": 52116
+      },
+      {
+        "checks": 101,
+        "rssKiB": 52116
+      },
+      {
+        "checks": 121,
+        "rssKiB": 52116
+      },
+      {
+        "checks": 141,
+        "rssKiB": 52784
+      },
+      {
+        "checks": 161,
+        "rssKiB": 52784
+      },
+      {
+        "checks": 181,
+        "rssKiB": 53460
+      },
+      {
+        "checks": 201,
+        "rssKiB": 53460
+      },
+      {
+        "checks": 221,
+        "rssKiB": 53460
+      },
+      {
+        "checks": 241,
+        "rssKiB": 54132
+      },
+      {
+        "checks": 261,
+        "rssKiB": 54132
+      },
+      {
+        "checks": 281,
+        "rssKiB": 54804
+      },
+      {
+        "checks": 301,
+        "rssKiB": 54804
+      },
+      {
+        "checks": 321,
+        "rssKiB": 54804
+      },
+      {
+        "checks": 341,
+        "rssKiB": 55472
+      },
+      {
+        "checks": 361,
+        "rssKiB": 55472
+      },
+      {
+        "checks": 381,
+        "rssKiB": 56144
+      }
+    ]
+  },
+  "after": {
+    "checks": 400,
+    "initialKiB": 17044,
+    "peakKiB": 18656,
+    "finalKiB": 18656,
+    "fileDescriptors": 4,
+    "samples": [
+      {
+        "checks": 1,
+        "rssKiB": 18636
+      },
+      {
+        "checks": 21,
+        "rssKiB": 18652
+      },
+      {
+        "checks": 41,
+        "rssKiB": 18652
+      },
+      {
+        "checks": 61,
+        "rssKiB": 18656
+      },
+      {
+        "checks": 81,
+        "rssKiB": 18656
+      },
+      {
+        "checks": 101,
+        "rssKiB": 18656
+      },
+      {
+        "checks": 121,
+        "rssKiB": 18656
+      },
+      {
+        "checks": 141,
+        "rssKiB": 18656
+      },
+      {
+        "checks": 161,
+        "rssKiB": 18656
+      },
+      {
+        "checks": 181,
+        "rssKiB": 18656
+      },
+      {
+        "checks": 201,
+        "rssKiB": 18656
+      },
+      {
+        "checks": 221,
+        "rssKiB": 18656
+      },
+      {
+        "checks": 241,
+        "rssKiB": 18656
+      },
+      {
+        "checks": 261,
+        "rssKiB": 18656
+      },
+      {
+        "checks": 281,
+        "rssKiB": 18656
+      },
+      {
+        "checks": 301,
+        "rssKiB": 18656
+      },
+      {
+        "checks": 321,
+        "rssKiB": 18656
+      },
+      {
+        "checks": 341,
+        "rssKiB": 18656
+      },
+      {
+        "checks": 361,
+        "rssKiB": 18656
+      },
+      {
+        "checks": 381,
+        "rssKiB": 18656
+      }
+    ]
+  },
+  "scope": "ARMv7 unprivileged isolated Python, real urllib constructors, mocked HTTP reply; no VTT process or listener; bounded to 64 MiB and 400 checks"
+}

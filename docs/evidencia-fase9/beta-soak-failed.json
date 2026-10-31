@@ -1,0 +1,44 @@
+{
+  "result": "fail",
+  "scope": "Windows clients through public API hostname and Apache; no claim of independent external network",
+  "clients": 4,
+  "players": 3,
+  "authenticationAndQrApproval": true,
+  "transports": [
+    "websocket",
+    "websocket",
+    "polling",
+    "websocket"
+  ],
+  "permissionsAndConvergence": true,
+  "transferMs": 52062.6064,
+  "bytes": 12582912,
+  "sha256": "52de80afac499efc3f508f27ad5f440ca77c05aa58ba78b45e06d3ea8b616eb5",
+  "playerReconnect": true,
+  "duration": "pending",
+  "stage": "three real hours connected",
+  "error": "AssertionError",
+  "message": "UNEXPECTED_DISCONNECT",
+  "tokenStates": [
+    {
+      "ready": false,
+      "error": null,
+      "revision": 4
+    },
+    {
+      "ready": false,
+      "error": null,
+      "revision": 4
+    },
+    {
+      "ready": false,
+      "error": null,
+      "revision": 4
+    },
+    {
+      "ready": false,
+      "error": null,
+      "revision": 4
+    }
+  ]
+}

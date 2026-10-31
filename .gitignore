@@ -2,6 +2,8 @@ node_modules/
 coverage/
 dist/
 .dist-stage-*/
+/.phase9-work/
+__pycache__/
 /backend/data/
 .env
 .env.*

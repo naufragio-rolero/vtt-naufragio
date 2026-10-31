@@ -2,6 +2,8 @@
 
 Fecha: 2026-10-31. Rama: `feat/backend-multijugador`.
 
+> Plan histórico. La autorización posterior A+B+C y el requisito de tres horas consecutivas sustituyen los bloques de 50 minutos de este documento. La ejecución y sus resultados se registran en [Fase 9 — beta remota](FASE9-BETA-REMOTA-RASPBERRY.md). La intervención M sigue sin autorizarse.
+
 **Recomendación: beta privada supervisada, APTO CON LIMITACIONES.** La instalación y aceptación de [Fase 8](FASE8-DESPLIEGUE-RASPBERRY.md) quedan cerradas; no se repitieron suites. La operación permanente con contención de memoria es viable como intervención propuesta, pero **no está validada ni autorizada**. Ninguna autorización de este plan se considera concedida por su publicación.
 
 ## 1. Estado y hallazgo de arranque

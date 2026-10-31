@@ -1,0 +1,7 @@
+{
+  "result": "pass",
+  "scope": "actual published beta in private Edge context",
+  "prototypeLocalStoragePreserved": true,
+  "betaBoardSavedSeparately": true,
+  "betaImageDatabaseNamespaced": true
+}

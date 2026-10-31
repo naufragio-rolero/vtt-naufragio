@@ -1,16 +1,18 @@
 # Naufragio VTT
 
-Tablero virtual ligero para El Naufragio, inspirado en la sencillez de Owlbear Rodeo 1.0. Esta rama integra la mesa local con salas multijugador, mapa activo y retratos compartidos y acceso temporal mediante QR. El MVP completo y la publicación siguen pendientes.
+Tablero virtual ligero para El Naufragio, inspirado en la sencillez de Owlbear Rodeo 1.0. Esta rama integra la mesa local con salas multijugador, mapa activo y retratos compartidos y acceso temporal mediante QR. La beta supervisada tiene publicación separada; el MVP completo sigue pendiente.
+
+**[Fase 9 — beta remota de tres horas](docs/FASE9-BETA-REMOTA-RASPBERRY.md): APTO CON LIMITACIONES.** Frontend en [beta/](https://naufragio-rolero.github.io/vtt-naufragio/beta/), con almacenamiento separado del prototipo de raíz. Backend detenido y deshabilitado al cerrar la prueba; API en 403 hasta otra ventana atendida. No es un servicio 24/7 ni dispone aún de contención dura de memoria.
 
 **[Requisitos completos y plan de trabajo](docs/REQUISITOS.md)** — arquitectura, alcance del MVP y decisiones confirmadas.
 
 **[Referencias funcionales de Owlbear Rodeo](docs/REFERENCIAS-OWLBEAR.md)** — equivalencias con Owlbear 1.0/2.0, fuentes oficiales y criterios para conservar una experiencia sencilla.
 
-**[Plan de backend multijugador y despliegue portable](docs/BACKEND-RASPBERRY.md)** — frontend configurable para GitHub Pages u otro servidor. **Fase 5 de integración del frontend implementada y validada localmente en Firefox y Edge; no existe backend público ni se han publicado estos cambios en Pages.**
+**[Plan de backend multijugador y despliegue portable](docs/BACKEND-RASPBERRY.md)** — arquitectura e histórico de la integración; el estado de publicación y operación actual se recoge en Fase 9.
 
 ## Probar el multijugador en Windows
 
-[Validación Windows, artefacto público y piloto privado](docs/PILOTO-PRIVADO-RASPBERRY.md): `npm run build:frontend` genera `dist/` con lista pública explícita; `npm run serve:dist` permite revisarlo localmente. Piloto ARMv7 real aprobado con tres clientes, recuperación y cinco minutos de estabilidad; recursos eliminados y excepción SSH temporal revertida. El despliegue permanente sigue pendiente.
+[Validación Windows, artefacto público y piloto privado](docs/PILOTO-PRIVADO-RASPBERRY.md): `npm run build:frontend` genera `dist/` con lista pública explícita; `npm run serve:dist` permite revisarlo localmente. Documento histórico del primer piloto; las fases posteriores y el estado actual están enlazados en el informe de Fase 9. El despliegue permanente sigue pendiente.
 
 Seguir la [guía de Fase 5](docs/FASE5-FRONTEND.md): preparar el backend con Node 22/24 y el administrador inicial; ejecutar `npm run start:env` y, en otra terminal dentro de `backend/`, `npm run frontend`. Abrir `http://127.0.0.1:8080/`, configurar los destinos desde **Multijugador → Configuración del sitio** y acceder. El administrador provisiona dirección; el director crea la partida, invita cuentas registradas y asigna tokens. Alta de cuenta y código de sala son independientes.
 
@@ -53,7 +55,7 @@ El tablero básico se puede abrir como archivo local. Para módulos multijugador
 
 1. En el repositorio, abrir **Settings → Pages**.
 2. En **Build and deployment**, elegir **Deploy from a branch**.
-3. Seleccionar la rama `main` y la carpeta `/(root)`.
+3. Seleccionar la rama y la carpeta `/(root)`: `main` publica solo el prototipo; actualmente `deploy/phase9-beta` conserva esa raíz y añade `/beta/`.
 4. Guardar. La URL prevista es https://naufragio-rolero.github.io/vtt-naufragio/.
 
 **Estado actual:** el repositorio es público. El código y la web publicada son accesibles públicamente; el prototipo no tiene control de acceso.
@@ -62,7 +64,7 @@ El proyecto no necesita un workflow personalizado de GitHub Actions.
 
 ## Límites deliberados del MVP
 
-**La web publicada aún conserva el prototipo local; esta entrega permanece en la rama de trabajo.** GitHub Pages solo aloja archivos estáticos. El backend de desarrollo se ejecuta por separado y el código de esta rama permite conectarlo expresamente desde la interfaz, sin publicar nada automáticamente.
+**La raíz publicada conserva el prototipo local; `/beta/` contiene el cliente multijugador separado.** GitHub Pages solo aloja archivos estáticos. El backend se ejecuta por separado durante ventanas supervisadas; conservar la web publicada no lo mantiene encendido.
 
 La mesa local conserva tokens/ajustes en localStorage y su mapa en IndexedDB. Las salas tienen un diario separado en IndexedDB del director; el servidor solo conserva identidad, permisos y metadatos de continuidad, nunca posiciones ni imágenes. Limpiar los datos del navegador puede hacer perder la autoridad local de una sala: no hay transferencia entre dispositivos ni recuperación automática desde servidor.
 

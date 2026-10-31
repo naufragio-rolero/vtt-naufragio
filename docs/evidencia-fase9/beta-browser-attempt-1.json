@@ -1,0 +1,10 @@
+{
+  "result": "fail",
+  "network": "Windows on Raspberry LAN, public HTTPS hostnames",
+  "physicalMobile": false,
+  "qrDecode": true,
+  "threeGuestsAndDirector": true,
+  "mobileEmulation": "Edge touch, three contexts",
+  "stage": "director reload",
+  "error": "TimeoutError"
+}

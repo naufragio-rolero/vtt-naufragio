@@ -1,0 +1,16 @@
+✔ dist contains only allowlisted browser files with reproducible hashes and no backend directory (407.3805ms)
+✔ dist refuses unrecognized existing content and invalid public config without deleting it (22.103ms)
+✔ dist validates explicit public config and serves only generated public files in a subdirectory (355.3375ms)
+✔ QR approval/rejection, single claim, normal membership and no elevation or cross-room access (2130.6123ms)
+✔ QR expiry, pause/reopen, rotation and revocation do not admit pending requests (2024.0657ms)
+✔ temporary member disconnects immediately on expulsion, cannot reuse session, and expiry cleans identities (1700.1547ms)
+✔ guest inputs, capacities and HTTP request attempts are bounded (1643.7549ms)
+✔ account socket capacity cannot be exhausted by reusing a guest session in many tabs (1803.1647ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11005.7356

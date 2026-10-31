@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-31",
+  "source": "Confirmaciones del propietario en esta conversación; no captura automática del agente",
+  "device": "Móvil físico con Wi-Fi desactivado y conexión de datos móviles",
+  "health": {
+    "url": "https://api.naufragio.net/health",
+    "reportedResult": "JSON correcto, sin aviso de certificado",
+    "userAnswer": "Sí, responde correctamente con datos móviles"
+  },
+  "transports": {
+    "url": "https://naufragio-rolero.github.io/vtt-naufragio/beta/network-check.html",
+    "action": "Comprobar conexión",
+    "https": "OK",
+    "websocket": "OK",
+    "polling": "OK",
+    "userAnswer": "Las tres conexiones muestran OK"
+  },
+  "scope": "Validación externa de HTTPS y transportes Engine.IO; no acredita una partida autenticada de tres horas ni escaneo QR en tres móviles físicos"
+}

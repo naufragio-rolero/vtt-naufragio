@@ -1,0 +1,10 @@
+✔ beta build isolates prototype browser storage and rejects unsafe namespace values (166.2505ms)
+✔ dist validates explicit public config and serves only generated public files in a subdirectory (314.9969ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 686.7521

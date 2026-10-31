@@ -1,0 +1,17 @@
+✔ configuration defaults bind to loopback and are immutable (2.9651ms)
+✔ environment overrides are portable and production requires exact HTTPS origins (8.0708ms)
+✔ rate limiter expires state, rejects excess peers, and resets budget (0.3796ms)
+✔ beta session bounds remain finite and guest maximum stays four hours (3.1861ms)
+✔ accelerated clock: QR expiry leaves admitted guests and director valid after three hours; reconnect, revoke and expiry still work (1887.4016ms)
+✔ trusted proxy is explicit, secret-bound, loopback-only and rejects ambiguous client IPs (11.1383ms)
+✔ HTTP proxy budgets distinguish clients and reject forged proxy identity (82.3724ms)
+✔ account authentication limit survives source IP rotation at the trusted proxy (1177.7592ms)
+✔ Engine.IO polling and WebSocket enforce the same authenticated proxy boundary (84.4923ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4397.5273

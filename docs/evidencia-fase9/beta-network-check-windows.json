@@ -1,0 +1,8 @@
+{
+  "scope": "Windows same LAN, public HTTPS",
+  "result": [
+    "HTTPS: OK",
+    "WebSocket: OK",
+    "Polling: OK"
+  ]
+}

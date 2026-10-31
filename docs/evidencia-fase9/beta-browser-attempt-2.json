@@ -1,0 +1,7 @@
+{
+  "result": "fail",
+  "network": "Windows on Raspberry LAN, public HTTPS hostnames",
+  "physicalMobile": false,
+  "stage": "public Pages",
+  "error": "TimeoutError"
+}
