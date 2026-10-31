@@ -5,6 +5,7 @@ import { createAssetClient } from '../backend/client/asset-client.js';
 import { createRoomMediaStore } from './room-media-store.js';
 import { io } from './vendor/socket.io-4.8.4.esm.min.js';
 import { initialRoomTokens, publicTokens, socketDestination } from './board-model.js';
+import { initQr } from './qr.js';
 
 if (!window.NaufragioBoard) await new Promise(resolve => window.addEventListener('naufragio:board:ready', resolve, { once: true }));
 const board = window.NaufragioBoard;
@@ -97,6 +98,7 @@ async function move(id, point) {
   } catch (error) { pending.delete(eventId); status(describe(error), true); }
 }
 async function leave() {
+  qrControls?.reset();
   generation++; const old = client, oldStorage = storage;
   assetClient?.close(); assetClient = null; mediaStore = null; mediaSource = null; lastPublishedEpoch = null;
   client = null; socket?.disconnect(); socket = null; storage = null; room = null; rights = null; pending.clear(); members = [];
@@ -107,7 +109,7 @@ async function leave() {
 async function clearSession(revoke = true) {
   await leave();
   try { if (revoke && session) await api('/auth/logout', { method: 'POST', body: {} }); }
-  finally { session = null; clearTimeout(expiry); get('signupOutput').value = ''; get('roomCode').value = ''; get('roomList').replaceChildren(); sessionView(); }
+  finally { sessionStorage.removeItem('naufragio-guest-session-v1'); sessionStorage.removeItem('naufragio-guest-pending-v1'); session = null; clearTimeout(expiry); get('signupOutput').value = ''; get('roomCode').value = ''; get('roomList').replaceChildren(); sessionView(); }
 }
 async function publishMedia() {
   if (!room?.isOwner || !mediaSource || !assetClient?.epoch || !client?.state.ready) return;
@@ -187,7 +189,10 @@ async function enter(selected, initialTokens, admissionCode, initialMedia) {
   });
   live.on('token:move:committed', value => { if (current === generation) { pending.delete(value.eventId); status('Movimiento confirmado.'); } });
   live.on('token:move:rejected', value => { if (current === generation) { pending.delete(value.eventId); status(errors[value.reason] || 'Movimiento rechazado; se conserva la posición confirmada.', true); } });
-  live.on('disconnect', () => { if (current === generation) { pending.clear(); roomView(); } });
+  live.on('disconnect', reason => { if (current === generation) {
+    pending.clear(); roomView();
+    if(session?.user.guest && reason==='io server disconnect') void clearSession(false).then(()=>status('Tu acceso temporal ha terminado o ha sido retirado.',true));
+  } });
   live.on('connect_error', error => { if (current === generation) { status(describe(error), true); roomView(); } });
   live.io.on('reconnect_attempt', () => { if (current === generation) get('roomState').textContent = 'Reconectando…'; });
   get('admissionCode').value = admissionCode?.code || '';
@@ -378,6 +383,8 @@ get('assignedToken').addEventListener('change', () => {
   get('sharedTokenSize').value = String(token.size);
 });
 
+const qrControls = initQr({ api, getRoom: () => room, refreshMembers, status });
+window.addEventListener('pagehide', () => clearTimeout(expiry));
 try {
   const saved = localStorage.getItem(CONFIG_KEY);
   if (saved) config = validateConfig(JSON.parse(saved));
@@ -387,3 +394,15 @@ try {
   }
 } catch { status('Sin configuración válida. Puedes continuar en local o revisar Configuración del sitio.'); }
 showConfig(); sessionView();
+try {
+  const saved=JSON.parse(sessionStorage.getItem('naufragio-guest-session-v1')||'null');
+  if(saved&&config&&saved.apiBaseUrl===config.apiBaseUrl&&saved.expiresAt>Date.now()&&/^sess_[A-Za-z0-9_-]{43}$/.test(saved.token)){
+    session={token:saved.token,expiresAt:saved.expiresAt};
+    const current=await api('/auth/me');
+    if(!current.user.guest)throw new Error('UNAUTHENTICATED');
+    session.user=current.user;sessionView();
+    expiry=setTimeout(()=>void clearSession(false).then(()=>status(errors.UNAUTHENTICATED,true)),Math.max(1,saved.expiresAt-Date.now()));
+    await enter(await api('/rooms/'+current.user.roomId));
+    sessionStorage.removeItem('naufragio-guest-pending-v1');status('Te has unido como invitado temporal.');
+  }else if(saved){sessionStorage.removeItem('naufragio-guest-session-v1');}
+}catch{await clearSession(false);status('La admisión temporal ha caducado o se ha retirado. Solicita un nuevo acceso al director.',true);}

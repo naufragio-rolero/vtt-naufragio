@@ -28,8 +28,12 @@ export function loadConfig(env = process.env) {
   const socketPath = env.SOCKET_PATH ?? '/socket.io';
   if (socketPath.length > 200 || !/^\/[a-zA-Z0-9_.-]+(?:\/[a-zA-Z0-9_.-]+)*$/.test(socketPath) ||
       socketPath.split('/').some(segment => segment === '.' || segment === '..') ||
-      /^\/(health|settings|auth|rooms|room-invitations|invitations|users|roles|resources)(\/|$)/.test(socketPath)) throw new Error('Invalid SOCKET_PATH');
+      /^\/(health|settings|auth|rooms|room-invitations|invitations|users|roles|resources|guest-requests)(\/|$)/.test(socketPath)) throw new Error('Invalid SOCKET_PATH');
   const diagnostics = env.ENABLE_DIAGNOSTICS ?? 'false';
+  const trustProxy = env.TRUST_PROXY_LOOPBACK ?? 'false';
+  const proxyToken = env.TRUSTED_PROXY_TOKEN ?? '';
+  if (!['true', 'false'].includes(trustProxy) || (trustProxy === 'true' &&
+      (!['127.0.0.1', '::1'].includes(host) || !/^[a-f0-9]{64}$/.test(proxyToken)))) throw new Error('Invalid trusted proxy configuration');
   if (!['true', 'false'].includes(diagnostics) || (mode === 'production' && diagnostics === 'true')) {
     throw new Error('Invalid ENABLE_DIAGNOSTICS');
   }
@@ -38,6 +42,12 @@ export function loadConfig(env = process.env) {
       (mode === 'production' && databasePath === ':memory:')) throw new Error('Invalid DATABASE_PATH');
   return Object.freeze({
     mode, host, port: integer('PORT', 3400, 1, 65535),
+    trustProxyLoopback: trustProxy === 'true', proxyToken,
+    guestQrTtlSeconds: integer('GUEST_QR_TTL_SECONDS', 3600, 60, 14400),
+    guestRequestTtlSeconds: integer('GUEST_REQUEST_TTL_SECONDS', 300, 30, 900),
+    guestSessionTtlSeconds: integer('GUEST_SESSION_TTL_SECONDS', 1800, 60, 14400),
+    guestLimit: integer('GUEST_LIMIT', 16, 1, 32),
+    guestRequestRateLimit: integer('GUEST_REQUEST_RATE_LIMIT', 20, 1, 100),
     allowedOrigins: Object.freeze([...new Set(allowedOrigins)]), socketPath,
     maxBodyBytes: integer('MAX_BODY_BYTES', 16384, 256, 1048576),
     maxMessageBytes: integer('MAX_MESSAGE_BYTES', 65536, 256, 1048576),
@@ -46,6 +56,7 @@ export function loadConfig(env = process.env) {
     handshakeRateLimit: integer('HANDSHAKE_RATE_LIMIT', 20, 1, 1000),
     eventRateLimit: integer('EVENT_RATE_LIMIT', 120, 1, 1000),
     connectionLimit: integer('CONNECTION_LIMIT', 32, 1, 1000),
+    accountConnectionLimit: integer('ACCOUNT_CONNECTION_LIMIT', 4, 1, 16),
     databasePath,
     authRateLimit: integer('AUTH_RATE_LIMIT', 10, 1, 100),
     authWindowMs: integer('AUTH_WINDOW_MS', 300000, 100, 3600000),

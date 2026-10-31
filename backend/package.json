@@ -3,7 +3,9 @@
   "version": "0.6.0",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=22.16.0" },
+  "engines": {
+    "node": ">=22.16.0"
+  },
   "scripts": {
     "start": "node src/main.js",
     "start:env": "node --env-file=.env src/main.js",
@@ -14,10 +16,18 @@
     "validate:site": "node scripts/validate-site.js",
     "frontend": "node scripts/dev-frontend.js",
     "test:browser": "node scripts/browser-integration.js",
+    "test:browser:qr": "node scripts/browser-qr.js",
+    "backup": "node scripts/database-backup.js",
     "sync:browser-client": "node scripts/sync-browser-client.js",
     "build:frontend": "node scripts/build-frontend.js",
     "serve:dist": "node scripts/serve-dist.js"
   },
-  "dependencies": { "socket.io": "4.8.4" },
-  "devDependencies": { "socket.io-client": "4.8.4" }
+  "dependencies": {
+    "socket.io": "4.8.4"
+  },
+  "devDependencies": {
+    "jsqr": "1.4.0",
+    "qrcode-generator": "2.0.4",
+    "socket.io-client": "4.8.4"
+  }
 }

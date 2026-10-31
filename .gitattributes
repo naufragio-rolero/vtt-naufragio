@@ -1,0 +1,2 @@
+# Keep the pinned vendor byte-identical to its npm ESM source on Windows too.
+frontend/vendor/qrcode-generator-2.0.4.js text eol=lf

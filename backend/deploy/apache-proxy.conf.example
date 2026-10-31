@@ -1,0 +1,22 @@
+# Future fragment for the API SSL vhost ONLY. Do not install in Phase 7.
+# Remove the static <Directory> denial from the API vhost when authorizing proxy activation.
+# Include a NEW root-only secret file setting X-Naufragio-Proxy-Token to the same
+# random 32-byte hex value as TRUSTED_PROXY_TOKEN. Never commit that file/value.
+ProxyRequests Off
+ProxyPreserveHost On
+ProxyAddHeaders Off
+RequestHeader unset Forwarded
+RequestHeader unset X-Real-IP
+RequestHeader unset X-Forwarded-For
+RequestHeader unset X-Forwarded-Host
+RequestHeader unset X-Forwarded-Server
+RequestHeader unset X-Forwarded-Proto
+RequestHeader unset X-Naufragio-Proxy-Token
+RequestHeader set X-Forwarded-For "expr=%{CONN_REMOTE_ADDR}"
+RequestHeader set X-Forwarded-Proto "https"
+Include /etc/apache2/secrets/naufragio-vtt-proxy.conf
+LimitRequestBody 131072
+ProxyPass "/socket.io/" "http://127.0.0.1:3400/socket.io/" upgrade=websocket connectiontimeout=5 timeout=120
+ProxyPassReverse "/socket.io/" "http://127.0.0.1:3400/socket.io/"
+ProxyPass "/" "http://127.0.0.1:3400/" connectiontimeout=5 timeout=120
+ProxyPassReverse "/" "http://127.0.0.1:3400/"

@@ -16,11 +16,12 @@ test('schema 2 migration preserves room metadata and adds no content columns', a
   try {
     store.db.exec(`INSERT INTO users VALUES ('synthetic-owner','synthetic-owner','synthetic-hash','director',0,1);
       INSERT INTO rooms VALUES ('synthetic-room','synthetic-owner','Synthetic',1);
+      DROP TABLE guest_requests; DROP TABLE guest_accounts; DROP TABLE room_admissions;
       DROP TABLE room_authority; DROP TABLE token_assignments; PRAGMA user_version=2;`);
   } finally { store.close(); }
   store = openStorage(path);
   try {
-    assert.equal(store.db.prepare('PRAGMA user_version').get().user_version, 3);
+    assert.equal(store.db.prepare('PRAGMA user_version').get().user_version, 4);
     assert.equal(store.db.prepare('SELECT owner_id FROM rooms').get().owner_id, 'synthetic-owner');
     assert.deepEqual(store.db.prepare('PRAGMA table_info(room_authority)').all().map(row => row.name),
       ['room_id', 'state_id', 'public_key', 'revision', 'state_digest']);

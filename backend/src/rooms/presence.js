@@ -72,6 +72,9 @@ export function attachRoomPresence(io, auth, rooms, config, { clock = Date.now, 
       auth.session(input?.token);
       fields(input, ['token', 'roomId']);
       const access = rooms.access(input.token, input.roomId);
+      if ([...namespace.sockets.values()].filter(peer => peer.connected && peer.data.access?.actor.id === access.actor.id).length >= config.accountConnectionLimit) {
+        throw new HttpError(429, 'ACCOUNT_CONNECTION_LIMIT');
+      }
       socket.data = { token: input.token, roomId: input.roomId, access };
       next();
     } catch (cause) {

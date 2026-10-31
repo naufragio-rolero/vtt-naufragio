@@ -246,3 +246,11 @@ canvas.map-resize.dragging { cursor: crosshair; }
 body[data-mode=shared] .map-section, body[data-mode=shared] .selection-section, body[data-mode=shared] #addToken { display: none; }
 body[data-mode=shared] #changeIdentity { display: none; }
 #connectionState { max-width: 260px; white-space: normal; }
+/* Admission controls remain independent of the local board. */
+.qr-dialog{width:min(92vw,720px)}
+.qr-dialog canvas{display:block;width:min(100%,480px);height:auto;margin:16px auto;image-rendering:pixelated;background:white}
+.qr-dialog canvas[hidden]{display:none}
+.qr-dialog input{width:100%;box-sizing:border-box}
+.qr-dialog button{min-height:44px;margin:4px}
+.qr-request{display:flex;gap:8px;flex-wrap:wrap;align-items:center;border-top:1px solid #7895;padding:12px 0}
+.qr-request span{flex:1;min-width:160px;overflow-wrap:anywhere}

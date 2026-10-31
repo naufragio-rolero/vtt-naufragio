@@ -9,10 +9,18 @@ function bearer(request) {
   return value.slice(7);
 }
 
-export function createAuthRouter(auth, config, { clock = Date.now, rooms } = {}) {
+export function createAuthRouter(auth, config, { clock = Date.now, rooms, guests } = {}) {
   const attempt = createLimiter(config.authRateLimit, config.authWindowMs, { clock });
   const joinAttempt = createLimiter(config.roomJoinRateLimit, config.authWindowMs, { clock });
+  const guestAttempt = createLimiter(config.guestRequestRateLimit, config.authWindowMs, { clock });
   const routes = [
+    ['POST', /^\/guest-requests$/, { public: true, guestAttempt: true, status: 201 }, ({ body }) => guests.request(body)],
+    ['POST', /^\/guest-requests\/status$/, { public: true }, ({ body }) => guests.status(body)],
+    ['POST', /^\/guest-requests\/claim$/, { public: true }, ({ body }) => guests.claim(body)],
+    ['POST', /^\/rooms\/([0-9a-f-]{36})\/admission$/, {}, ({ token, match, body }) => guests.open(token, match[1], body)],
+    ['PATCH', /^\/rooms\/([0-9a-f-]{36})\/admission$/, {}, ({ token, match, body }) => guests.configure(token, match[1], body)],
+    ['GET', /^\/rooms\/([0-9a-f-]{36})\/admission$/, {}, ({ token, match }) => guests.list(token, match[1])],
+    ['POST', /^\/rooms\/([0-9a-f-]{36})\/admission\/([0-9a-f-]{36})$/, {}, ({ token, match, body }) => guests.decide(token, match[1], match[2], body)],
     ['POST', /^\/auth\/login$/, { public: true, costly: true }, ({ body }) => auth.login(body)],
     ['GET', /^\/auth\/me$/, {}, ({ token }) => ({ user: auth.session(token) })],
     ['POST', /^\/auth\/logout$/, { empty: true }, ({ token }) => auth.logout(token)],
@@ -56,8 +64,9 @@ export function createAuthRouter(auth, config, { clock = Date.now, rooms } = {})
             const actor = auth.session(token);
             if (options.permission) requirePermission(actor, options.permission);
           }
-          if (options.costly && !attempt(request.socket.remoteAddress)) throw new HttpError(429, 'AUTH_RATE_LIMITED');
-          if (options.roomAttempt && !joinAttempt(request.socket.remoteAddress)) throw new HttpError(429, 'ROOM_JOIN_RATE_LIMITED');
+          if (options.costly && !attempt(request.clientAddress)) throw new HttpError(429, 'AUTH_RATE_LIMITED');
+          if (options.roomAttempt && !joinAttempt(request.clientAddress)) throw new HttpError(429, 'ROOM_JOIN_RATE_LIMITED');
+          if (options.guestAttempt && !guestAttempt(request.clientAddress)) throw new HttpError(429, 'RATE_LIMITED');
           const body = ['POST', 'PUT', 'PATCH'].includes(method) ? await readBody(request, config.maxBodyBytes) : null;
           if (options.empty) fields(body, []);
           const result = await handler({ token, body, match: expression.exec(pathname) });

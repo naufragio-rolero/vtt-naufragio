@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "siteName": "Naufragio VTT",
+  "apiBaseUrl": "https://api.naufragio.net",
+  "realtimeBaseUrl": "https://api.naufragio.net",
+  "socketPath": "/socket.io",
+  "roleLabels": { "admin": "Administrador", "director": "Máster", "user": "Jugador" }
+}

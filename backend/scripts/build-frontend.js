@@ -9,6 +9,9 @@ export const publicFiles = Object.freeze([
   ['index.html', 'index.html'], ['app.js', 'app.js'], ['styles.css', 'styles.css'],
   ['frontend/multiplayer.js', 'frontend/multiplayer.js'], ['frontend/board-model.js', 'frontend/board-model.js'],
   ['frontend/room-media-store.js', 'frontend/room-media-store.js'],
+  ['join.html','join.html'], ['frontend/join.js','frontend/join.js'], ['frontend/join.css','frontend/join.css'], ['frontend/qr.js','frontend/qr.js'],
+  ['frontend/vendor/qrcode-generator-2.0.4.js','frontend/vendor/qrcode-generator-2.0.4.js'],
+  ['frontend/vendor/qrcode-LICENSE.txt','frontend/vendor/qrcode-LICENSE.txt'],
   ['frontend/vendor/socket.io-4.8.4.esm.min.js', 'frontend/vendor/socket.io-4.8.4.esm.min.js'],
   ['frontend/vendor/socket.io-LICENSE.txt', 'frontend/vendor/socket.io-LICENSE.txt'],
   ['backend/client/token-client.js', 'client/token-client.js'], ['backend/client/asset-client.js', 'client/asset-client.js'],
@@ -42,7 +45,7 @@ export async function buildFrontend({ outputRoot = sourceRoot, configPath } = {}
   try {
     for (const [from, to] of publicFiles) {
       let bytes = await readFile(resolve(sourceRoot, from));
-      if (['index.html', 'frontend/multiplayer.js', 'frontend/board-model.js'].includes(to)) {
+      if (['index.html', 'frontend/multiplayer.js', 'frontend/board-model.js', 'frontend/join.js'].includes(to)) {
         bytes = bytes.toString('utf8').replaceAll('./backend/public/', './settings/')
           .replaceAll('../backend/public/', '../settings/').replaceAll('../backend/client/', '../client/').replaceAll('../backend/shared/', '../shared/');
       }

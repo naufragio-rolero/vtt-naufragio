@@ -8,7 +8,8 @@ import { requirePermission } from './permissions.js';
 const digest = token => createHash('sha256').update(token).digest('hex');
 const generate = prefix => `${prefix}_${randomBytes(32).toString('base64url')}`;
 const validToken = (token, prefix) => typeof token === 'string' && new RegExp(`^${prefix}_[A-Za-z0-9_-]{43}$`).test(token);
-const publicUser = user => ({ id: user.id, username: user.username, role: user.role, disabled: Boolean(user.disabled) });
+const publicUser = user => ({ id: user.id, username: user.guest_name ?? user.username, role: user.role, disabled: Boolean(user.disabled),
+  ...(user.guest_room ? { guest: true, roomId: user.guest_room } : {}) });
 
 export function createAuthService(store, config, { clock = Date.now, hasher = passwords, reportChangeError = () => {} } = {}) {
   const { db } = store;
@@ -18,8 +19,11 @@ export function createAuthService(store, config, { clock = Date.now, hasher = pa
   const getUser = userId => db.prepare('SELECT * FROM users WHERE id = ?').get(userId);
   function sessionRow(token) {
     if (!validToken(token, 'sess')) throw new HttpError(401, 'UNAUTHENTICATED');
-    const row = db.prepare(`SELECT u.*,s.expires_at AS session_expires FROM sessions s JOIN users u ON u.id = s.user_id
-      WHERE s.token_hash = ? AND s.expires_at > ? AND s.revoked_at IS NULL AND u.disabled = 0`).get(digest(token), clock());
+    const row = db.prepare(`SELECT u.*,s.expires_at AS session_expires,g.room_id AS guest_room,g.display_name AS guest_name
+      FROM sessions s JOIN users u ON u.id = s.user_id LEFT JOIN guest_accounts g ON g.user_id=u.id
+      WHERE s.token_hash = ? AND s.expires_at > ? AND s.revoked_at IS NULL AND u.disabled = 0
+      AND (g.user_id IS NULL OR (g.expires_at > ? AND g.revoked_at IS NULL AND u.role='user'
+        AND EXISTS(SELECT 1 FROM room_memberships m WHERE m.room_id=g.room_id AND m.user_id=u.id AND m.active=1)))`).get(digest(token), clock(), clock());
     if (!row) throw new HttpError(401, 'UNAUTHENTICATED');
     return row;
   }
@@ -48,6 +52,13 @@ export function createAuthService(store, config, { clock = Date.now, hasher = pa
   }
   return {
     session,
+    // Internal capability minting for an approved, room-scoped temporary identity; never exposed as an HTTP route.
+    guestSession(userId, expiresAt) {
+      if (!db.prepare('SELECT 1 FROM guest_accounts WHERE user_id=? AND expires_at=? AND revoked_at IS NULL').get(userId, expiresAt)) throw new HttpError(403, 'FORBIDDEN');
+      const token = generate('sess');
+      db.prepare('INSERT INTO sessions(token_hash,user_id,created_at,expires_at) VALUES (?,?,?,?)').run(digest(token), userId, clock(), expiresAt);
+      return { token, expiresAt, user: session(token) };
+    },
     sessionInfo(token) { const row = sessionRow(token); return { user: publicUser(row), expiresAt: row.session_expires }; },
     onChanged(listener) { listeners.add(listener); return () => listeners.delete(listener); },
     bootstrapAvailable() { return db.prepare('SELECT count(*) AS total FROM users').get().total === 0; },
@@ -68,7 +79,8 @@ export function createAuthService(store, config, { clock = Date.now, hasher = pa
       const matches = await hasher.verify(input.password, user?.password_hash);
       const created = store.transaction(() => {
         const current = user && getUser(user.id);
-        if (!matches || !current || current.disabled || current.password_hash !== user.password_hash) {
+        if (!matches || !current || current.disabled || current.password_hash !== user.password_hash ||
+            db.prepare('SELECT 1 FROM guest_accounts WHERE user_id=?').get(current.id)) {
           throw new HttpError(401, 'INVALID_CREDENTIALS');
         }
         const now = clock();
@@ -93,6 +105,7 @@ export function createAuthService(store, config, { clock = Date.now, hasher = pa
     async changePassword(token, input) {
       fields(input, ['currentPassword', 'newPassword']);
       const actor = session(token);
+      if (actor.guest) throw new HttpError(403, 'FORBIDDEN');
       loginInput({ username: actor.username, password: input.currentPassword });
       validateNewPassword(input.newPassword);
       const before = getUser(actor.id).password_hash;
@@ -127,6 +140,7 @@ export function createAuthService(store, config, { clock = Date.now, hasher = pa
         authorized(token, 'users:update');
         const target = getUser(userId);
         if (!target) throw new HttpError(404, 'USER_NOT_FOUND');
+        if (db.prepare('SELECT 1 FROM guest_accounts WHERE user_id=?').get(userId)) throw new HttpError(403, 'FORBIDDEN');
         const nextRole = input.role ?? target.role;
         const disabled = input.disabled === undefined ? target.disabled : Number(input.disabled);
         if (target.role === 'admin' && !target.disabled && (nextRole !== 'admin' || disabled) &&

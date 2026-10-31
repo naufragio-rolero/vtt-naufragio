@@ -1,6 +1,7 @@
 import { Server } from 'socket.io';
 import { createLimiter } from './limits.js';
 import { attachRoomPresence } from './rooms/presence.js';
+import { clientAddress } from './peer.js';
 
 export function attachRealtime(server, config, auth, rooms, options = {}) {
   const allowed = origin => config.allowedOrigins.includes(origin);
@@ -16,8 +17,10 @@ export function attachRealtime(server, config, auth, rooms, options = {}) {
     connectTimeout: 5000,
     cors: { origin: config.allowedOrigins, methods: ['GET', 'POST'], allowedHeaders: ['Content-Type'] },
     allowRequest(request, done) {
+      let peer;
+      try { peer = clientAddress(request, config); } catch { return done(null, false); }
       if (!allowed(request.headers.origin) || io.engine.clientsCount + pending.size >= config.connectionLimit ||
-          !handshake(request.socket.remoteAddress)) return done(null, false);
+          !handshake(peer)) return done(null, false);
       // Reserve capacity before Engine.IO's asynchronous ID generation.
       const cleanup = () => {
         clearTimeout(deadline);
@@ -35,6 +38,7 @@ export function attachRealtime(server, config, auth, rooms, options = {}) {
   io.engine.on('close', () => { for (const cleanup of pending.values()) cleanup(); });
   // Also enforce Origin on subsequent polling requests and transport upgrades.
   io.engine.use((request, response, next) => {
+    try { clientAddress(request, config); } catch { return next(new Error('PROXY_DENIED')); }
     if (!allowed(request.headers.origin)) return next(new Error('ORIGIN_DENIED'));
     next();
   });

@@ -1,0 +1,43 @@
+# Proposal only: do not install until the Raspberry deployment is expressly authorized.
+[Unit]
+Description=Naufragio VTT isolated backend
+After=network.target
+RequiresMountsFor=/mnt/ssd/services/naufragio-vtt/data
+
+[Service]
+Type=simple
+User=naufragio-vtt
+Group=naufragio-vtt
+WorkingDirectory=/opt/naufragio-vtt/current/backend
+EnvironmentFile=/etc/naufragio-vtt/backend.env
+Environment=UV_THREADPOOL_SIZE=1
+ExecStart=/opt/naufragio-vtt/runtime/bin/node --max-old-space-size=64 src/main.js
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=15
+UMask=0077
+Nice=10
+CPUQuota=100%
+MemoryHigh=160M
+MemoryMax=192M
+TasksMax=32
+LimitNOFILE=1024
+LimitCORE=0
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+CapabilityBoundingSet=
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+ReadWritePaths=/mnt/ssd/services/naufragio-vtt/data
+ReadOnlyPaths=/opt/naufragio-vtt
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=naufragio-vtt
+
+[Install]
+WantedBy=multi-user.target

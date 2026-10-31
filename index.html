@@ -195,6 +195,7 @@
       <button type="button" id="reconnectRoom">Reconectar</button><button type="button" id="leaveRoom">Volver a mi mesa local</button>
       <label>Código de admisión (solo se muestra al crear o regenerar)<input id="admissionCode" readonly autocomplete="off"></label>
       <section id="roomAdministration" hidden>
+        <button type="button" id="inviteQr">Invitar con QR</button>
         <button type="button" id="rotateCode">Generar código nuevo</button><button type="button" id="revokeCode">Revocar código de admisión</button>
         <form id="inviteRoomForm" class="mp-form"><h3>Invitar a esta partida</h3>
           <label>Identificador de cuenta <input id="inviteUserId" required maxlength="36"></label>
@@ -234,5 +235,15 @@
     <iframe id="settingsFrame" title="Configuración del sitio" src="./backend/public/settings.html"></iframe>
   </dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <dialog id="qrDialog" class="multiplayer-dialog qr-dialog" aria-labelledby="qrTitle">
+    <header><h2 id="qrTitle">Invitar con QR</h2><button type="button" id="qrClose">Cerrar ventana</button></header>
+    <p id="qrStatus" role="status" aria-live="polite"></p>
+    <canvas id="qrCanvas" aria-label="Código QR de incorporación" role="img" hidden></canvas>
+    <label>Enlace de incorporación<input id="qrLink" readonly autocomplete="off"></label>
+    <button type="button" id="qrCopy">Copiar enlace</button><button type="button" id="qrNew">Generar QR nuevo</button>
+    <button type="button" id="qrPause">Cerrar admisión</button><button type="button" id="qrOpen">Abrir admisión</button><button type="button" id="qrRevoke">Revocar QR</button>
+    <p>El QR no da acceso por sí solo. Comprueba el nombre de cada persona antes de aprobarla. Cerrar esta ventana no cierra la admisión.</p>
+    <div id="qrRequests"></div>
+  </dialog>
 </body>
 </html>

@@ -10,6 +10,25 @@ import { createBackend } from '../src/server.js';
 import { roomFixture } from './room-helpers.js';
 import { origin } from './helpers.js';
 
+test('schema 3 migrates to 4 and temporary admissions and room-scoped sessions survive restart',async t=>{
+  const directory=await mkdtemp(join(tmpdir(),'naufragio-guest-restart-')),path=join(directory,'metadata.sqlite'),cleanups=[];
+  t.after(async()=>{for(const cleanup of cleanups.reverse())await cleanup();await rm(directory,{recursive:true,force:true});});
+  const store=openStorage(path);
+  store.db.exec('DROP TABLE guest_requests; DROP TABLE guest_accounts; DROP TABLE room_admissions; PRAGMA user_version=3;');store.close();
+  const f=await roomFixture({after:fn=>cleanups.push(fn)},{DATABASE_PATH:path}),id=f.created.room.id;
+  const qr=f.app.guests.open(f.director.token,id,{}).admission;
+  const request=f.app.guests.request({admissionToken:qr.token,displayName:'Synthetic restart guest'});
+  const pending=f.app.guests.list(f.director.token,id).requests[0];f.app.guests.decide(f.director.token,id,pending.id,{approve:true});
+  const guest=f.app.guests.claim({requestToken:request.requestToken});await f.app.close();
+  const app=createBackend(f.config);cleanups.push(()=>app.close());
+  assert.equal(app.store.db.prepare('PRAGMA user_version').get().user_version,4);
+  assert.equal(app.auth.session(guest.token).roomId,id);assert.equal(app.auth.session(guest.token).guest,true);
+  assert.equal(app.rooms.get(guest.token,id).isOwner,false);
+  assert.equal(app.guests.status({requestToken:request.requestToken}).state,'claimed');
+  assert.throws(()=>app.guests.claim({requestToken:request.requestToken}),/ADMISSION_NOT_APPROVED/);
+  assert.deepEqual(app.store.db.prepare('PRAGMA foreign_key_check').all(),[]);
+});
+
 test('schema 1 migrates transactionally without losing existing identity metadata', async t => {
   const directory = await mkdtemp(join(tmpdir(), 'naufragio-migration-'));
   t.after(() => rm(directory, { recursive: true, force: true }));
@@ -17,13 +36,14 @@ test('schema 1 migrates transactionally without losing existing identity metadat
   let store = openStorage(path);
   try {
     store.db.prepare('INSERT INTO users VALUES (?,?,?,?,?,?)').run('synthetic-id', 'synthetic-user', 'synthetic-hash', 'user', 0, 1);
-    store.db.exec(`DROP TABLE room_authority; DROP TABLE token_assignments;
+    store.db.exec(`DROP TABLE guest_requests; DROP TABLE guest_accounts; DROP TABLE room_admissions;
+      DROP TABLE room_authority; DROP TABLE token_assignments;
       DROP TABLE room_invitations; DROP TABLE room_memberships; DROP TABLE room_codes; DROP TABLE rooms;
       PRAGMA user_version = 1;`);
   } finally { store.close(); }
   store = openStorage(path);
   try {
-    assert.equal(store.db.prepare('PRAGMA user_version').get().user_version, 3);
+    assert.equal(store.db.prepare('PRAGMA user_version').get().user_version, 4);
     assert.equal(store.db.prepare('SELECT username FROM users').get().username, 'synthetic-user');
     assert.equal(store.db.prepare('SELECT count(*) AS n FROM rooms').get().n, 0);
     assert.deepEqual(store.db.prepare('PRAGMA foreign_key_check').all(), []);

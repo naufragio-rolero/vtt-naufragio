@@ -4,7 +4,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { resolve, sep } from 'node:path';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
-const allowed = /^(?:index\.html|app\.js|styles\.css|site\.config\.json|frontend\/(?:board-model|multiplayer|room-media-store)\.js|frontend\/vendor\/socket\.io-4\.8\.4\.esm\.min\.js|backend\/client\/(?:token-client|asset-client|indexeddb-store)\.js|backend\/shared\/token-state\.js|backend\/public\/(?:settings\.html|settings\.js|settings\.css|site-config\.js|site\.config\.example\.json|site\.config\.schema\.json))$/;
+const allowed = /^(?:index\.html|join\.html|app\.js|styles\.css|site\.config\.json|frontend\/(?:board-model|multiplayer|room-media-store|join|qr)\.js|frontend\/join\.css|frontend\/vendor\/(?:qrcode-generator-2\.0\.4\.js|qrcode-LICENSE\.txt|socket\.io-4\.8\.4\.esm\.min\.js)|backend\/client\/(?:token-client|asset-client|indexeddb-store)\.js|backend\/shared\/token-state\.js|backend\/public\/(?:settings\.html|settings\.js|settings\.css|site-config\.js|site\.config\.example\.json|site\.config\.schema\.json))$/;
 const types = { html: 'text/html', js: 'text/javascript', css: 'text/css', json: 'application/json' };
 export function createFrontendServer({ basePath = '/', publicConfig } = {}) {
   if (!/^\/(?:[a-zA-Z0-9_-]+\/)*$/.test(basePath)) throw new Error('INVALID_FRONTEND_BASE');

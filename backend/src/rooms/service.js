@@ -31,6 +31,7 @@ export function createRoomService(store, auth, config, { clock = Date.now,
   function access(token, roomId) {
     const actor = auth.session(token);
     id(roomId);
+    if (actor.guest && actor.roomId !== roomId) denied();
     const room = db.prepare('SELECT * FROM rooms WHERE id = ?').get(roomId);
     const member = db.prepare('SELECT * FROM room_memberships WHERE room_id = ? AND user_id = ? AND active = 1').get(roomId, actor.id);
     if (!room || !member || (room.owner_id === actor.id && actor.role !== 'director')) denied();
@@ -50,6 +51,7 @@ export function createRoomService(store, auth, config, { clock = Date.now,
   }
   return {
     access,
+    changed: notify,
     onChanged(listener) { listeners.add(listener); return () => listeners.delete(listener); },
     create(token, input) {
       fields(input, ['name']);
@@ -95,6 +97,7 @@ export function createRoomService(store, auth, config, { clock = Date.now,
       if (!Number.isInteger(duration) || duration < 60 || duration > config.roomInvitationTtlSeconds) throw new HttpError(400, 'INVALID_INPUT');
       return store.transaction(() => {
         const { actor } = owner(token, roomId);
+        if (db.prepare('SELECT 1 FROM guest_accounts WHERE user_id=?').get(input.userId)) throw new HttpError(403, 'FORBIDDEN');
         if (!db.prepare('SELECT id FROM users WHERE id=? AND disabled=0').get(input.userId)) throw new HttpError(404, 'USER_NOT_FOUND');
         if (db.prepare('SELECT 1 FROM room_memberships WHERE room_id=? AND user_id=? AND active=1').get(roomId, input.userId)) {
           throw new HttpError(409, 'ALREADY_MEMBER');
@@ -127,6 +130,7 @@ export function createRoomService(store, auth, config, { clock = Date.now,
     join(token, input) {
       const actor = auth.session(token);
       if (!acceptJoin(actor.id)) throw new HttpError(429, 'ROOM_JOIN_RATE_LIMITED');
+      if (actor.guest) throw new HttpError(403, 'FORBIDDEN');
       fields(input, ['code']);
       if (typeof input.code !== 'string' || !/^room_[A-Za-z0-9_-]{22}$/.test(input.code)) denied();
       const result = store.transaction(() => {
@@ -151,8 +155,9 @@ export function createRoomService(store, auth, config, { clock = Date.now,
     },
     members(token, roomId) {
       owner(token, roomId);
-      return db.prepare(`SELECT m.*,u.username FROM room_memberships m JOIN users u ON u.id=m.user_id
-        WHERE m.room_id=? AND m.active=1 ORDER BY u.username LIMIT 1000`).all(roomId)
+      return db.prepare(`SELECT m.*,COALESCE(g.display_name,u.username) AS username FROM room_memberships m JOIN users u ON u.id=m.user_id
+        LEFT JOIN guest_accounts g ON g.user_id=u.id
+        WHERE m.room_id=? AND m.active=1 AND (g.user_id IS NULL OR (g.expires_at>? AND g.revoked_at IS NULL)) ORDER BY username LIMIT 1000`).all(roomId, clock())
         .map(row => ({ userId: row.user_id, username: row.username, permissions: permissions(row) }));
     },
     updateMember(token, roomId, userId, input) {
@@ -177,6 +182,7 @@ export function createRoomService(store, auth, config, { clock = Date.now,
         if (userId === room.owner_id) throw new HttpError(409, 'OWNER_IMMUTABLE');
         if (!db.prepare('UPDATE room_memberships SET active=0,dice_allowed=0,move_assigned_tokens=0 WHERE room_id=? AND user_id=?').run(roomId, userId).changes) denied();
         db.prepare('DELETE FROM token_assignments WHERE room_id=? AND user_id=?').run(roomId, userId);
+        db.prepare('UPDATE guest_accounts SET revoked_at=? WHERE user_id=? AND room_id=?').run(clock(), userId, roomId);
         db.prepare('UPDATE room_invitations SET revoked_at=? WHERE room_id=? AND target_id=? AND used_at IS NULL AND revoked_at IS NULL').run(clock(), roomId, userId);
       });
       notify();

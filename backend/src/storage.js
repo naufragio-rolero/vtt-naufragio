@@ -13,7 +13,7 @@ export function openStorage(path) {
   try {
     db.exec('PRAGMA foreign_keys = ON; PRAGMA busy_timeout = 5000; PRAGMA journal_mode = WAL; PRAGMA synchronous = FULL; PRAGMA trusted_schema = OFF;');
     const version = db.prepare('PRAGMA user_version').get().user_version;
-    if (![0, 1, 2, 3].includes(version)) throw new Error('UNSUPPORTED_DATABASE_VERSION');
+    if (![0, 1, 2, 3, 4].includes(version)) throw new Error('UNSUPPORTED_DATABASE_VERSION');
     if (version === 0) {
       db.exec(`BEGIN IMMEDIATE;
         CREATE TABLE users (
@@ -109,6 +109,28 @@ export function openStorage(path) {
           PRIMARY KEY(room_id,token_id,user_id)
         ) STRICT;
         PRAGMA user_version = 3;
+        COMMIT;`);
+    }
+    if (version < 4) {
+      db.exec(`BEGIN IMMEDIATE;
+        CREATE TABLE room_admissions (
+          id TEXT PRIMARY KEY, room_id TEXT NOT NULL REFERENCES rooms(id),
+          token_hash TEXT NOT NULL UNIQUE, expires_at INTEGER NOT NULL,
+          open INTEGER NOT NULL CHECK(open IN (0,1)), revoked_at INTEGER
+        ) STRICT;
+        CREATE UNIQUE INDEX admission_active ON room_admissions(room_id) WHERE revoked_at IS NULL;
+        CREATE TABLE guest_accounts (
+          user_id TEXT PRIMARY KEY REFERENCES users(id), room_id TEXT NOT NULL REFERENCES rooms(id),
+          display_name TEXT NOT NULL, expires_at INTEGER NOT NULL, revoked_at INTEGER
+        ) STRICT;
+        CREATE TABLE guest_requests (
+          id TEXT PRIMARY KEY, admission_id TEXT NOT NULL REFERENCES room_admissions(id),
+          claim_hash TEXT NOT NULL UNIQUE, display_name TEXT NOT NULL, expires_at INTEGER NOT NULL,
+          state TEXT NOT NULL CHECK(state IN ('pending','approved','rejected','claimed')),
+          user_id TEXT REFERENCES users(id) ON DELETE SET NULL
+        ) STRICT;
+        CREATE INDEX guest_requests_admission ON guest_requests(admission_id);
+        PRAGMA user_version = 4;
         COMMIT;`);
     }
   } catch (error) {

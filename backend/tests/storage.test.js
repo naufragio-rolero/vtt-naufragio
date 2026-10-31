@@ -27,7 +27,7 @@ test('SQLite persists only identity metadata, survives reopen and stores no raw 
   for (const row of rows) assert.match(row.password_hash, /^scrypt\$32768\$8\$3\$/);
   assert.match(store.db.prepare('SELECT token_hash FROM sessions').get().token_hash, /^[a-f0-9]{64}$/);
   const tables = store.db.prepare("SELECT name FROM sqlite_master WHERE type = 'table' ORDER BY name").all().map(row => row.name);
-  assert.deepEqual(tables, ['role_labels', 'room_authority', 'room_codes', 'room_invitations', 'room_memberships', 'rooms', 'sessions', 'signup_invitations', 'token_assignments', 'users']);
+  assert.deepEqual(tables, ['guest_accounts', 'guest_requests', 'role_labels', 'room_admissions', 'room_authority', 'room_codes', 'room_invitations', 'room_memberships', 'rooms', 'sessions', 'signup_invitations', 'token_assignments', 'users']);
   store.close();
   const file = await readFile(path);
   for (const value of [secret, first.token, invitation.token]) assert.equal(file.includes(Buffer.from(value)), false);

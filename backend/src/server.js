@@ -8,6 +8,8 @@ import { openStorage } from './storage.js';
 import { createAuthService } from './auth/service.js';
 import { createAuthRouter } from './auth/routes.js';
 import { createRoomService } from './rooms/service.js';
+import { clientAddress } from './peer.js';
+import { createGuestService } from './rooms/guests.js';
 
 const assets = new Map([
   ['/settings/', ['settings.html', 'text/html']],
@@ -41,7 +43,8 @@ export function createBackend(config, { reportError = () => {}, publicConfigFile
   const store = openStorage(config.databasePath);
   const auth = createAuthService(store, config, { clock, reportChangeError: reportError });
   const rooms = createRoomService(store, auth, config, { clock });
-  const authRouter = createAuthRouter(auth, config, { clock, rooms });
+  const guests = createGuestService(store, auth, rooms, config, { clock });
+  const authRouter = createAuthRouter(auth, config, { clock, rooms, guests });
   const acceptRequest = createLimiter(config.httpRateLimit, config.rateWindowMs, { clock });
   const server = createServer({ maxHeaderSize: 8192, requestTimeout: 10000, headersTimeout: 10000, keepAliveTimeout: 5000 }, (request, response) => {
     response.setHeader('Cache-Control', 'no-store');
@@ -61,7 +64,8 @@ export function createBackend(config, { reportError = () => {}, publicConfigFile
     const origin = request.headers.origin;
     if (origin !== undefined && !config.allowedOrigins.includes(origin)) throw new HttpError(403, 'ORIGIN_DENIED');
     if (origin) response.setHeader('Access-Control-Allow-Origin', origin);
-    if (!acceptRequest(request.socket.remoteAddress)) {
+    request.clientAddress = clientAddress(request, config);
+    if (!acceptRequest(request.clientAddress)) {
       response.setHeader('Retry-After', String(Math.ceil(config.rateWindowMs / 1000)));
       throw new HttpError(429, 'RATE_LIMITED');
     }
@@ -118,7 +122,7 @@ export function createBackend(config, { reportError = () => {}, publicConfigFile
 
   let closing;
   return {
-    server, io, auth, rooms, presence, store,
+    server, io, auth, rooms, guests, presence, store,
     listen(port = config.port) {
       return new Promise((resolve, reject) => {
         const failed = error => reject(error);
