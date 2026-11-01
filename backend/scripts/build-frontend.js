@@ -24,8 +24,9 @@ export const publicFiles = Object.freeze([
     .map(name => [`backend/public/${name}`, `settings/${name}`])
 ]);
 const generator = 'naufragio-public-frontend-v1';
-export async function buildFrontend({ outputRoot = sourceRoot, configPath, storageNamespace } = {}) {
+export async function buildFrontend({ outputRoot = sourceRoot, configPath, storageNamespace, assetVersion } = {}) {
   if (storageNamespace !== undefined && (typeof storageNamespace !== 'string' || !/^[a-z0-9-]{1,40}$/.test(storageNamespace))) throw new Error('INVALID_STORAGE_NAMESPACE');
+  if (assetVersion !== undefined && (typeof assetVersion !== 'string' || !/^[a-zA-Z0-9-]{1,64}$/.test(assetVersion))) throw new Error('INVALID_ASSET_VERSION');
   const parent = await realpath(outputRoot);
   const target = join(parent, 'dist');
   // Only replace our own generated directory; never traverse a junction/symlink.
@@ -64,11 +65,17 @@ export async function buildFrontend({ outputRoot = sourceRoot, configPath, stora
         if (to === 'app.js') bytes = bytes.replaceAll('./backend/shared/', './shared/');
       }
       if (to === 'settings/settings.js') bytes = bytes.toString('utf8').replace("'../../site.config.json'", "'../site.config.json'");
+      if (assetVersion && /\.(js|html)$/.test(to)) {
+        // Version the complete module graph, including dynamic imports, without
+        // changing local storage names or the public API configuration.
+        bytes = bytes.toString('utf8').replace(/(["'])(\.{1,2}\/[^"'\s?]+\.(?:js|css))(?:\?[^"'\s]*)?\1/g,
+          (_, quote, path) => `${quote}${path}?v=${assetVersion}${quote}`);
+      }
       await put(to, bytes);
     }
     if (config) await put('site.config.json', `${JSON.stringify(config, null, 2)}\n`);
     files.sort((a, b) => a.path.localeCompare(b.path, 'en'));
-    await writeFile(join(stage, 'manifest.json'), `${JSON.stringify({ generator, ...(storageNamespace ? { storageNamespace } : {}), files }, null, 2)}\n`);
+    await writeFile(join(stage, 'manifest.json'), `${JSON.stringify({ generator, ...(storageNamespace ? { storageNamespace } : {}), ...(assetVersion ? { assetVersion } : {}), files }, null, 2)}\n`);
     // target and stage are fixed children of the resolved parent, verified above.
     if (existing) await rm(target, { recursive: true });
     await rename(stage, target);
