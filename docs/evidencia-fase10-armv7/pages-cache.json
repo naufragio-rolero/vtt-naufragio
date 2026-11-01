@@ -1,0 +1,30 @@
+{
+  "at": "2026-11-01T12:53:25.113Z",
+  "checks": [
+    {
+      "path": "index.html",
+      "status": 200,
+      "cacheControl": "max-age=600",
+      "etag": "W/\"6ae64d63-43dc\""
+    },
+    {
+      "path": "app.js?v=0.6.0",
+      "status": 200,
+      "cacheControl": "max-age=600",
+      "etag": "W/\"6ae64d63-aacc\""
+    },
+    {
+      "path": "styles.css?v=0.6.0",
+      "status": 200,
+      "cacheControl": "max-age=600",
+      "etag": "W/\"6ae64d63-50b9\""
+    },
+    {
+      "path": "frontend/multiplayer.js",
+      "status": 200,
+      "cacheControl": "max-age=600",
+      "etag": "W/\"6ae64d63-6f1a\""
+    }
+  ],
+  "clientDataCleared": false
+}
