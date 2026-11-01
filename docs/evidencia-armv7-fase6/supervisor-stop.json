@@ -1,0 +1,22 @@
+{
+  "state": "stopped",
+  "reason": "controller_stop",
+  "servicesUnchanged": true,
+  "web": [
+    {
+      "label": "proxy",
+      "code": "404",
+      "seconds": 0.047443
+    },
+    {
+      "label": "forum",
+      "code": "200",
+      "seconds": 0.154651
+    },
+    {
+      "label": "heavensgate",
+      "code": "200",
+      "seconds": 0.14794
+    }
+  ]
+}

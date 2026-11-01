@@ -1,5 +1,7 @@
 # Validación Windows y piloto privado ARMv7
 
+> **Actualización, 30 de octubre de 2026:** el [piloto ARMv7 de Fase 6](PILOTO-ARMV7-FASE6.md) ha completado mapas/retratos, PNG de 12 MiB a dos jugadores, interrupción/reconexión y cinco minutos de actividad. SSH restaurado y limpieza verificada. Los resultados históricos de Fases 1–5 que siguen se conservan; las métricas nuevas están en el informe de Fase 6.
+
 Fecha: **28 de octubre de 2026**. Rama `feat/backend-multijugador`. Primer intento desde `1e0f519`; piloto posterior sobre `1cd4dd6`, conservando los cambios documentales del diagnóstico y las Fases 1–5. No se implementan funciones de juego nuevas.
 
 ## Decisión y estado real

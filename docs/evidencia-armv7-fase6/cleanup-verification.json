@@ -1,0 +1,103 @@
+{
+  "exactSshBytes": true,
+  "sshSyntaxValid": true,
+  "effective": [
+    "gatewayports no",
+    "allowtcpforwarding local",
+    "disableforwarding no",
+    "permitopen 127.0.0.1:3306"
+  ],
+  "pilotRootAbsent": true,
+  "sshBackupAbsent": true,
+  "port3400Free": true,
+  "nodeProcesses": 0,
+  "web": [
+    {
+      "label": "proxy",
+      "code": "404",
+      "expected": "404",
+      "seconds": 0.061955
+    },
+    {
+      "label": "forum",
+      "code": "200",
+      "expected": "200",
+      "seconds": 0.136948
+    },
+    {
+      "label": "heavensgate",
+      "code": "200",
+      "expected": "200",
+      "seconds": 0.134383
+    }
+  ],
+  "forwardingAfter": [
+    {
+      "port": 3306,
+      "result": "DATABASE_GREETING_NO_AUTH"
+    },
+    {
+      "port": 3400,
+      "result": "DENIED"
+    },
+    {
+      "port": 3401,
+      "result": "DENIED"
+    }
+  ],
+  "remoteCleanup": {
+    "sqlite": {
+      "integrity": {
+        "integrity_check": "ok"
+      },
+      "tables": [
+        {
+          "name": "users"
+        },
+        {
+          "name": "sessions"
+        },
+        {
+          "name": "signup_invitations"
+        },
+        {
+          "name": "role_labels"
+        },
+        {
+          "name": "rooms"
+        },
+        {
+          "name": "room_codes"
+        },
+        {
+          "name": "room_memberships"
+        },
+        {
+          "name": "room_invitations"
+        },
+        {
+          "name": "room_authority"
+        },
+        {
+          "name": "token_assignments"
+        }
+      ],
+      "rooms": {
+        "n": 2
+      }
+    },
+    "dataFiles": [
+      {
+        "name": "fixture.json",
+        "bytes": 404
+      },
+      {
+        "name": "pilot.sqlite",
+        "bytes": 122880
+      }
+    ],
+    "rootAbsent": true,
+    "port3400Free": true,
+    "noRootProcesses": true
+  }
+}

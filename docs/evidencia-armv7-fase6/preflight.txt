@@ -1,0 +1,13 @@
+armv7l
+32
+               total        used        free      shared  buff/cache   available
+Mem:             920         411          57          34         549         508
+Swap:            919         309         610
+Filesystem     1048576-blocks  Used Available Capacity Mounted on
+/dev/mmcblk0p2          59385  3658     53276       7% /
+59072
+ 00:47:31 up 16 days, 16:51,  4 users,  load average: 0.06, 0.16, 0.13
+active
+active
+active
+FORWARDING_PERMITTED_DESTINATION_REFUSED: repetir recursos y puerto libre antes de preparar el piloto.

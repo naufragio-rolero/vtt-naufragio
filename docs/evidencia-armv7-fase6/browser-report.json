@@ -1,0 +1,82 @@
+{
+  "result": "pass",
+  "backend": "SSH tunnel to ARMv7",
+  "frontend": "Windows dist",
+  "checks": [
+    "login",
+    "user_cannot_create_room_or_upload",
+    "account_invitation_signup_and_reuse_denied",
+    "named_invitations_and_room_code",
+    "token_assignments",
+    "initial_illustrated_map",
+    "public_portrait",
+    "names_colors_sizes",
+    "map_change",
+    "exact_12MiB_two_players_sha256",
+    "mid_transfer_disconnect_keeps_director_and_other_player",
+    "player_reconnection_media",
+    "cross_room_access_denied",
+    "convergence",
+    "unassigned_move_denied",
+    "revoked_permission_backend_denied",
+    "director_move",
+    "waiting_on_logout",
+    "same_browser_login_recovery",
+    "indexeddb_reload_recovery",
+    "backend_restart_sqlite_and_authority_recovery",
+    "map_and_portrait_after_backend_restart",
+    "three_clients_stable_for_five_minutes",
+    "original_local_board_preserved"
+  ],
+  "steadyMoves": 30,
+  "browsers": {
+    "edge": "156.0.4314.50",
+    "firefox": "142.0.1"
+  },
+  "media": {
+    "bytes": 12582912,
+    "sha256": "2710f8b7a6de0fb7eb31cff6aedda3bfccc2572849fb16a9ab9db5c76d193208",
+    "twoPlayerTransferMs": 37825.269799999995,
+    "threeDecoded": true,
+    "interruption": {
+      "secondPlayerCompleteMs": 20722.352,
+      "sha256": "11131cb1364a59d8a88f45ca9b27894659920136527f7f38c5be7a195934b893",
+      "directorConnected": true,
+      "reconnectedPlayerDecoded": true
+    }
+  },
+  "steadySeconds": 308.45691500000004,
+  "finalTokenVersions": [
+    21,
+    11,
+    0,
+    0
+  ],
+  "unhandledRejections": 0,
+  "wireErrorCodes": [
+    "TRANSFER_NOT_FOUND"
+  ],
+  "latency": {
+    "login": {
+      "samples": 7,
+      "minMs": 1639.5620999999992,
+      "medianMs": 1702.264,
+      "p95Ms": 1830.39990234375,
+      "maxMs": 1830.39990234375
+    },
+    "health": {
+      "samples": 60,
+      "minMs": 6.774099999980535,
+      "medianMs": 9.164999999979045,
+      "p95Ms": 19.636999999987893,
+      "maxMs": 131.04039999999804
+    },
+    "movementWire": {
+      "samples": 32,
+      "minMs": 33.059700000012526,
+      "medianMs": 45.26680000004126,
+      "p95Ms": 79.55829999997513,
+      "maxMs": 81.88099999999395
+    }
+  }
+}

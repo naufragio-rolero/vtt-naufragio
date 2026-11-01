@@ -2,17 +2,27 @@
 
 Tablero virtual ligero para El Naufragio, inspirado en la sencillez de Owlbear Rodeo 1.0. Esta rama integra la mesa local con salas multijugador, mapa activo y retratos compartidos y acceso temporal mediante QR. La beta supervisada tiene publicación separada; el MVP completo sigue pendiente.
 
-**[Fase 9 — beta remota de tres horas](docs/FASE9-BETA-REMOTA-RASPBERRY.md): APTO CON LIMITACIONES.** Frontend en [beta/](https://naufragio-rolero.github.io/vtt-naufragio/beta/), con almacenamiento separado del prototipo de raíz. Backend detenido y deshabilitado al cerrar la prueba; API en 403 hasta otra ventana atendida. No es un servicio 24/7 ni dispone aún de contención dura de memoria.
+**[Despliegue de producción de Fase 10](docs/FASE10-DESPLIEGUE-PRODUCCION.md): APTO para partidas supervisadas de hasta tres horas.** La [beta pública](/beta/) incorpora la actualización, con almacenamiento separado del prototipo de raíz. El backend queda detenido y deshabilitado al terminar cada ventana; la API permanece en 403 entre partidas. No es un servicio 24/7 y no dispone de contención dura de memoria. Consulta el [informe de Fase 9](docs/FASE9-BETA-REMOTA-RASPBERRY.md) para su ensayo histórico de tres horas.
 
 **[Requisitos completos y plan de trabajo](docs/REQUISITOS.md)** — arquitectura, alcance del MVP y decisiones confirmadas.
 
 **[Referencias funcionales de Owlbear Rodeo](docs/REFERENCIAS-OWLBEAR.md)** — equivalencias con Owlbear 1.0/2.0, fuentes oficiales y criterios para conservar una experiencia sencilla.
 
-**[Plan de backend multijugador y despliegue portable](docs/BACKEND-RASPBERRY.md)** — arquitectura e histórico de la integración; el estado de publicación y operación actual se recoge en Fase 9.
+**[Plan de backend multijugador y despliegue portable](docs/BACKEND-RASPBERRY.md)** — arquitectura e histórico de la integración; el estado de publicación y operación actual se recoge en el informe de Fase 10.
 
 ## Probar el multijugador en Windows
 
-[Validación Windows, artefacto público y piloto privado](docs/PILOTO-PRIVADO-RASPBERRY.md): `npm run build:frontend` genera `dist/` con lista pública explícita; `npm run serve:dist` permite revisarlo localmente. Documento histórico del primer piloto; las fases posteriores y el estado actual están enlazados en el informe de Fase 9. El despliegue permanente sigue pendiente.
+[Validación Windows, artefacto público y piloto privado](docs/PILOTO-PRIVADO-RASPBERRY.md): `npm run build:frontend` genera `dist/` con lista pública explícita; `npm run serve:dist` permite revisarlo localmente. El despliegue verificado de Fase 10 y el estado operativo de Raspberry están descritos en su [informe de producción](docs/FASE10-DESPLIEGUE-PRODUCCION.md).
+
+## Punto de pausa — 1 de noviembre de 2026
+
+Fase 10 está publicada y sus comprobaciones focalizadas pasaron. La aplicación se probó mediante las URL públicas; las pruebas desde Windows se hicieron dentro de la LAN de Raspberry. La configuración está preparada para ventanas supervisadas de hasta tres horas, aunque no se repitió un ensayo prolongado para Fase 10.
+
+Al pausar el trabajo, VTT está **detenido y deshabilitado**, sin arranque automático. La API responde **403** fuera de una ventana autorizada. La base de producción es SQLite v7; la v4 original y copias recientes para recuperación se conservan fuera del directorio público. No se modificaron el IndexedDB ni el perfil real del director.
+
+Queda investigar las desconexiones que ha observado el propietario antes de abrir nuevas partidas. Después, aclarar la interfaz: probar pills de color para distinguir jugadores de forma consistente en la lista, las fichas y las solicitudes QR; mostrar con claridad conexión, reconexión y desconexión; acompañar el color de texto o iconos accesibles. Son propuestas para la siguiente iteración, todavía sin implementar.
+
+Al retomar, revisar primero la evidencia y límites operativos del [informe de despliegue](docs/FASE10-DESPLIEGUE-PRODUCCION.md), y después recopilar el momento, alcance y mensajes visibles de las desconexiones. Mantener la API cerrada durante el diagnóstico inicial. No borrar almacenamiento local ni los datos del navegador del director. El trabajo publicado está en `feat/phase10-table-ux`; la web está en `deploy/phase9-beta` y `main` no se ha actualizado.
 
 Seguir la [guía de Fase 5](docs/FASE5-FRONTEND.md): preparar el backend con Node 22/24 y el administrador inicial; ejecutar `npm run start:env` y, en otra terminal dentro de `backend/`, `npm run frontend`. Abrir `http://127.0.0.1:8080/`, configurar los destinos desde **Multijugador → Configuración del sitio** y acceder. El administrador provisiona dirección; el director crea la partida, invita cuentas registradas y asigna tokens. Alta de cuenta y código de sala son independientes.
 
