@@ -1,0 +1,12 @@
+{
+  "published": false,
+  "backendSourceCommit": "ebcc3d1",
+  "storageNamespace": "phase9-beta",
+  "publicConfigIncluded": false,
+  "frontendFiles": 27,
+  "backendZip": "artifacts/phase10/backend-source.zip",
+  "backendZipSha256": "1c7584f7190255a13388c24c4e40e27d1cb7c2424e0339eb8d5ef9eb6f883e30",
+  "frontendManifest": "artifacts/phase10/dist/manifest.json",
+  "frontendManifestSha256": "cfd8aca716e3c77cbea7733def2d3405da0a164e142462d313af01200945366d",
+  "requires": ["public configuration", "ARMv7 validation", "no connected participants", "consistent real SQLite backup", "coordinated backend and frontend publication", "owner authorization"]
+}
