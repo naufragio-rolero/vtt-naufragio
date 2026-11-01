@@ -17,6 +17,8 @@
     "frontend": "node scripts/dev-frontend.js",
     "test:browser": "node scripts/browser-integration.js",
     "test:browser:qr": "node scripts/browser-qr.js",
+    "test:browser:phase10": "node scripts/browser-phase10.js",
+    "prepare:phase10": "node scripts/prepare-phase10.js",
     "backup": "node scripts/database-backup.js",
     "sync:browser-client": "node scripts/sync-browser-client.js",
     "build:frontend": "node scripts/build-frontend.js",

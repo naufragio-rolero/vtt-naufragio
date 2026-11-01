@@ -1,6 +1,7 @@
 node_modules/
 coverage/
 dist/
+artifacts/
 .dist-stage-*/
 /.phase9-work/
 __pycache__/
