@@ -36,6 +36,14 @@ try {
   await director.waitForFunction(()=>!document.getElementById('signedIn').hidden);
   await director.fill('#roomName','Mesa de aceptación'); await director.locator('#createRoomForm button').click();
   await director.waitForFunction(()=>document.getElementById('roomState').textContent.includes('Partida conectada'));
+  const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGPQXRT9HwAEVAIq3G2ZNgAAAABJRU5ErkJggg==','base64');
+  await director.click('#openMap');
+  await director.setInputFiles('#mapCandidate',{name:'test-map.png',mimeType:'image/png',buffer:png});
+  await director.waitForFunction(()=>!document.getElementById('useMap').disabled);
+  assert.equal(await director.evaluate(()=>window.NaufragioBoard.map()),null,'preview must not publish');
+  await director.fill('#candidateWidth','20'); await director.fill('#candidateHeight','20'); await director.fill('#candidateX','-10'); await director.fill('#candidateY','-10');
+  await director.click('#useMap'); await director.waitForFunction(()=>document.getElementById('mapTransferStatus').textContent.includes('Mapa publicado'));
+  await director.click('#closeMapManager');
   const roomId = await director.getAttribute('#currentRoom','data-room-id');
   await director.click('#tableInvite');
   assert.equal(await director.inputValue('#qrLink'),'','opening invitation must not generate a code');
@@ -58,10 +66,12 @@ try {
   await director.locator('.qr-request').filter({hasText:'Bruno'}).getByRole('button',{name:'Rechazar',exact:true}).click();
   await one.waitForURL('**/index.html');
   await one.waitForFunction(()=>document.getElementById('roomState').textContent.includes('Partida conectada'));
+  await one.waitForFunction(()=>window.NaufragioBoard.map()?.name==='test-map.png');
   await two.waitForFunction(()=>document.getElementById('joinStatus').textContent.includes('rechazado'));
   await director.waitForFunction(()=>document.getElementById('pendingCount').textContent==='0');
   assert.equal(app.rooms.members(owner.token,roomId).length,2);
   assert.match(await director.locator('#connectedPlayers').innerText(),/Ana/);
+
   await mkdir(resolve('../docs/evidencia-fase10'),{recursive:true});
   await director.screenshot({path:resolve('../docs/evidencia-fase10/jugadores-escritorio.png')});
   await one.click('#openPlayers'); await one.screenshot({path:resolve('../docs/evidencia-fase10/jugadores-movil.png')});

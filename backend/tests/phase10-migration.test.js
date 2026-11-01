@@ -11,10 +11,10 @@ test('phase10 migration backs up v4 and preserves requests; rollback copy remain
   t.after(()=>rm(dir,{recursive:true,force:true}));
   const path = join(dir,'game.sqlite');
   let store = openStorage(path);
-  store.db.exec('ALTER TABLE guest_requests DROP COLUMN created_at; PRAGMA user_version=4');
+  store.db.exec('ALTER TABLE guest_requests DROP COLUMN created_at; DROP TABLE room_scene; PRAGMA user_version=4');
   store.close();
   store = openStorage(path);
-  assert.equal(store.db.prepare('PRAGMA user_version').get().user_version,5);
+  assert.equal(store.db.prepare('PRAGMA user_version').get().user_version,6);
   assert.ok(store.db.prepare('PRAGMA table_info(guest_requests)').all().some(c=>c.name==='created_at'));
   store.close();
   const files = (await readdir(dir)).filter(name=>name.includes('.pre-phase10-'));

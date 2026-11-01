@@ -16,7 +16,7 @@ const digest = async blob => [...new Uint8Array(await crypto.subtle.digest('SHA-
 const clone = data => structuredClone(data);
 
 export function createAssetClient(socket, { roomId, director = false, getSource = async () => null,
-  onUpdate = () => {}, onError = () => {} } = {}) {
+  onUpdate = () => {}, onError = () => {}, onProgress = () => {} } = {}) {
   let epoch = null, revision = 0, manifest = null, stopped = false;
   let generation = 0;
   let nextChunkSlot = 0;
@@ -177,6 +177,7 @@ export function createAssetClient(socket, { roomId, director = false, getSource 
           if (!response.pending) throw new Error('INVALID_CHUNK_ACK');
           const outcome = await acknowledged;
           if (outcome) throw outcome;
+          onProgress({assetId:message.asset.id,transferId,percent:Math.round(Math.min(blob.size,offset+bytes.length)/blob.size*100)});
         } finally {
           clearTimeout(deadline);
           settlePending(key);

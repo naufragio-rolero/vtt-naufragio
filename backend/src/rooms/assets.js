@@ -91,6 +91,7 @@ export function createAssetRelay({ namespace, rooms, game, clock = Date.now }) {
     // Each declared token must be in the public official token set.
     const ids = game.tokenIds(socket.data.roomId);
     if (manifest.tokens.length !== ids.length || manifest.tokens.some(t => !ids.includes(t.id))) bad('ASSET_MANIFEST_INVALID');
+    game.mapChanged(socket,manifest.map,manifest.tokens);
     drop(socket.data.roomId);
     sessions.set(socket.data.roomId, { owner: socket.id, manifest });
     for (const peer of namespace.sockets.values()) {

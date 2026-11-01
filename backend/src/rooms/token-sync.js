@@ -1,6 +1,7 @@
 import { createHash, randomUUID, createPublicKey, verify } from 'node:crypto';
 import { HttpError } from '../errors.js';
 import { requirePermission } from '../auth/permissions.js';
+import { validateBounds, insideBounds, mapBounds } from '../../shared/board-bounds.js';
 import { exact, uuid, counter, snapshot, position, tokenText, checkpointText, claimText } from '../../shared/token-state.js';
 
 const hash = text => createHash('sha256').update(text).digest('hex');
@@ -20,6 +21,30 @@ export function createTokenSync({ store, rooms, namespace, clock = Date.now, onS
     return state;
   }
   const checkpoint = roomId => db.prepare('SELECT * FROM room_authority WHERE room_id=?').get(roomId);
+  function scene(roomId) {
+    const row = db.prepare('SELECT * FROM room_scene WHERE room_id=?').get(roomId);
+    return row ? {revision:row.revision, mode:row.mode, bounds:JSON.parse(row.bounds_json), sizes:JSON.parse(row.sizes_json)} : {revision:0, mode:'map', bounds:null, sizes:{}};
+  }
+  function saveScene(state, value) {
+    const outside = [...state.tokens.values()].filter(token => !insideBounds(token, value.sizes[token.id] || 1, value.bounds));
+    if (outside.length) fail('TOKENS_OUTSIDE_BOARD');
+    for (const record of state.records.values()) if (!record.result) fail('TOKEN_BUSY');
+    const next = {...value,revision:value.revision+1};
+    db.prepare(`INSERT INTO room_scene VALUES (?,?,?,?,?) ON CONFLICT(room_id) DO UPDATE SET revision=excluded.revision,mode=excluded.mode,bounds_json=excluded.bounds_json,sizes_json=excluded.sizes_json`)
+      .run(state.roomId,next.revision,next.mode,JSON.stringify(next.bounds),JSON.stringify(next.sizes));
+    send(state.roomId,'room:scene',{version:1,roomId:state.roomId,...next});
+    return next;
+  }
+  function setScene(socket,input) {
+    common(socket,input,['epoch','revision','mode','bounds']);
+    const {state}=ready(socket,true); matchesEpoch(state,input);
+    const previous=scene(state.roomId);
+    if (input.revision!==previous.revision) fail('STALE_SCENE');
+    if (!['map','custom','free'].includes(input.mode)) fail('INVALID_MESSAGE',400);
+    const bounds=validateBounds(input.bounds);
+    if (input.mode==='custom' && !bounds || input.mode==='free' && bounds) fail('INVALID_MESSAGE',400);
+    return {scene:saveScene(state,{...previous,mode:input.mode,bounds})};
+  }
   function send(roomId, event, message) {
     // Revalidate recipients at emission time, even when a periodic sweep has not run.
     for (const socket of namespace.sockets.values()) {
@@ -77,7 +102,7 @@ export function createTokenSync({ store, rooms, namespace, clock = Date.now, onS
     for (const [key, request] of state.syncs) if (request.until <= clock()) state.syncs.delete(key);
   }
   function metadata(value) {
-    return new Map(value.tokens.map(token => [token.id, { id: token.id, tokenVersion: token.tokenVersion, digest: hash(tokenText(token)) }]));
+    return new Map(value.tokens.map(token => [token.id, { ...token, digest: hash(tokenText(token)) }]));
   }
   const digestFor = (stateId, revision, tokens) => hash(checkpointText(stateId, revision, tokens.values()));
   function common(socket, input, required, optional = []) {
@@ -130,6 +155,8 @@ export function createTokenSync({ store, rooms, namespace, clock = Date.now, onS
     if (!counter(input.baseRevision) || !counter(input.tokenVersion)) fail('INVALID_MESSAGE', 400);
     const point = position(input.position);
     allowed(socket, state, input.tokenId);
+    const area = scene(state.roomId);
+    if (!insideBounds(point, area.sizes[input.tokenId] || 1, area.bounds)) fail('OUTSIDE_BOARD');
     prune(state);
     const fingerprint = hash(JSON.stringify([input.epoch, input.baseRevision, input.tokenId, input.tokenVersion, point]));
     const duplicate = state.records.get(input.eventId);
@@ -172,7 +199,9 @@ export function createTokenSync({ store, rooms, namespace, clock = Date.now, onS
     if (!counter(input.revision) || input.revision !== current.revision + 1 || token.tokenVersion + 1 >= Number.MAX_SAFE_INTEGER) fail('STALE_MOVE');
     const nextToken = { id: token.id, tokenVersion: token.tokenVersion + 1, ...record.input.position };
     const next = new Map(state.tokens);
-    next.set(token.id, { id: token.id, tokenVersion: nextToken.tokenVersion, digest: hash(tokenText(nextToken)) });
+    const area = scene(state.roomId);
+    if (!insideBounds(record.input.position, area.sizes[token.id] || 1, area.bounds)) { reject(state, record, 'OUTSIDE_BOARD'); return record.result; }
+    next.set(token.id, { ...nextToken, digest: hash(tokenText(nextToken)) });
     const digest = digestFor(current.state_id, input.revision, next);
     if (input.stateDigest !== digest) fail('OFFICIAL_STATE_MISMATCH');
     // Durable checkpoint only; never write the snapshot, positions or pending moves.
@@ -266,11 +295,20 @@ export function createTokenSync({ store, rooms, namespace, clock = Date.now, onS
     return { status: 'sent' };
   }
   const handlers = { 'authority:claim': claim, 'token:move:request': requestMove,
+    'scene:set': setScene,
+    'scene:get': (socket,input) => { common(socket,input,[]); access(socket); return {scene:scene(socket.data.roomId)}; },
     'tokens:permissions:get': (socket, input) => { common(socket, input, []); return { permissions: permissions(socket) }; },
     'token:move:accept': (socket, input) => decide(socket, input, true),
     'token:move:reject': (socket, input) => decide(socket, input, false),
     'token:assign': assign, 'tokens:sync:request': syncRequest, 'tokens:sync:provide': syncProvide };
   return {
+    mapChanged(socket,map,tokens) {
+      const {state}=ready(socket,true), previous=scene(state.roomId);
+      const bounds=previous.mode==='map'?validateBounds(mapBounds(map)):previous.bounds;
+      const sizes=Object.fromEntries(tokens.map(token=>[token.id,token.size]));
+      if (JSON.stringify(bounds)===JSON.stringify(previous.bounds) && JSON.stringify(sizes)===JSON.stringify(previous.sizes)) return;
+      saveScene(state,{...previous,bounds,sizes});
+    },
     isReady(roomId) { return Boolean(runtime.get(roomId)?.epoch); },
     authorityEpoch(roomId) { return runtime.get(roomId)?.epoch ?? null; },
     isDirectorSocket(roomId, socket) { const state = runtime.get(roomId); return Boolean(state?.epoch && state.owner === socket?.id); },
@@ -284,6 +322,7 @@ export function createTokenSync({ store, rooms, namespace, clock = Date.now, onS
       const current = access(socket);
       const state = stateFor(socket.data.roomId);
       socket.emit('room:authority', status(state));
+      socket.emit('room:scene',{version:1,roomId:state.roomId,...scene(state.roomId)});
       refreshPermissions();
       if (current.isOwner) {
         socket.data.authorityChallenge = randomUUID();

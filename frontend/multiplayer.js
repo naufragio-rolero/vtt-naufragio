@@ -6,6 +6,7 @@ import { createRoomMediaStore } from './room-media-store.js';
 import { io } from './vendor/socket.io-4.8.4.esm.min.js';
 import { initialRoomTokens, publicTokens, socketDestination } from './board-model.js';
 import { initQr } from './qr.js';
+import { insideBounds, mapBounds } from '../backend/shared/board-bounds.js';
 
 if (!window.NaufragioBoard) await new Promise(resolve => window.addEventListener('naufragio:board:ready', resolve, { once: true }));
 const board = window.NaufragioBoard;
@@ -17,6 +18,13 @@ let rights = null, members = [], pending = new Map(), generation = 0, validatedS
 let assetClient = null, mediaStore = null, mediaSource = null, lastPublishedEpoch = null;
 let publishQueue = Promise.resolve();
 let presence = [];
+let scene = {revision:0,mode:'map',bounds:null,sizes:{}};
+async function command(event, body = {}) {
+  if (!socket?.connected || !room) throw new Error('DIRECTOR_NOT_READY');
+  const answer = await socket.timeout(12000).emitWithAck(event,{version:1,roomId:room.room.id,...body});
+  if (!answer.ok) throw new Error(answer.error?.code || 'INVALID_MESSAGE');
+  return answer;
+}
 const errors = {
   INVALID_CREDENTIALS: 'Usuario o contraseña incorrectos.', INVALID_INVITATION: 'Invitación de alta caducada, usada, revocada o inválida.',
   ROOM_ACCESS_DENIED: 'No tienes autorización o el código de sala no es válido.', FORBIDDEN: 'No tienes permiso para esta operación.',
@@ -28,6 +36,9 @@ const errors = {
   INVALID_INPUT: 'Revisa los campos y la política de contraseña (15–128 caracteres).', DESTINATION_REQUIRED: 'Configura y confirma los destinos antes de enviar credenciales.',
   PERMISSION_REVOKED: 'El movimiento se rechazó porque se retiró el permiso.', DIRECTOR_DISCONNECTED: 'Movimiento cancelado: el director se ha desconectado.',
   ASSET_MANIFEST_INVALID: 'Los metadatos de imágenes no son válidos.', TRANSFER_INTERRUPTED: 'Transferencia interrumpida; reconecta para repetirla.',
+  OUTSIDE_BOARD: 'Fuera del área jugable. Se conserva la última posición válida.',
+  TOKENS_OUTSIDE_BOARD: 'Hay fichas fuera del área propuesta. Ajusta sus posiciones o cambia/desactiva los límites antes de confirmar.',
+  STALE_SCENE: 'Los límites han cambiado. Reabre el panel para actualizarlos.',
   HASH_MISMATCH: 'La imagen no coincide con SHA-256.', TRANSFER_BUSY: 'Hay demasiadas transferencias.', ASSET_SOURCE_MISMATCH: 'La imagen del director no coincide con lo publicado.'
 };
 function status(message, error = false) {
@@ -78,8 +89,10 @@ function roomView() {
   get('currentRoom').hidden = !room;
   get('openPlayers').hidden = !room;
   get('tableInvite').hidden = !room?.isOwner;
+  get('openMap').hidden = Boolean(room && !room.isOwner);
+  get('openBounds').hidden = Boolean(room && !room.isOwner);
   get('playersAdministration').hidden = !room?.isOwner;
-  get('playersConnection').textContent = room ? (socket?.connected ? 'Conectado a la sala' : 'Desconectado ? reconectando?') : 'Sin sala';
+  get('playersConnection').textContent = room ? (socket?.connected ? 'Conectado a la sala' : 'Desconectado · reconectando…') : 'Sin sala';
   if (!room) get('playersPanel').hidden = true;
   get('roomAdministration').hidden = !room?.isOwner;
   if (!room) { get('connectionState').textContent = 'Solo este navegador'; return; }
@@ -98,6 +111,7 @@ function canMove(id) {
 }
 async function move(id, point) {
   if (!canMove(id)) { status(errors.FORBIDDEN, true); return; }
+  if (!insideBounds(point,scene.sizes[id]||1,scene.bounds)) { status(errors.OUTSIDE_BOARD,true); return; }
   const eventId = crypto.randomUUID(); pending.set(eventId, id);
   try {
     const result = await client.move(id, point, eventId);
@@ -158,6 +172,7 @@ async function enter(selected, initialTokens, admissionCode, initialMedia) {
   socket = io(destination.origin, { path: destination.path, autoConnect: false, forceNew: true, reconnection: true,
     auth: { token: session.token, roomId: room.room.id } });
   const live = socket;
+  live.on('room:scene', value => { if (current === generation) { scene = value; board.applyBounds(value); } });
   storage = room.isOwner ? createIndexedDbStore(`${config.apiBaseUrl.replace(/\/$/, '')}|${session.user.id}|${room.room.id}`) : null;
   client = createTokenClient(live, { roomId: room.room.id, director: room.isOwner, store: storage, initialTokens,
     onChange: value => {
@@ -179,7 +194,8 @@ async function enter(selected, initialTokens, admissionCode, initialMedia) {
   assetClient = createAssetClient(live, {
     roomId: room.room.id, director: room.isOwner, getSource: async id => mediaSource?.files?.[id] || null,
     onUpdate: value => { if (current === generation) void board.applySharedResources(value); },
-    onError: error => { if (current === generation) status(describe(new Error(error)), true); }
+    onError: error => { if (current === generation) { status(describe(new Error(error)), true); get('mapTransferStatus').textContent = describe(new Error(error)) + ' Se conserva el último mapa verificado; reconecta para reintentar.'; } },
+    onProgress: value => { if (current === generation && value.assetId === 'map') get('mapTransferStatus').textContent = `Enviando mapa · ${value.percent}% de una transferencia. Cada participante verifica SHA-256 al finalizar.`; }
   });
   live.on('room:authority', value => {
     if (current !== generation || !room?.isOwner || !mediaSource || value.state !== 'active') return;
@@ -246,7 +262,7 @@ function renderPeople() {
   get('connectedPlayers').replaceChildren();
   for (const person of presence) {
     const row = document.createElement('p');
-    row.textContent = `${person.username} ? ${person.role === 'director' ? 'Director' : 'Jugador'} ? conectado`;
+    row.textContent = `${person.username} · ${person.role === 'director' ? 'Director' : 'Jugador'} · conectado`;
     get('connectedPlayers').append(row);
   }
 }
@@ -258,7 +274,7 @@ async function refreshMembers() {
   members = value.members; get('members').replaceChildren();
   for (const member of members.filter(member => member.userId !== session.user.id)) {
     const row = document.createElement('div'); row.className = 'member-row'; row.dataset.userId = member.userId;
-    const name = document.createElement('strong'); name.textContent = `${member.username} ? ${presence.some(p => p.id === member.userId) ? 'conectado' : 'autorizado, desconectado'}`; row.append(name);
+    const name = document.createElement('strong'); name.textContent = `${member.username} · ${presence.some(p => p.id === member.userId) ? 'conectado' : 'autorizado, desconectado'}`; row.append(name);
     const controls = {};
     for (const [key, text] of [['moveAssignedTokens', 'Permitir movimiento asignado'], ['diceAllowed', 'Permitir tiradas']]) {
       const label = document.createElement('label'); label.textContent = text;
@@ -365,23 +381,6 @@ async function validateImage(file, max) {
     return { widthPx: bitmap.width, heightPx: bitmap.height };
   } finally { bitmap.close(); }
 }
-action('sharedMapUpload', 'change', async () => {
-  if (!room?.isOwner || !mediaSource) throw new Error('FORBIDDEN');
-  const file = get('sharedMapUpload').files?.[0]; if (!file) return;
-  try {
-    const dimensions = await validateImage(file, 12 * 1024 * 1024);
-    const old = mediaSource.map;
-    const widthCells = old?.widthCells ?? 20;
-    const heightCells = old?.heightCells ?? Math.min(200, 20 * dimensions.heightPx / dimensions.widthPx);
-    mediaSource.map = { name: file.name.slice(0, 100) || 'Mapa', ...dimensions, widthCells, heightCells,
-      xCells: old?.xCells ?? -10, yCells: old?.yCells ?? -heightCells / 2, imageId: 'map' };
-    mediaSource.files.map = file; await saveMedia();
-  } finally { get('sharedMapUpload').value = ''; }
-});
-action('sharedClearMap', 'click', async () => {
-  if (!room?.isOwner || !mediaSource) throw new Error('FORBIDDEN');
-  mediaSource.map = null; delete mediaSource.files.map; await saveMedia();
-});
 action('sharedTokenUpload', 'change', async () => {
   if (!room?.isOwner || !mediaSource) throw new Error('FORBIDDEN');
   const file = get('sharedTokenUpload').files?.[0], id = get('assignedToken').value;
@@ -414,6 +413,108 @@ get('assignedToken').addEventListener('change', () => {
   get('sharedTokenName').value = token.name;
   get('sharedTokenColor').value = token.color;
   get('sharedTokenSize').value = String(token.size);
+});
+
+let candidate = null, candidateUrl = null, candidateVersion = 0, mapBusy = false;
+get('openBounds').addEventListener('click', () => {
+  if (room && !room.isOwner) return;
+  const value = room ? scene : board.bounds();
+  const bounds = value.bounds || mapBounds(board.map()) || {x:-10,y:-10,width:20,height:20};
+  get('boundsMode').value = value.mode;
+  for (const key of ['x','y','width','height']) get('bounds'+key[0].toUpperCase()+key.slice(1)).value = String(bounds[key]);
+  get('boundsStatus').textContent = ''; get('boundsDialog').showModal();
+});
+get('closeBounds').addEventListener('click', () => get('boundsDialog').close());
+get('boundsForm').addEventListener('submit', async event => {
+  event.preventDefault();
+  const mode = get('boundsMode').value;
+  const bounds = mode === 'free' ? null : mode === 'map' ? mapBounds(board.map()) : Object.fromEntries(['x','y','width','height'].map(key=>[key,Number(get('bounds'+key[0].toUpperCase()+key.slice(1)).value)]));
+  try {
+    if (room) await command('scene:set',{epoch:client.state.epoch,revision:scene.revision,mode,bounds});
+    else board.setBounds(mode,bounds);
+    get('boundsDialog').close();
+  } catch(error) { get('boundsStatus').textContent = describe(error); }
+});
+function clearCandidate() {
+  candidateVersion++; candidate = null;
+  if (candidateUrl) URL.revokeObjectURL(candidateUrl);
+  candidateUrl = null; get('mapPreview').hidden = true; get('mapPreview').removeAttribute('src');
+  get('mapCandidate').value = ''; get('useMap').disabled = true;
+}
+function openMapManager() {
+  if (room && !room.isOwner) return;
+  clearCandidate(); get('multiplayerDialog').close();
+  get('mapCandidateInfo').textContent = 'PNG, JPEG o WebP · máximo 12 MiB, 20 Mpx y 8000 px por lado.';
+  get('mapTransferStatus').textContent = room ? 'El mapa se comparte solo con esta sala. Original en IndexedDB del director.' : 'Mapa local: se guarda exclusivamente en este navegador.';
+  if (!get('mapDialog').open) get('mapDialog').showModal();
+  const existing = room ? mediaSource?.files.map : null;
+  if (existing) void stageMap(existing);
+  else if (!room && board.map()) void board.localResources().then(value=>{if (value.blob && get('mapDialog').open) void stageMap(value.blob);});
+}
+async function stageMap(file) {
+  if (!file || mapBusy || (room && !room.isOwner)) return;
+  clearCandidate(); const version = candidateVersion;
+  get('mapCandidateInfo').textContent = 'Comprobando imagen…';
+  try {
+    const dimensions = await validateImage(file, 12 * 1024 * 1024);
+    if (version !== candidateVersion || !get('mapDialog').open) return;
+    candidate = {file, dimensions, generation};
+    candidateUrl = URL.createObjectURL(file); get('mapPreview').src = candidateUrl; get('mapPreview').hidden = false;
+    const old = board.map();
+    get('candidateWidth').value = String(old?.widthCells || 20);
+    get('candidateHeight').value = String(old?.heightCells || Math.max(1, Math.min(200, 20 * dimensions.heightPx / dimensions.widthPx)));
+    get('candidateX').value = String(old?.xCells ?? -10);
+    get('candidateY').value = String(old?.yCells ?? -Number(get('candidateHeight').value) / 2);
+    get('mapCandidateInfo').textContent = `${file.name} · ${dimensions.widthPx} × ${dimensions.heightPx} px · ${file.type} · ${(file.size / 1048576).toFixed(2)} MiB`;
+    get('useMap').disabled = false;
+  } catch { if (version === candidateVersion) get('mapCandidateInfo').textContent = 'Imagen no válida: revisa formato, tamaño y dimensiones.'; }
+}
+get('openMap').addEventListener('click', openMapManager);
+get('chooseMap').addEventListener('click', event => { event.stopPropagation(); get('mapCandidate').click(); });
+get('mapDrop').addEventListener('click', event => { if (event.target === get('mapDrop')) get('mapCandidate').click(); });
+get('mapDrop').addEventListener('keydown', event => { if (event.target === get('mapDrop') && ['Enter',' '].includes(event.key)) { event.preventDefault(); get('mapCandidate').click(); } });
+get('mapCandidate').addEventListener('change', () => void stageMap(get('mapCandidate').files?.[0]));
+for (const type of ['dragenter','dragover','dragleave','drop']) get('mapDrop').addEventListener(type, event => {
+  event.preventDefault(); get('mapDrop').classList.toggle('drag-over', type === 'dragenter' || type === 'dragover');
+  if (type === 'drop') void stageMap(event.dataTransfer?.files?.[0]);
+});
+window.addEventListener('naufragio:map:candidate', event => { openMapManager(); void stageMap(event.detail); });
+get('sharedMapUpload').addEventListener('change', () => { const file = get('sharedMapUpload').files?.[0]; openMapManager(); void stageMap(file); get('sharedMapUpload').value = ''; });
+get('sharedClearMap').addEventListener('click', openMapManager);
+get('closeMapManager').addEventListener('click', () => { if (!mapBusy) get('mapDialog').close(); });
+get('mapDialog').addEventListener('cancel', event => { if (mapBusy) event.preventDefault(); });
+get('mapDialog').addEventListener('close', clearCandidate);
+async function commitMap(map, file) {
+  if (!room) { await board.setLocalMap(file, map); return; }
+  if (!room.isOwner || !mediaSource || !client?.state.ready) throw new Error('FORBIDDEN');
+  const previous = mediaSource;
+  mediaSource = {...previous, map: map && {...map, imageId:'map'}, files:{...previous.files}};
+  if (map) mediaSource.files.map = file; else delete mediaSource.files.map;
+  try { await saveMedia(); }
+  catch (error) { mediaSource = previous; await mediaStore.save(previous); throw error; }
+}
+get('mapConfirm').addEventListener('submit', async event => {
+  event.preventDefault(); if (!candidate || mapBusy || candidate.generation !== generation) return;
+  const fields = ['candidateWidth','candidateHeight','candidateX','candidateY'].map(id => Number(get(id).value));
+  if (!fields.every(Number.isFinite) || fields.slice(0,2).some(n => n < 1 || n > 200) || fields.slice(2).some(n => Math.abs(n)>1000)) return;
+  const [widthCells,heightCells,xCells,yCells] = fields;
+  const map = {name:candidate.file.name.slice(0,100)||'Mapa', ...candidate.dimensions, widthCells,heightCells,xCells,yCells};
+  mapBusy = true; get('useMap').disabled = true; get('closeMapManager').disabled = true;
+  get('mapTransferStatus').textContent = room ? 'Calculando SHA-256 y publicando el mapa… Los participantes verifican cada transferencia.' : 'Guardando mapa local…';
+  try {
+    await commitMap(map, candidate.file);
+    if (get('candidateFit').checked) board.fitMap();
+    get('mapTransferStatus').textContent = room ? 'Mapa publicado. Transferencia verificada en curso para los participantes conectados.' : 'Mapa guardado en este navegador.';
+    get('openMap').textContent = 'Gestionar mapa'; clearCandidate();
+  } catch (error) { get('mapTransferStatus').textContent = describe(error) + ' El mapa anterior se conserva.'; get('useMap').disabled = false; }
+  finally { mapBusy = false; get('closeMapManager').disabled = false; }
+});
+get('managerRemoveMap').addEventListener('click', async () => {
+  if (mapBusy) return;
+  mapBusy = true;
+  try { await commitMap(null, null); clearCandidate(); get('mapTransferStatus').textContent = 'Mapa retirado. Las fichas conservan sus posiciones.'; }
+  catch (error) { get('mapTransferStatus').textContent = describe(error); }
+  finally { mapBusy = false; }
 });
 
 const qrControls = initQr({ api, getRoom: () => room, refreshMembers, status, notify: board.notify });

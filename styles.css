@@ -263,3 +263,10 @@ body[data-mode=shared] #changeIdentity { display: none; }
 .member-row, .qr-request { border-bottom: 1px solid #839ca766; padding: 12px 0; }
 #pendingCount { border-radius: 20px; background: #873e21; color: white; padding: 2px 7px; }
 .topbar-actions { flex-wrap: wrap; }
+#mapDrop { padding: 32px; border: 2px dashed #548e86; border-radius: 14px; text-align: center; background: #edf7f5; }
+#mapDrop.drag-over { background: #ccefe5; }
+#mapPreview { display: block; max-width: 100%; max-height: 250px; object-fit: contain; margin: 12px auto; }
+#mapPreview[hidden] { display: none; }
+#mapDialog button, #mapDialog input { min-height: 44px; }
+.table-panel input:not([type=checkbox]), .table-panel select { width: 100%; min-height: 44px; }
+.table-panel input[type=checkbox] { width: 20px; height: 20px; vertical-align: middle; margin-right: 8px; }

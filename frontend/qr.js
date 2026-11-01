@@ -29,7 +29,7 @@ export function initQr({ api, getRoom, refreshMembers, status, notify = () => {}
       try {
         const value = await api(`/rooms/${id}/admission`);
         if (current !== epoch) return;
-        get('qrStatus').textContent = value.admission?.open ? 'Admisi?n abierta. Aprueba solo a quienes reconozcas.' : 'Admisi?n cerrada o caducada.';
+        get('qrStatus').textContent = value.admission?.open ? 'Admisión abierta. Aprueba solo a quienes reconozcas.' : 'Admisión cerrada o caducada.';
         const pending = value.requests.filter(entry => entry.state === 'pending');
         get('pendingCount').textContent = String(pending.length);
         if (pending.some(entry => !seen.has(entry.id))) { const message = `${pending.length} solicitudes pendientes. Abre Jugadores para revisarlas.`; status(message); notify(message); }
@@ -38,8 +38,8 @@ export function initQr({ api, getRoom, refreshMembers, status, notify = () => {}
         for (const entry of value.requests) {
           const row = document.createElement('div'); row.className = 'qr-request'; row.dataset.requestId = entry.id;
           const label = document.createElement('span');
-          const age = entry.createdAt == null ? 'antig?edad no disponible (solicitud anterior)' : `hace ${Math.max(0, Math.floor((Date.now() - entry.createdAt) / 60000))} min`;
-          label.textContent = `${entry.displayName} ? ${({pending:'Esperando aprobaci?n', approved:'Admitido; esperando conexi?n', claimed:'Admitido', rejected:'Rechazado'})[entry.state] || entry.state} ? ${age}`;
+          const age = entry.createdAt == null ? 'antigüedad no disponible (solicitud anterior)' : `hace ${Math.max(0, Math.floor((Date.now() - entry.createdAt) / 60000))} min`;
+          label.textContent = `${entry.displayName} · ${({pending:'Esperando aprobación', approved:'Admitido; esperando conexión', claimed:'Admitido', rejected:'Rechazado'})[entry.state] || entry.state} · ${age}`;
           row.append(label);
           if (entry.state === 'pending') for (const approve of [true, false]) {
             const button = document.createElement('button'); button.type = 'button'; button.textContent = approve ? 'Aprobar' : 'Rechazar';
@@ -54,14 +54,14 @@ export function initQr({ api, getRoom, refreshMembers, status, notify = () => {}
           get('qrRequests').append(row);
         }
       } catch {
-        if (current === epoch) get('admissionNotice').textContent = 'No se pudo actualizar la admisi?n. Reintentando?';
+        if (current === epoch) get('admissionNotice').textContent = 'No se pudo actualizar la admisión. Reintentando…';
       } finally {
         if (current === epoch) { flight = null; timer = setTimeout(refresh, 3000); }
       }
     })();
     return flight;
   }
-  async function run(work) { try { await work(); } catch { status('No se pudo completar la admisi?n. Revisa la conexi?n y los permisos.', true); } }
+  async function run(work) { try { await work(); } catch { status('No se pudo completar la admisión. Revisa la conexión y los permisos.', true); } }
   async function generate() {
     if (!getRoom()?.isOwner || !roomId) throw new Error('FORBIDDEN');
     const id = roomId, current = epoch;

@@ -107,6 +107,8 @@
           <div><span class="topbar-overline">TABLERO DE PRUEBA</span><h1>Mesa sin nombre</h1></div>
         </div>
         <div class="topbar-actions">
+          <button type="button" class="primary-button" id="openMap">Cargar mapa</button>
+          <button type="button" class="secondary-button" id="openBounds">Área jugable</button>
           <button type="button" class="secondary-button" id="openPlayers" aria-controls="playersPanel" aria-expanded="false" hidden>Jugadores <span id="pendingCount" aria-label="Solicitudes pendientes">0</span></button>
           <button type="button" class="secondary-button" id="tableInvite" hidden>Invitar</button>
           <button type="button" class="secondary-button" id="openMultiplayer">Multijugador</button>
@@ -137,6 +139,36 @@
       <div id="tableAssignments"></div>
     </section>
   </aside>
+  <dialog id="mapDialog" class="multiplayer-dialog" aria-labelledby="mapTitle">
+    <header><h2 id="mapTitle">Gestionar mapa</h2><button type="button" id="closeMapManager">Cancelar</button></header>
+    <p>Selecciona y ajusta una imagen. Solo se guardará o compartirá al confirmar.</p>
+    <div id="mapDrop" tabindex="0" role="button" aria-label="Seleccionar imagen o arrastrar un mapa aquí">Arrastra aquí tu mapa<br><button type="button" id="chooseMap">Seleccionar archivo</button></div>
+    <input type="file" id="mapCandidate" accept="image/png,image/jpeg,image/webp" hidden>
+    <img id="mapPreview" alt="Vista previa del mapa" hidden>
+    <p id="mapCandidateInfo" role="status"></p>
+    <form id="mapConfirm" class="mp-form">
+      <label>Anchura en casillas<input id="candidateWidth" type="number" min="1" max="200" step="any" value="20" required></label>
+      <label>Altura en casillas<input id="candidateHeight" type="number" min="1" max="200" step="any" value="15" required></label>
+      <label>Origen X en casillas<input id="candidateX" type="number" min="-1000" max="1000" step="any" value="-10" required></label>
+      <label>Origen Y en casillas<input id="candidateY" type="number" min="-1000" max="1000" step="any" value="-7.5" required></label>
+      <label><input id="candidateFit" type="checkbox" checked> Centrar y encajar la vista al confirmar</label>
+      <button type="submit" id="useMap" disabled>Usar este mapa</button>
+    </form>
+    <p id="mapTransferStatus" role="status" aria-live="polite"></p>
+    <button type="button" id="managerRemoveMap">Quitar mapa actual</button>
+  </dialog>
+  <dialog id="boundsDialog" class="multiplayer-dialog" aria-labelledby="boundsTitle">
+    <header><h2 id="boundsTitle">Área jugable</h2><button type="button" id="closeBounds">Cerrar</button></header>
+    <p>El contorno marca dónde pueden terminar los movimientos. Las fichas mantienen sus posiciones.</p>
+    <form id="boundsForm" class="mp-form">
+      <label>Límites<select id="boundsMode"><option value="map">Ajustar al mapa</option><option value="custom">Rectángulo personalizado</option><option value="free">Desactivados</option></select></label>
+      <label>Origen X<input id="boundsX" type="number" step="any" min="-1000" max="1000" value="-10" required></label>
+      <label>Origen Y<input id="boundsY" type="number" step="any" min="-1000" max="1000" value="-10" required></label>
+      <label>Anchura (casillas)<input id="boundsWidth" type="number" step="any" min="1" max="200" value="20" required></label>
+      <label>Altura (casillas)<input id="boundsHeight" type="number" step="any" min="1" max="200" value="20" required></label>
+      <button type="submit">Guardar límites</button>
+    </form><p id="boundsStatus" role="status"></p>
+  </dialog>
   <dialog id="identityDialog" class="identity-dialog" aria-labelledby="identityTitle">
     <form id="identityForm">
       <div class="identity-emblem" aria-hidden="true">✦</div>

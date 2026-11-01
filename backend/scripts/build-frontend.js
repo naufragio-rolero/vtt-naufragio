@@ -18,6 +18,7 @@ export const publicFiles = Object.freeze([
   ['backend/client/token-client.js', 'client/token-client.js'], ['backend/client/asset-client.js', 'client/asset-client.js'],
   ['backend/client/indexeddb-store.js', 'client/indexeddb-store.js'],
   ['backend/shared/token-state.js', 'shared/token-state.js'],
+  ['backend/shared/board-bounds.js', 'shared/board-bounds.js'],
   ...['settings.html', 'settings.js', 'settings.css', 'site-config.js', 'site.config.example.json', 'site.config.schema.json']
     .map(name => [`backend/public/${name}`, `settings/${name}`])
 ]);
@@ -56,9 +57,10 @@ export async function buildFrontend({ outputRoot = sourceRoot, configPath, stora
         }
         bytes = script;
       }
-      if (['index.html', 'frontend/multiplayer.js', 'frontend/board-model.js', 'frontend/join.js'].includes(to)) {
+      if (['app.js', 'index.html', 'frontend/multiplayer.js', 'frontend/board-model.js', 'frontend/join.js'].includes(to)) {
         bytes = bytes.toString('utf8').replaceAll('./backend/public/', './settings/')
           .replaceAll('../backend/public/', '../settings/').replaceAll('../backend/client/', '../client/').replaceAll('../backend/shared/', '../shared/');
+        if (to === 'app.js') bytes = bytes.replaceAll('./backend/shared/', './shared/');
       }
       if (to === 'settings/settings.js') bytes = bytes.toString('utf8').replace("'../../site.config.json'", "'../site.config.json'");
       await put(to, bytes);

@@ -13,8 +13,8 @@ export function openStorage(path) {
   try {
     db.exec('PRAGMA foreign_keys = ON; PRAGMA busy_timeout = 5000; PRAGMA journal_mode = WAL; PRAGMA synchronous = FULL; PRAGMA trusted_schema = OFF;');
     const version = db.prepare('PRAGMA user_version').get().user_version;
-    if (![0, 1, 2, 3, 4, 5].includes(version)) throw new Error('UNSUPPORTED_DATABASE_VERSION');
-    if (version > 0 && version < 5 && path !== ':memory:') {
+    if (![0, 1, 2, 3, 4, 5, 6].includes(version)) throw new Error('UNSUPPORTED_DATABASE_VERSION');
+    if (version > 0 && version < 6 && path !== ':memory:') {
       const destination = path + '.pre-phase10-' + Date.now() + '.sqlite';
       db.exec("VACUUM INTO '" + destination.replaceAll("'", "''") + "'");
       chmodSync(destination, 0o600);
@@ -142,6 +142,16 @@ export function openStorage(path) {
       db.exec(`BEGIN IMMEDIATE;
         ALTER TABLE guest_requests ADD COLUMN created_at INTEGER;
         PRAGMA user_version = 5;
+        COMMIT;`);
+    }
+    if (version < 6) {
+      db.exec(`BEGIN IMMEDIATE;
+        CREATE TABLE room_scene (
+          room_id TEXT PRIMARY KEY REFERENCES rooms(id), revision INTEGER NOT NULL,
+          mode TEXT NOT NULL CHECK(mode IN ('map','custom','free')),
+          bounds_json TEXT NOT NULL, sizes_json TEXT NOT NULL
+        ) STRICT;
+        PRAGMA user_version=6;
         COMMIT;`);
     }
   } catch (error) {
