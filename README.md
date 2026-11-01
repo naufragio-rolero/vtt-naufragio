@@ -2,7 +2,7 @@
 
 Tablero virtual ligero para El Naufragio, inspirado en la sencillez de Owlbear Rodeo 1.0. Esta rama integra la mesa local con salas multijugador, mapa activo y retratos compartidos y acceso temporal mediante QR. La beta supervisada tiene publicación separada; el MVP completo sigue pendiente.
 
-**[Despliegue de producción de Fase 10](docs/FASE10-DESPLIEGUE-PRODUCCION.md): APTO para partidas supervisadas de hasta tres horas.** La [beta pública](/beta/) incorpora la actualización, con almacenamiento separado del prototipo de raíz. El backend queda detenido y deshabilitado al terminar cada ventana; la API permanece en 403 entre partidas. No es un servicio 24/7 y no dispone de contención dura de memoria. Consulta el [informe de Fase 9](docs/FASE9-BETA-REMOTA-RASPBERRY.md) para su ensayo histórico de tres horas.
+**[Despliegue de producción de Fase 10](docs/FASE10-DESPLIEGUE-PRODUCCION.md): APTO para partidas supervisadas de hasta tres horas.** La [beta pública](https://naufragio-rolero.github.io/vtt-naufragio/beta/) incorpora la actualización, con almacenamiento separado del prototipo de raíz. El backend queda detenido y deshabilitado al terminar cada ventana; la API permanece en 403 entre partidas. No es un servicio 24/7 y no dispone de contención dura de memoria. Consulta el [informe de Fase 9](docs/FASE9-BETA-REMOTA-RASPBERRY.md) para su ensayo histórico de tres horas.
 
 **[Requisitos completos y plan de trabajo](docs/REQUISITOS.md)** — arquitectura, alcance del MVP y decisiones confirmadas.
 
