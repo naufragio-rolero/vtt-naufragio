@@ -109,6 +109,7 @@
         <div class="topbar-actions">
           <button type="button" class="primary-button" id="openMap">Cargar mapa</button>
           <button type="button" class="secondary-button" id="openBounds">Área jugable</button>
+          <button type="button" class="secondary-button" id="openDice" aria-controls="dicePanel" aria-expanded="false">Dados</button>
           <button type="button" class="secondary-button" id="openPlayers" aria-controls="playersPanel" aria-expanded="false" hidden>Jugadores <span id="pendingCount" aria-label="Solicitudes pendientes">0</span></button>
           <button type="button" class="secondary-button" id="tableInvite" hidden>Invitar</button>
           <button type="button" class="secondary-button" id="openMultiplayer">Multijugador</button>
@@ -139,6 +140,20 @@
       <h3>Solicitudes de acceso</h3><p id="admissionNotice" role="status" aria-live="polite"></p><div id="qrRequests"></div>
       <div id="tableAssignments"></div>
     </section>
+  </aside>
+  <aside id="dicePanel" class="table-panel" aria-labelledby="diceTitle" hidden>
+    <header><h2 id="diceTitle">Dados</h2><button id="closeDice" type="button">Cerrar bandeja</button></header>
+    <p id="diceMode" role="status">Tirada local · solo este navegador</p>
+    <form id="diceForm" class="mp-form">
+      <label>Dado<select id="dieSides"><option value="4">d4</option><option value="6" selected>d6</option><option value="8">d8</option><option value="10">d10</option><option value="12">d12</option><option value="20">d20</option><option value="100">d100</option></select></label>
+      <label>Cantidad<input id="dieCount" type="number" min="1" max="50" step="1" value="2" required></label>
+      <label>Modificador<input id="dieModifier" type="number" min="-1000" max="1000" step="1" value="3" required></label>
+      <label>Notación<input id="diceNotation" maxlength="32" value="2d6+3" required autocomplete="off" spellcheck="false" aria-describedby="diceHelp"></label>
+      <p id="diceHelp">Ejemplos: 2d6+3, 1d20, 3d10-2. Máximo 50 dados y modificador ±1000.</p>
+      <button type="submit" id="rollDice">Lanzar</button>
+    </form>
+    <p id="diceStatus" role="status" aria-live="polite"></p>
+    <h3>Tiradas recientes</h3><ol id="diceHistory" aria-label="Historial reciente de tiradas"></ol>
   </aside>
   <dialog id="mapDialog" class="multiplayer-dialog" aria-labelledby="mapTitle">
     <header><h2 id="mapTitle">Gestionar mapa</h2><button type="button" id="closeMapManager">Cancelar</button></header>

@@ -246,7 +246,7 @@ export function createTokenSync({ store, rooms, namespace, clock = Date.now, onS
     const state = runtime.get(socket.data.roomId);
     const own = db.prepare('SELECT token_id FROM token_assignments WHERE room_id=? AND user_id=? ORDER BY token_id')
       .all(socket.data.roomId, current.actor.id).map(row => row.token_id);
-    const result = { isOwner: current.isOwner, moveAssignedTokens: current.permissions.moveAssignedTokens, assignedTokenIds: own };
+    const result = { isOwner: current.isOwner, diceAllowed:current.permissions.diceAllowed, moveAssignedTokens: current.permissions.moveAssignedTokens, assignedTokenIds: own };
     if (current.isOwner) result.assignments = db.prepare('SELECT token_id,user_id FROM token_assignments WHERE room_id=? ORDER BY token_id,user_id')
       .all(socket.data.roomId).map(row => ({ tokenId: row.token_id, userId: row.user_id }));
     if (current.isOwner) result.assignmentVersions = Object.fromEntries([...state?.assignments ?? []].map(([id, row]) => [id, row.result.assignmentVersion]));

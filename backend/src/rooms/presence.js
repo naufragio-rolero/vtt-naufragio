@@ -3,6 +3,7 @@ import { fields } from '../auth/validation.js';
 import { HttpError } from '../errors.js';
 import { createTokenSync } from './token-sync.js';
 import { createAssetRelay } from './assets.js';
+import { createDiceService } from './dice.js';
 
 export function attachRoomPresence(io, auth, rooms, config, { clock = Date.now, reportError = () => {}, store } = {}) {
   const namespace = io.of('/');
@@ -15,6 +16,7 @@ export function attachRoomPresence(io, auth, rooms, config, { clock = Date.now, 
   const channel = roomId => `party:${roomId}`;
   const game = createTokenSync({ store, rooms, namespace, clock, onStatusChange: safeRefresh });
   const assets = createAssetRelay({ namespace, rooms, game, clock });
+  const dice = createDiceService({store,rooms,namespace,game,clock});
 
   function snapshot(roomId) {
     const people = new Map();
@@ -114,10 +116,11 @@ export function attachRoomPresence(io, auth, rooms, config, { clock = Date.now, 
         // Asset fragments have separate, strictly bounded capacity and backpressure.
         const mediaEvent = event === 'assets:chunk';
         if (! (mediaEvent ? mediaAccept(socket.id) : accept(socket.id))) throw new HttpError(429, 'RATE_LIMITED');
-        if (event !== 'room:presence:get' && !game.handles(event) && !assets.handles(event)) throw new HttpError(400, 'EVENT_NOT_AVAILABLE');
+        if (event !== 'room:presence:get' && !game.handles(event) && !assets.handles(event) && !dice.handles(event)) throw new HttpError(400, 'EVENT_NOT_AVAILABLE');
         if (args.length !== 1) throw new HttpError(400, 'INVALID_MESSAGE');
         if (game.handles(event)) { ack({ ok: true, ...game.handle(socket, event, args[0]) }); return; }
         if (assets.handles(event)) { ack({ ok: true, ...assets.handle(socket, event, args[0]) }); return; }
+        if (dice.handles(event)) { ack({ok:true,...dice.handle(socket,event,args[0])}); return; }
         fields(args[0], ['version']);
         if (args[0].version !== 1) throw new HttpError(400, 'INVALID_MESSAGE');
         refresh();
@@ -131,6 +134,7 @@ export function attachRoomPresence(io, auth, rooms, config, { clock = Date.now, 
     if (socket.connected) socket.emit('room:presence', snapshot(roomId));
     if (socket.connected) game.connected(socket);
     if (socket.connected) assets.connected(socket);
+    if (socket.connected) dice.connected(socket);
   });
   const offAuth = auth.onChanged(safeRefresh);
   const offRooms = rooms.onChanged(safeRefresh);

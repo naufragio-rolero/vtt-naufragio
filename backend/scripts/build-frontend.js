@@ -19,6 +19,7 @@ export const publicFiles = Object.freeze([
   ['backend/client/indexeddb-store.js', 'client/indexeddb-store.js'],
   ['backend/shared/token-state.js', 'shared/token-state.js'],
   ['backend/shared/board-bounds.js', 'shared/board-bounds.js'],
+  ['backend/shared/dice.js', 'shared/dice.js'],
   ...['settings.html', 'settings.js', 'settings.css', 'site-config.js', 'site.config.example.json', 'site.config.schema.json']
     .map(name => [`backend/public/${name}`, `settings/${name}`])
 ]);

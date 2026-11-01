@@ -7,6 +7,7 @@ import { io } from './vendor/socket.io-4.8.4.esm.min.js';
 import { initialRoomTokens, publicTokens, socketDestination } from './board-model.js';
 import { initQr } from './qr.js';
 import { insideBounds, mapBounds } from '../backend/shared/board-bounds.js';
+import { parseDice } from '../backend/shared/dice.js';
 
 if (!window.NaufragioBoard) await new Promise(resolve => window.addEventListener('naufragio:board:ready', resolve, { once: true }));
 const board = window.NaufragioBoard;
@@ -19,6 +20,7 @@ let assetClient = null, mediaStore = null, mediaSource = null, lastPublishedEpoc
 let publishQueue = Promise.resolve();
 let presence = [];
 let scene = {revision:0,mode:'map',bounds:null,sizes:{}};
+let sharedRolls = [], localRolls = [], diceBusy = false;
 async function command(event, body = {}) {
   if (!socket?.connected || !room) throw new Error('DIRECTOR_NOT_READY');
   const answer = await socket.timeout(12000).emitWithAck(event,{version:1,roomId:room.room.id,...body});
@@ -39,6 +41,10 @@ const errors = {
   OUTSIDE_BOARD: 'Fuera del área jugable. Se conserva la última posición válida.',
   TOKENS_OUTSIDE_BOARD: 'Hay fichas fuera del área propuesta. Ajusta sus posiciones o cambia/desactiva los límites antes de confirmar.',
   STALE_SCENE: 'Los límites han cambiado. Reabre el panel para actualizarlos.',
+  INVALID_DICE: 'Notación inválida. Usa 1–50 dados d4, d6, d8, d10, d12, d20 o d100 y modificador entre -1000 y 1000.',
+  DICE_RATE_LIMITED: 'Máximo seis tiradas cada diez segundos. Espera antes de lanzar de nuevo.',
+  ROLL_REPLAYED: 'La petición de tirada ya se utilizó. Consulta el historial antes de repetir.',
+  STALE_ROLL: 'Petición de tirada caducada. Comprueba la hora del dispositivo y vuelve a lanzar.',
   HASH_MISMATCH: 'La imagen no coincide con SHA-256.', TRANSFER_BUSY: 'Hay demasiadas transferencias.', ASSET_SOURCE_MISMATCH: 'La imagen del director no coincide con lo publicado.'
 };
 function status(message, error = false) {
@@ -82,6 +88,7 @@ function sessionView() {
   get('accountId').value = session?.user.id || '';
 }
 function roomView() {
+  renderDice();
   document.querySelector('.table-title h1').textContent = room?.room.name || 'Mesa sin nombre';
   document.querySelector('.topbar-overline').textContent = room ? 'PARTIDA COMPARTIDA' : 'TABLERO LOCAL';
   get('tableModeLabel').textContent = room ? 'COMPARTIDA' : 'LOCAL';
@@ -120,6 +127,7 @@ async function move(id, point) {
 }
 async function leave() {
   qrControls?.reset();
+  sharedRolls = [];
   generation++; const old = client, oldStorage = storage;
   assetClient?.close(); assetClient = null; mediaStore = null; mediaSource = null; lastPublishedEpoch = null;
   client = null; socket?.disconnect(); socket = null; storage = null; room = null; rights = null; pending.clear(); members = []; presence = []; renderPeople();
@@ -172,6 +180,8 @@ async function enter(selected, initialTokens, admissionCode, initialMedia) {
   socket = io(destination.origin, { path: destination.path, autoConnect: false, forceNew: true, reconnection: true,
     auth: { token: session.token, roomId: room.room.id } });
   const live = socket;
+  live.on('dice:history', value => { if (current === generation) { sharedRolls = value.rolls; renderDice(); } });
+  live.on('dice:result', value => { if (current === generation) { sharedRolls = [value.roll,...sharedRolls.filter(r=>r.id!==value.roll.id)].slice(0,50); renderDice(); } });
   live.on('room:scene', value => { if (current === generation) { scene = value; board.applyBounds(value); } });
   storage = room.isOwner ? createIndexedDbStore(`${config.apiBaseUrl.replace(/\/$/, '')}|${session.user.id}|${room.room.id}`) : null;
   client = createTokenClient(live, { roomId: room.room.id, director: room.isOwner, store: storage, initialTokens,
@@ -292,6 +302,7 @@ async function refreshMembers() {
 }
 get('tableAssignments').append(get('assignForm'));
 function togglePlayers(open) {
+  if (open) { get('dicePanel').hidden = true; get('openDice').setAttribute('aria-expanded','false'); }
   get('playersPanel').hidden = !open; get('openPlayers').setAttribute('aria-expanded', String(open));
   if (open) get('closePlayers').focus(); else get('openPlayers').focus();
 }
@@ -414,6 +425,55 @@ get('assignedToken').addEventListener('change', () => {
   get('sharedTokenName').value = token.name;
   get('sharedTokenColor').value = token.color;
   get('sharedTokenSize').value = String(token.size);
+});
+
+function renderDice() {
+  const allowed = !room || Boolean(socket?.connected && client?.state.ready && (rights?.isOwner || rights?.diceAllowed));
+  get('rollDice').disabled = diceBusy || !allowed;
+  get('diceMode').textContent = room ? (allowed ? 'Pública para la sala · resultado verificado por el servidor' : 'Pública para la sala · sin permiso o esperando conexión con el director') : 'Tirada local · solo este navegador, sin verificación del servidor';
+  get('diceHistory').replaceChildren();
+  for (const roll of room ? sharedRolls : localRolls) {
+    const item = document.createElement('li'); item.dataset.rollId = roll.id;
+    const modifier = roll.modifier ? ` ${roll.modifier > 0 ? '+' : '−'} ${Math.abs(roll.modifier)}` : '';
+    item.textContent = `${roll.author.name} · ${roll.notation}: [${roll.results.join(', ')}]${modifier} = ${roll.total} · ${new Date(roll.time).toLocaleTimeString()} · ${roll.verified ? 'Servidor' : 'Local'}`;
+    get('diceHistory').append(item);
+  }
+}
+get('openDice').addEventListener('click', () => {
+  const open = get('dicePanel').hidden;
+  get('dicePanel').hidden = !open; get('openDice').setAttribute('aria-expanded',String(open));
+  if (open) { get('playersPanel').hidden = true; get('openPlayers').setAttribute('aria-expanded','false'); get('diceNotation').focus(); }
+  renderDice();
+});
+function closeDice() { get('dicePanel').hidden = true; get('openDice').setAttribute('aria-expanded','false'); get('openDice').focus(); }
+get('closeDice').addEventListener('click',closeDice);
+get('dicePanel').addEventListener('keydown', event => { if (event.key==='Escape') closeDice(); });
+for (const id of ['dieSides','dieCount','dieModifier']) get(id).addEventListener('input', () => {
+  const modifier = Number(get('dieModifier').value);
+  get('diceNotation').value = `${get('dieCount').value}d${get('dieSides').value}${modifier ? (modifier > 0 ? '+' : '') + modifier : ''}`;
+});
+get('diceForm').addEventListener('submit', async event => {
+  event.preventDefault(); if (diceBusy || get('rollDice').disabled) return;
+  diceBusy = true; renderDice();
+  try {
+    const notation = get('diceNotation').value;
+    let dice; try { dice = parseDice(notation); } catch { throw new Error('INVALID_DICE'); }
+    get('dieSides').value = String(dice.sides); get('dieCount').value = String(dice.count); get('dieModifier').value = String(dice.modifier);
+    if (room) {
+      get('diceStatus').textContent = 'Esperando resultado del servidor…';
+      await command('dice:roll',{eventId:crypto.randomUUID(),issuedAt:Date.now(),notation});
+    } else {
+      const sample = () => {
+        const data = new Uint32Array(1), cap = Math.floor(4294967296/dice.sides)*dice.sides;
+        do { crypto.getRandomValues(data); } while (data[0]>=cap);
+        return data[0]%dice.sides+1;
+      };
+      const results = Array.from({length:dice.count},sample);
+      localRolls = [{id:crypto.randomUUID(),author:{name:get('profileName').textContent||'Mesa local'},notation,...dice,results,total:results.reduce((a,b)=>a+b,0)+dice.modifier,time:Date.now(),verified:false},...localRolls].slice(0,50);
+    }
+    get('diceStatus').textContent = 'Tirada recibida en el historial.';
+  } catch(error) { get('diceStatus').textContent = describe(error); }
+  finally { diceBusy = false; renderDice(); }
 });
 
 let editingTokenId = null;

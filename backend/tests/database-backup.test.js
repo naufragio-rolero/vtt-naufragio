@@ -12,7 +12,7 @@ test('online SQLite backup includes committed WAL metadata, preserves source and
   const source=join(root,'source.sqlite'),dest=join(root,'snapshot.sqlite'),store=openStorage(source);t.after(async()=>{store.close();await rm(root,{recursive:true,force:true});});
   store.db.prepare("INSERT INTO users VALUES ('synthetic','synthetic','hash','admin',0,1)").run();
   await backupDatabase(source,dest);
-  const copy=new DatabaseSync(dest,{readOnly:true});try{assert.equal(copy.prepare('SELECT count(*) AS n FROM users').get().n,1);assert.equal(copy.prepare('PRAGMA user_version').get().user_version,4);}finally{copy.close();}
+  const copy=new DatabaseSync(dest,{readOnly:true});try{assert.equal(copy.prepare('SELECT count(*) AS n FROM users').get().n,1);assert.equal(copy.prepare('PRAGMA user_version').get().user_version,7);}finally{copy.close();}
   assert.equal(store.db.prepare('SELECT count(*) AS n FROM users').get().n,1);
   await assert.rejects(backupDatabase(source,dest));await assert.rejects(backupDatabase(source,source));
 });
