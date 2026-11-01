@@ -1,0 +1,198 @@
+{
+  "at": "2026-11-01T12:43:29.561Z",
+  "ref": "4a6ba2c10fbb0bd0a0dd660ad165b152e9ca0000",
+  "files": [
+    {
+      "path": "beta/app.js",
+      "status": 200,
+      "sha256": "d9da45ea2a16c4d878c2f8f8a7e77ce2d9d0fb0a9320c2af8dc9def5f62ca053",
+      "expectedSha256": "d9da45ea2a16c4d878c2f8f8a7e77ce2d9d0fb0a9320c2af8dc9def5f62ca053",
+      "matches": true
+    },
+    {
+      "path": "beta/client/asset-client.js",
+      "status": 200,
+      "sha256": "8d5b5a56df0a216f668ef33fd6538eab3e152a66bda62184e05efc46aca8800f",
+      "expectedSha256": "8d5b5a56df0a216f668ef33fd6538eab3e152a66bda62184e05efc46aca8800f",
+      "matches": true
+    },
+    {
+      "path": "beta/client/indexeddb-store.js",
+      "status": 200,
+      "sha256": "e6e064d1a04cfd70e90d635c0f7794fdd7eccf24fd603f95b2979b75a9fcab93",
+      "expectedSha256": "e6e064d1a04cfd70e90d635c0f7794fdd7eccf24fd603f95b2979b75a9fcab93",
+      "matches": true
+    },
+    {
+      "path": "beta/client/token-client.js",
+      "status": 200,
+      "sha256": "6a38940cf6fedcdc5abc7a21f23ae9b5010593ffa1cfeb967414e57989c1f416",
+      "expectedSha256": "6a38940cf6fedcdc5abc7a21f23ae9b5010593ffa1cfeb967414e57989c1f416",
+      "matches": true
+    },
+    {
+      "path": "beta/frontend/board-model.js",
+      "status": 200,
+      "sha256": "291623bb89924ab22e6d82658f06ae97502e1178d062ed90978b3f31ad806491",
+      "expectedSha256": "291623bb89924ab22e6d82658f06ae97502e1178d062ed90978b3f31ad806491",
+      "matches": true
+    },
+    {
+      "path": "beta/frontend/join.css",
+      "status": 200,
+      "sha256": "e0c22a1c9f33aa58a6af944d60a63a0367511221ece995c278d1bdabfee416e5",
+      "expectedSha256": "e0c22a1c9f33aa58a6af944d60a63a0367511221ece995c278d1bdabfee416e5",
+      "matches": true
+    },
+    {
+      "path": "beta/frontend/join.js",
+      "status": 200,
+      "sha256": "9207f0162de78ae33b7373b91c880c5dbe467fd76b3eb96de08a3ed771729186",
+      "expectedSha256": "9207f0162de78ae33b7373b91c880c5dbe467fd76b3eb96de08a3ed771729186",
+      "matches": true
+    },
+    {
+      "path": "beta/frontend/multiplayer.js",
+      "status": 200,
+      "sha256": "6077ab0ddf26bc2810a4ba421fcecf4394b13d5bc3940c24a0b4c450018820a6",
+      "expectedSha256": "6077ab0ddf26bc2810a4ba421fcecf4394b13d5bc3940c24a0b4c450018820a6",
+      "matches": true
+    },
+    {
+      "path": "beta/frontend/qr.js",
+      "status": 200,
+      "sha256": "4c7b6ac9bbbb490951373140a1512b2eb2160996f2b249129d7f159f8043b7ee",
+      "expectedSha256": "4c7b6ac9bbbb490951373140a1512b2eb2160996f2b249129d7f159f8043b7ee",
+      "matches": true
+    },
+    {
+      "path": "beta/frontend/room-media-store.js",
+      "status": 200,
+      "sha256": "801078417b2ee3f800d6888acc9d083e4323a4f5fbd66550f256ed6b2a90a933",
+      "expectedSha256": "801078417b2ee3f800d6888acc9d083e4323a4f5fbd66550f256ed6b2a90a933",
+      "matches": true
+    },
+    {
+      "path": "beta/frontend/vendor/qrcode-LICENSE.txt",
+      "status": 200,
+      "sha256": "3a850fa5f08101db6f40676c2786e10bd2cd5fff7b12ffdf1e0c434d4e49d90c",
+      "expectedSha256": "3a850fa5f08101db6f40676c2786e10bd2cd5fff7b12ffdf1e0c434d4e49d90c",
+      "matches": true
+    },
+    {
+      "path": "beta/frontend/vendor/qrcode-generator-2.0.4.js",
+      "status": 200,
+      "sha256": "ea91d7118a5395289170da848b7c6758b996163bfbccf312591ab65a4911b7c0",
+      "expectedSha256": "ea91d7118a5395289170da848b7c6758b996163bfbccf312591ab65a4911b7c0",
+      "matches": true
+    },
+    {
+      "path": "beta/frontend/vendor/socket.io-4.8.4.esm.min.js",
+      "status": 200,
+      "sha256": "771c3872e7d9bf81020615fda67ef0fd2aa61fcaf1990100714a46fa2c39f8a1",
+      "expectedSha256": "771c3872e7d9bf81020615fda67ef0fd2aa61fcaf1990100714a46fa2c39f8a1",
+      "matches": true
+    },
+    {
+      "path": "beta/frontend/vendor/socket.io-LICENSE.txt",
+      "status": 200,
+      "sha256": "73cb68c437d59e066f9386ef97be57298df4db119fdbd7d7150817c6dbd9f189",
+      "expectedSha256": "73cb68c437d59e066f9386ef97be57298df4db119fdbd7d7150817c6dbd9f189",
+      "matches": true
+    },
+    {
+      "path": "beta/index.html",
+      "status": 200,
+      "sha256": "7fa09c470f5f9c75ff1e6423a2e86d2692729ca5dac3950bfbc2a0f52827f071",
+      "expectedSha256": "7fa09c470f5f9c75ff1e6423a2e86d2692729ca5dac3950bfbc2a0f52827f071",
+      "matches": true
+    },
+    {
+      "path": "beta/join.html",
+      "status": 200,
+      "sha256": "fb186f5df54307d4c6544d7cf105ab60c4b9e7dd477b988c2d544a78c2ed0ffd",
+      "expectedSha256": "fb186f5df54307d4c6544d7cf105ab60c4b9e7dd477b988c2d544a78c2ed0ffd",
+      "matches": true
+    },
+    {
+      "path": "beta/manifest.json",
+      "status": 200,
+      "sha256": "cae91cbdcd247cb7d9bd03ec0a72e7555e462e878bfbf2646d9c1b5c266c768c",
+      "expectedSha256": "cae91cbdcd247cb7d9bd03ec0a72e7555e462e878bfbf2646d9c1b5c266c768c",
+      "matches": true
+    },
+    {
+      "path": "beta/network-check.html",
+      "status": 200,
+      "sha256": "0902b3d1ee97dbd8d6746728b06cd3aeb7a2f04cf733fa24e641d15c468b4e09",
+      "expectedSha256": "0902b3d1ee97dbd8d6746728b06cd3aeb7a2f04cf733fa24e641d15c468b4e09",
+      "matches": true
+    },
+    {
+      "path": "beta/settings/settings.css",
+      "status": 200,
+      "sha256": "c8717f3f13d02fa120d62323c5b02068e397f16ff219c8c41abd989ca6a495fc",
+      "expectedSha256": "c8717f3f13d02fa120d62323c5b02068e397f16ff219c8c41abd989ca6a495fc",
+      "matches": true
+    },
+    {
+      "path": "beta/settings/settings.html",
+      "status": 200,
+      "sha256": "f1008811ff14ff231fb688551600294b6e95450849e3117e47429fa519faf8b3",
+      "expectedSha256": "f1008811ff14ff231fb688551600294b6e95450849e3117e47429fa519faf8b3",
+      "matches": true
+    },
+    {
+      "path": "beta/settings/settings.js",
+      "status": 200,
+      "sha256": "9810d183efc43f20e389a86ffe5da8266683f46e8f724228b6ce46fe6d1c0399",
+      "expectedSha256": "9810d183efc43f20e389a86ffe5da8266683f46e8f724228b6ce46fe6d1c0399",
+      "matches": true
+    },
+    {
+      "path": "beta/settings/site-config.js",
+      "status": 200,
+      "sha256": "eeaf5d84bf3886a7178a95110b7ef6799defe794d8199d8d21c7887e547c1da3",
+      "expectedSha256": "eeaf5d84bf3886a7178a95110b7ef6799defe794d8199d8d21c7887e547c1da3",
+      "matches": true
+    },
+    {
+      "path": "beta/settings/site.config.example.json",
+      "status": 200,
+      "sha256": "f65ca783f8eb619c8e106a1cd3acc812a1ab1270c2f638c16932116da9201a30",
+      "expectedSha256": "f65ca783f8eb619c8e106a1cd3acc812a1ab1270c2f638c16932116da9201a30",
+      "matches": true
+    },
+    {
+      "path": "beta/settings/site.config.schema.json",
+      "status": 200,
+      "sha256": "26063ebfe0aede6e50a8d0e659045efb51775ddfa9d6383ab59507dcb711e031",
+      "expectedSha256": "26063ebfe0aede6e50a8d0e659045efb51775ddfa9d6383ab59507dcb711e031",
+      "matches": true
+    },
+    {
+      "path": "beta/shared/token-state.js",
+      "status": 200,
+      "sha256": "a02b602a19305c447c7fdf78e6adbcc17d06b8b48763bfac7174a392311fd8cc",
+      "expectedSha256": "a02b602a19305c447c7fdf78e6adbcc17d06b8b48763bfac7174a392311fd8cc",
+      "matches": true
+    },
+    {
+      "path": "beta/site.config.json",
+      "status": 200,
+      "sha256": "2d0635f7fa118e6e41459739a09593e7448158618bc5b26fe3cef72daed1ea12",
+      "expectedSha256": "2d0635f7fa118e6e41459739a09593e7448158618bc5b26fe3cef72daed1ea12",
+      "matches": true
+    },
+    {
+      "path": "beta/styles.css",
+      "status": 200,
+      "sha256": "2b0e2fc01b997c8463668f7ce56e405000afa3ea05d4d1bba6b42a9be7130b4b",
+      "expectedSha256": "2b0e2fc01b997c8463668f7ce56e405000afa3ea05d4d1bba6b42a9be7130b4b",
+      "matches": true
+    }
+  ],
+  "allMatch": true,
+  "apiHealthStatus": 403,
+  "publishedByThisRun": false
+}

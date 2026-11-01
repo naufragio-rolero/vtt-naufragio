@@ -1,0 +1,120 @@
+(node:6239) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# Subtest: fractional and offset rectangles include the full visual token radius
+ok 1 - fractional and offset rectangles include the full visual token radius
+  ---
+  duration_ms: 98.644188
+  type: 'test'
+  ...
+# Subtest: authoritative bounds reject direct wire movement, preserve versions, share state and can be disabled
+ok 2 - authoritative bounds reject direct wire movement, preserve versions, share state and can be disabled
+  ---
+  duration_ms: 12112.321962
+  type: 'test'
+  ...
+# Subtest: participant cannot change a room scene even with a forged owner epoch
+ok 3 - participant cannot change a room scene even with a forged owner epoch
+  ---
+  duration_ms: 11376.637034
+  type: 'test'
+  ...
+# Subtest: strict dice parser supports all basic dice, counts and signed modifiers without code evaluation
+ok 4 - strict dice parser supports all basic dice, counts and signed modifiers without code evaluation
+  ---
+  duration_ms: 6.560147
+  type: 'test'
+  ...
+# Subtest: one server-generated roll reaches every authorized peer identically and survives reconnection
+ok 5 - one server-generated roll reaches every authorized peer identically and survives reconnection
+  ---
+  duration_ms: 11641.8011
+  type: 'test'
+  ...
+# Subtest: server rejects forged results, unsupported event names, stale requests and excessive rate
+ok 6 - server rejects forged results, unsupported event names, stale requests and excessive rate
+  ---
+  duration_ms: 11758.251516
+  type: 'test'
+  ...
+# Subtest: bounded recent history retains 50 results and permits d100 after the rate window
+ok 7 - bounded recent history retains 50 results and permits d100 after the rate window
+  ---
+  duration_ms: 12256.262896
+  type: 'test'
+  ...
+# Subtest: SQLite history survives backend restart without retaining credentials
+ok 8 - SQLite history survives backend restart without retaining credentials
+  ---
+  duration_ms: 11671.859943
+  type: 'test'
+  ...
+# Subtest: QR approval/rejection, single claim, normal membership and no elevation or cross-room access
+ok 9 - QR approval/rejection, single claim, normal membership and no elevation or cross-room access
+  ---
+  duration_ms: 13634.295778
+  type: 'test'
+  ...
+# Subtest: QR expiry, pause/reopen, rotation and revocation do not admit pending requests
+ok 10 - QR expiry, pause/reopen, rotation and revocation do not admit pending requests
+  ---
+  duration_ms: 11329.136643
+  type: 'test'
+  ...
+# Subtest: temporary member disconnects immediately on expulsion, cannot reuse session, and expiry cleans identities
+ok 11 - temporary member disconnects immediately on expulsion, cannot reuse session, and expiry cleans identities
+  ---
+  duration_ms: 11412.892667
+  type: 'test'
+  ...
+# Subtest: guest inputs, capacities and HTTP request attempts are bounded
+ok 12 - guest inputs, capacities and HTTP request attempts are bounded
+  ---
+  duration_ms: 11792.380747
+  type: 'test'
+  ...
+# Subtest: account socket capacity cannot be exhausted by reusing a guest session in many tabs
+ok 13 - account socket capacity cannot be exhausted by reusing a guest session in many tabs
+  ---
+  duration_ms: 12598.741381
+  type: 'test'
+  ...
+# Subtest: phase10 migration backs up v4 and preserves requests; rollback copy remains v4
+ok 14 - phase10 migration backs up v4 and preserves requests; rollback copy remains v4
+  ---
+  duration_ms: 258.020277
+  type: 'test'
+  ...
+# Subtest: rollback copy preserves current identities, requests and checkpoints; original v7 data stays intact
+ok 15 - rollback copy preserves current identities, requests and checkpoints; original v7 data stays intact
+  ---
+  duration_ms: 237.742044
+  type: 'test'
+  ...
+# Subtest: schema 3 migrates to 4 and temporary admissions and room-scoped sessions survive restart
+ok 16 - schema 3 migrates to 4 and temporary admissions and room-scoped sessions survive restart
+  ---
+  duration_ms: 11558.41034
+  type: 'test'
+  ...
+# Subtest: schema 1 migrates transactionally without losing existing identity metadata
+ok 17 - schema 1 migrates transactionally without losing existing identity metadata
+  ---
+  duration_ms: 355.016098
+  type: 'test'
+  ...
+# Subtest: restart preserves ownership, hashed admissions and grants while presence starts waiting
+ok 18 - restart preserves ownership, hashed admissions and grants while presence starts waiting
+  ---
+  duration_ms: 15396.634191
+  type: 'test'
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 162018.893875

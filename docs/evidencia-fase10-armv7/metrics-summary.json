@@ -1,0 +1,108 @@
+{
+  "stages": {
+    "core": {
+      "samples": 115,
+      "observedSeconds": 162.488,
+      "maxCombinedRssMiB": 135.6796875,
+      "maxNodeRssMiB": 118.62890625,
+      "maxSupervisorRssMiB": 17.0546875,
+      "minAvailableMiB": 423.875,
+      "maxTemperatureC": 64.99,
+      "nodeCpuSecondsObserved": 139.04,
+      "servicesUnchanged": true
+    },
+    "authority": {
+      "samples": 231,
+      "observedSeconds": 328.893,
+      "maxCombinedRssMiB": 125.3515625,
+      "maxNodeRssMiB": 108.28515625,
+      "maxSupervisorRssMiB": 17.06640625,
+      "minAvailableMiB": 354.2421875,
+      "maxTemperatureC": 68.756,
+      "nodeCpuSecondsObserved": 283.29,
+      "servicesUnchanged": true
+    },
+    "media": {
+      "samples": 36,
+      "observedSeconds": 50.286,
+      "maxCombinedRssMiB": 119.2890625,
+      "maxNodeRssMiB": 102.25,
+      "maxSupervisorRssMiB": 17.0390625,
+      "minAvailableMiB": 459.76171875,
+      "maxTemperatureC": 66.604,
+      "nodeCpuSecondsObserved": 43.37,
+      "servicesUnchanged": true
+    },
+    "functional": {
+      "samples": 134,
+      "observedSeconds": 175.918,
+      "maxCombinedRssMiB": 116.43359375,
+      "maxNodeRssMiB": 97.58984375,
+      "maxSupervisorRssMiB": 18.8671875,
+      "minAvailableMiB": 319.578125,
+      "maxTemperatureC": 67.68,
+      "nodeCpuSecondsObserved": 25.14,
+      "servicesUnchanged": true
+    }
+  },
+  "totalSamples": 516,
+  "web": {
+    "heavensgate": {
+      "samples": 88,
+      "codes": [
+        "200"
+      ],
+      "medianMs": 328.62,
+      "maxMs": 393.82
+    },
+    "forum": {
+      "samples": 87,
+      "codes": [
+        "200"
+      ],
+      "medianMs": 321.96,
+      "maxMs": 438.59
+    },
+    "proxy": {
+      "samples": 87,
+      "codes": [
+        "404"
+      ],
+      "medianMs": 226.91,
+      "maxMs": 402.03
+    },
+    "bibprof": {
+      "samples": 85,
+      "codes": [
+        "200"
+      ],
+      "medianMs": 341.73,
+      "maxMs": 541.16
+    },
+    "ordenanthia": {
+      "samples": 85,
+      "codes": [
+        "200"
+      ],
+      "medianMs": 244.75,
+      "maxMs": 384.02
+    },
+    "gallery": {
+      "samples": 84,
+      "codes": [
+        "200"
+      ],
+      "medianMs": 237.33,
+      "maxMs": 354.28
+    }
+  },
+  "thresholds": {
+    "combinedRssMiB": 160,
+    "minimumAvailableMiB": 192,
+    "minimumInitialAvailableMiB": 384,
+    "temperatureC": 75,
+    "watchdogSeconds": 10,
+    "cpuQuotaPercent": 100
+  },
+  "threeHourPhase10Validated": false
+}

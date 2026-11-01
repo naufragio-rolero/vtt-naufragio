@@ -1,0 +1,16 @@
+{
+  "result": "pass",
+  "arch": "arm",
+  "node": "v22.23.4",
+  "checks": [
+    "two pending requests, approve/reject, memberships and permissions",
+    "public contextual appearance manifest, explicit map publication, SHA-256 to two peers",
+    "offset map bounds, fractional custom bounds, forged movement rejection and official commit",
+    "identical verified dice, replay/forgery/permission denial, history and map after reconnect"
+  ],
+  "mapBytes": 12582912,
+  "mapSha256": "a2e3746c1868784497823516735ecbe951f11fecfa813cf5e46425e62aacfe59",
+  "twoRecipientTransferMs": 46397,
+  "clientDriverMaxRssKiB": 243068,
+  "publicBrowserConnection": false
+}

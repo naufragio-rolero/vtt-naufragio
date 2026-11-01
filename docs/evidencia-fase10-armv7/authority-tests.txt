@@ -1,0 +1,151 @@
+(node:6707) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# Subtest: presence messages validate versions, reject extra fields and enforce event limits
+ok 1 - presence messages validate versions, reject extra fields and enforce event limits
+  ---
+  duration_ms: 12037.849558
+  type: 'test'
+  ...
+# Subtest: both transports enforce identity, membership, Origin and strict handshakes
+ok 2 - both transports enforce identity, membership, Origin and strict handshakes
+  ---
+  duration_ms: 12245.393362
+  type: 'test'
+  ...
+# Subtest: disconnect waits without electing a participant; owner reconnection preserves authority
+ok 3 - disconnect waits without electing a participant; owner reconnection preserves authority
+  ---
+  duration_ms: 12170.64031
+  type: 'test'
+  ...
+# Subtest: presence and grants are isolated between parties; unsupported game messages stay closed
+ok 4 - presence and grants are isolated between parties; unsupported game messages stay closed
+  ---
+  duration_ms: 15451.12075
+  type: 'test'
+  ...
+# Subtest: membership revocation disconnects just that party and cannot be undone with the old code
+ok 5 - membership revocation disconnects just that party and cannot be undone with the old code
+  ---
+  duration_ms: 11495.150617
+  type: 'test'
+  ...
+# Subtest: logout and role changes invalidate live authority without promoting other accounts
+ok 6 - logout and role changes invalidate live authority without promoting other accounts
+  ---
+  duration_ms: 13419.454453
+  type: 'test'
+  ...
+# Subtest: session expiration removes the director and later the participant
+ok 7 - session expiration removes the director and later the participant
+  ---
+  duration_ms: 13512.813781
+  type: 'test'
+  ...
+# Subtest: three simulated clients converge after simultaneous moves, director moves and a missed event
+ok 8 - three simulated clients converge after simultaneous moves, director moves and a missed event
+  ---
+  duration_ms: 15889.746606
+  type: 'test'
+  ...
+# Two simultaneous requests → three clients at revision 2: 242.30 ms (Windows loopback)
+# Subtest: duplicate requests/acceptances commit once; altered IDs and obsolete versions fail
+ok 9 - duplicate requests/acceptances commit once; altered IDs and obsolete versions fail
+  ---
+  duration_ms: 15481.889597
+  type: 'test'
+  ...
+# Subtest: simultaneous requests on one token conflict and can retry against the confirmed version
+ok 10 - simultaneous requests on one token conflict and can retry against the confirmed version
+  ---
+  duration_ms: 15218.12728
+  type: 'test'
+  ...
+# Subtest: director rejection does not alter official state and cannot later be accepted
+ok 11 - director rejection does not alter official state and cannot later be accepted
+  ---
+  duration_ms: 15354.561346
+  type: 'test'
+  ...
+# Subtest: movement flags and assignments are both required; pending grants are rechecked
+ok 12 - movement flags and assignments are both required; pending grants are rechecked
+  ---
+  duration_ms: 15377.215427
+  type: 'test'
+  ...
+# Subtest: assignment versions prevent stale regrant and membership revocation clears assignments
+ok 13 - assignment versions prevent stale regrant and membership revocation clears assignments
+  ---
+  duration_ms: 15450.514976
+  type: 'test'
+  ...
+# Subtest: participants cannot impersonate the director, submit content or route to another party
+ok 14 - participants cannot impersonate the director, submit content or route to another party
+  ---
+  duration_ms: 15482.813559
+  type: 'test'
+  ...
+# Subtest: disconnect suspends movements; a new device or stale snapshot cannot reclaim authority
+ok 15 - disconnect suspends movements; a new device or stale snapshot cannot reclaim authority
+  ---
+  duration_ms: 15304.912381
+  type: 'test'
+  ...
+# Subtest: expired requests and disconnected requesters cannot be accepted later
+ok 16 - expired requests and disconnected requesters cannot be accepted later
+  ---
+  duration_ms: 15413.498773
+  type: 'test'
+  ...
+# Subtest: sync snapshots must match the durable checkpoint and only reach the requested member
+ok 17 - sync snapshots must match the durable checkpoint and only reach the requested member
+  ---
+  duration_ms: 15385.012661
+  type: 'test'
+  ...
+# Subtest: failed local writes suspend authority; a staged committed state recovers after lost completion
+ok 18 - failed local writes suspend authority; a staged committed state recovers after lost completion
+  ---
+  duration_ms: 11714.822828
+  type: 'test'
+  ...
+# Subtest: client without local state refuses authority instead of inventing IndexedDB recovery
+ok 19 - client without local state refuses authority instead of inventing IndexedDB recovery
+  ---
+  duration_ms: 15884.873768
+  type: 'test'
+  ...
+# Subtest: another login cannot replace a verified director until it proves the same local state
+ok 20 - another login cannot replace a verified director until it proves the same local state
+  ---
+  duration_ms: 15490.990878
+  type: 'test'
+  ...
+# Subtest: initial proof validates signatures, token bounds and shape before creating a checkpoint
+ok 21 - initial proof validates signatures, token bounds and shape before creating a checkpoint
+  ---
+  duration_ms: 11423.592482
+  type: 'test'
+  ...
+# Subtest: a confirmation must match the pending coordinates, revision and computed checkpoint
+ok 22 - a confirmation must match the pending coordinates, revision and computed checkpoint
+  ---
+  duration_ms: 15382.901472
+  type: 'test'
+  ...
+# Subtest: an uncommitted local journal is discarded when recovering the confirmed checkpoint
+ok 23 - an uncommitted local journal is discarded when recovering the confirmed checkpoint
+  ---
+  duration_ms: 11512.548779
+  type: 'test'
+  ...
+1..23
+# tests 23
+# suites 0
+# pass 23
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 328573.664563

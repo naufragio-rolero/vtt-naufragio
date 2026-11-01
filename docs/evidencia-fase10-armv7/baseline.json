@@ -1,0 +1,16 @@
+{
+  "utc": "2026-11-01T12:20:16Z",
+  "release": "/opt/naufragio-vtt/releases/phase9-beta",
+  "releaseFiles": 426,
+  "releaseManifestSha256": "65698ebbe561683e26ebeac380ac226c04b84b2e712e37217cdd494831882043",
+  "runtimeSha256": "407b390f1667066e55cb36c8622e79d6d488aed417d072487bfbe92f47829d6b",
+  "supervisorSha256": "66493462bcadc49f7c0e994a076724e3f45c86fa22245ddd298bd91a69fa6c51",
+  "loadavg": "0.35 0.15 0.11 1/268 6184",
+  "meminfo": "MemTotal:         942116 kB\nMemFree:          129692 kB\nMemAvailable:     525556 kB\nBuffers:           88700 kB\nCached:           340236 kB\nSwapCached:         7404 kB\nActive:           225240 kB\nInactive:         449464 kB\nActive(anon):     203580 kB\nInactive(anon):    71048 kB\nActive(file):      21660 kB\nInactive(file):   378416 kB\nUnevictable:           0 kB\nMlocked:               0 kB\nSwapTotal:        942076 kB\nSwapFree:         679152 kB\nZswap:                 0 kB\nZswapped:              0 kB\nDirty:              5352 kB\nWriteback:             0 kB\nAnonPages:        242272 kB\nMapped:            84124 kB\nShmem:             28852 kB\nKReclaimable:      61580 kB\nSlab:              89504 kB\nSReclaimable:      61580 kB\nSUnreclaim:        27924 kB\nKernelStack:        2168 kB\nPageTables:         6960 kB\nSecPageTables:         0 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:     1413132 kB\nCommitted_AS:    1904936 kB\nVmallocTotal:    1114112 kB\nVmallocUsed:       12044 kB\nVmallocChunk:          0 kB\nPercpu:              496 kB\nCmaTotal:         262144 kB\nCmaFree:           13556 kB\nBalloon:               0 kB\n",
+  "temperatureC": 59.072,
+  "ssd": {
+    "totalBytes": 117547601920,
+    "availableBytes": 88604024832
+  },
+  "services": "MainPID=31389\nId=apache2.service\nActiveState=active\n\nMainPID=868\nId=mariadb.service\nActiveState=active\n\nMainPID=803\nId=ssh.service\nActiveState=active\n\nMainPID=1029\nId=smbd.service\nActiveState=active\n"
+}

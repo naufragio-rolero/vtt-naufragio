@@ -1,0 +1,59 @@
+{
+  "at": "2026-11-01T12:39:29Z",
+  "architecture": "armv7l",
+  "productionState": "MainPID=0\nActiveState=inactive\nUnitFileState=disabled",
+  "currentRelease": "/opt/naufragio-vtt/releases/phase9-beta",
+  "previousReleaseFilesUnchanged": 426,
+  "realVersion": 4,
+  "adminCount": 1,
+  "realIdentityMatchesBackup": true,
+  "servicePidsAndStatesUnchanged": true,
+  "web": [
+    {
+      "label": "heavensgate",
+      "code": "200",
+      "seconds": 0.219372,
+      "tlsVerified": true
+    },
+    {
+      "label": "forum",
+      "code": "200",
+      "seconds": 0.227032,
+      "tlsVerified": true
+    },
+    {
+      "label": "proxy",
+      "code": "404",
+      "seconds": 0.123801,
+      "tlsVerified": true
+    },
+    {
+      "label": "bibprof",
+      "code": "200",
+      "seconds": 0.250987,
+      "tlsVerified": true
+    },
+    {
+      "label": "ordenanthia",
+      "code": "200",
+      "seconds": 0.150704,
+      "tlsVerified": true
+    },
+    {
+      "label": "gallery",
+      "code": "200",
+      "seconds": 0.120782,
+      "tlsVerified": true
+    }
+  ],
+  "nodeProcesses": "",
+  "port3400Free": true,
+  "runtimeSha256": "407b390f1667066e55cb36c8622e79d6d488aed417d072487bfbe92f47829d6b",
+  "supervisorSha256": "66493462bcadc49f7c0e994a076724e3f45c86fa22245ddd298bd91a69fa6c51",
+  "candidatePrepared": true,
+  "candidateCurrent": false,
+  "frontendPublished": false,
+  "temperatureC": 60.686,
+  "loadavg": "0.17 0.56 0.56 1/271 8559",
+  "ssdAvailableBytes": 88589426688
+}

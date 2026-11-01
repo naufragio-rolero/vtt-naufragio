@@ -1,0 +1,24 @@
+{
+  "codeCommit": "1f19390afd0671e4bf4dd719e1c4a1522101475a",
+  "codeTree": "5c6ea98f9d58b46b211e0d2143f136ed41e24720",
+  "applicationParent": "6a96591d5a5993f6211d9b0f2b8b9d11386b0d0c",
+  "commits": [
+    "1f19390afd0671e4bf4dd719e1c4a1522101475a docs: record phase10 evidence and release plan",
+    "ebcc3d1f39580fda45c6ac442de5f419621c894d feat(release): prepare phase10 and rollback copies",
+    "a2ce974e7f8e6896ae8f6ce1874fa8603df2e682 refactor(ux): keep game controls at the table",
+    "c532dc45415fab876fc769c4de185d7534153563 feat(dice): verify shared rolls on the server",
+    "d0469325ea4a5c3231cea7988285beb2b430734c feat(tokens): edit selected pieces in context",
+    "ab2f59309d7568a77c0b20852c72b0a10f689763 feat(board): confirm maps and enforce scene bounds",
+    "54c09f306ffa215fe20374ec2858fc77012f16ca fix(admission): surface requests at the table"
+  ],
+  "sourceZipSha256": "eca17051896e4554b928a6c57568e041ef1ad686ad76f8973adb721f6899bb99",
+  "dependencyTarSha256": "02cfdace14826197aa880e6ef9c7f3ca543706723ccb52af9626ad94a0108f37",
+  "backendZipSha256": "723519075137292f03ee1255bb6c12ae3af47b23ed900478158f137ae8bd467d",
+  "frontendManifestSha256": "64fad935b3dd0d1c93aa57851aad94bad1b035772d85a5259772439cd00d5f0e",
+  "frontendTarSha256": "169da1e26498fff884f0891d20d631cd8ba3190be9d16618d6552ea822beee51",
+  "apiBaseUrl": "https://api.naufragio.net",
+  "realtimeBaseUrl": "https://api.naufragio.net",
+  "socketPath": "/socket.io",
+  "storageNamespace": "phase9-beta",
+  "published": false
+}

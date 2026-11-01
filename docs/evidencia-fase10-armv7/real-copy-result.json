@@ -1,0 +1,17 @@
+{
+  "at": "2026-11-01T12:30:11Z",
+  "databasePath": "/mnt/ssd/naufragio-vtt/data/naufragio.sqlite",
+  "backupPath": "/mnt/ssd/naufragio-vtt/backups/phase10-1f19390/real-v4.sqlite",
+  "migrationCopy": "/mnt/ssd/naufragio-vtt/backups/phase10-1f19390/migration-v7.sqlite",
+  "rollbackCopy": "/mnt/ssd/naufragio-vtt/backups/phase10-1f19390/rollback-v4.sqlite",
+  "realVersionBefore": 4,
+  "realVersionAfter": 4,
+  "copyVersion": 7,
+  "rollbackVersion": 4,
+  "adminCount": 1,
+  "identitiesAndPermissionsPreserved": true,
+  "realDatabaseUnchanged": true,
+  "releasePrepared": "/opt/naufragio-vtt/releases/phase10-1f19390",
+  "currentUnchanged": true,
+  "frontendPublished": false
+}
