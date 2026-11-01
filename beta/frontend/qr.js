@@ -1,4 +1,4 @@
-import qrcode from './vendor/qrcode-generator-2.0.4.js';
+import qrcode from './vendor/qrcode-generator-2.0.4.js?v=phase10-1f19390';
 
 export function invitationLink(base, value) {
   if (!/^qr_[A-Za-z0-9_-]{43}$/.test(value)) throw new Error('INVALID_INPUT');
@@ -11,43 +11,84 @@ export function drawQr(canvas, link) {
   const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#000';
   for(let r=0;r<count;r++)for(let c=0;c<count;c++)if(code.isDark(r,c))ctx.fillRect((c+4)*scale,(r+4)*scale,scale,scale);
 }
-export function initQr({ api, getRoom, refreshMembers, status }) {
-  const get=id=>document.getElementById(id);let timer=null,epoch=0,roomId=null;
-  const stop=()=>{epoch++;clearTimeout(timer);timer=null;};
-  function reset(){stop();roomId=null;get('qrLink').value='';get('qrRequests').replaceChildren();get('qrCanvas').hidden=true;if(get('qrDialog').open)get('qrDialog').close();}
-  async function refresh(){
-    const current=epoch,id=roomId;if(!id||!get('qrDialog').open)return;
-    try{
-      const value=await api(`/rooms/${id}/admission`);
-      if(current!==epoch)return;
-      get('qrStatus').textContent=value.admission?.open?'Admisión abierta. Aprueba solo a quienes reconozcas.':'Admisión cerrada o caducada.';
-      get('qrRequests').replaceChildren();
-      for(const entry of value.requests){
-        const row=document.createElement('div');row.className='qr-request';row.dataset.requestId=entry.id;
-        const label=document.createElement('span');label.textContent=entry.displayName+' (#'+entry.id.slice(0,6)+') · '+({pending:'Esperando aprobación',approved:'Admitido; esperando conexión',claimed:'Admitido',rejected:'Rechazado'}[entry.state]||entry.state);row.append(label);
-        if(entry.state==='pending')for(const approve of [true,false]){
-          const button=document.createElement('button');button.type='button';button.textContent=approve?'Aprobar':'Rechazar';
-          button.addEventListener('click',()=>void run(async()=>{await api(`/rooms/${id}/admission/${entry.id}`,{method:'POST',body:{approve}});await refresh();await refreshMembers();}));row.append(button);
+export function initQr({ api, getRoom, refreshMembers, status, notify = () => {} }) {
+  const get = id => document.getElementById(id);
+  let timer = null, epoch = 0, roomId = null, flight = null, seen = new Set(), rendered = '';
+  function reset() {
+    epoch++; clearTimeout(timer); timer = null; roomId = null; flight = null; seen = new Set(); rendered = '';
+    get('qrLink').value = ''; get('qrRequests').replaceChildren(); get('pendingCount').textContent = '0';
+    get('qrCanvas').hidden = true;
+    if (get('qrDialog').open) get('qrDialog').close();
+  }
+  async function refresh() {
+    if (!roomId || !getRoom()?.isOwner) return;
+    if (flight) return flight;
+    const current = epoch, id = roomId;
+    clearTimeout(timer);
+    flight = (async () => {
+      try {
+        const value = await api(`/rooms/${id}/admission`);
+        if (current !== epoch) return;
+        get('qrStatus').textContent = value.admission?.open ? 'Admisión abierta. Aprueba solo a quienes reconozcas.' : 'Admisión cerrada o caducada.';
+        const pending = value.requests.filter(entry => entry.state === 'pending');
+        get('pendingCount').textContent = String(pending.length);
+        if (pending.some(entry => !seen.has(entry.id))) { const message = `${pending.length} solicitudes pendientes. Abre Jugadores para revisarlas.`; status(message); notify(message); }
+        for (const entry of value.requests) seen.add(entry.id);
+        const signature = JSON.stringify(value.requests.map(entry=>[entry.id,entry.state,Math.floor((Date.now()-(entry.createdAt||0))/60000)]));
+        if (signature === rendered) return;
+        rendered = signature;
+        get('qrRequests').replaceChildren();
+        for (const entry of value.requests) {
+          const row = document.createElement('div'); row.className = 'qr-request'; row.dataset.requestId = entry.id;
+          const label = document.createElement('span');
+          const age = entry.createdAt == null ? 'antigüedad no disponible (solicitud anterior)' : `hace ${Math.max(0, Math.floor((Date.now() - entry.createdAt) / 60000))} min`;
+          label.textContent = `${entry.displayName} · ${({pending:'Esperando aprobación', approved:'Admitido; esperando conexión', claimed:'Admitido', rejected:'Rechazado'})[entry.state] || entry.state} · ${age}`;
+          row.append(label);
+          if (entry.state === 'pending') for (const approve of [true, false]) {
+            const button = document.createElement('button'); button.type = 'button'; button.textContent = approve ? 'Aprobar' : 'Rechazar';
+            button.addEventListener('click', () => void run(async () => {
+              button.disabled = true;
+              try { await api(`/rooms/${id}/admission/${entry.id}`, { method: 'POST', body: { approve } }); }
+              finally { button.disabled = false; }
+              await refresh(); await refreshMembers();
+            }));
+            row.append(button);
+          }
+          get('qrRequests').append(row);
         }
-        get('qrRequests').append(row);
+      } catch {
+        if (current === epoch) get('admissionNotice').textContent = 'No se pudo actualizar la admisión. Reintentando…';
+      } finally {
+        if (current === epoch) { flight = null; timer = setTimeout(refresh, 3000); }
       }
-    }catch{if(current===epoch)get('qrStatus').textContent='No se pudo actualizar la admisión. Comprueba la conexión.';}
-    finally{if(current===epoch&&get('qrDialog').open){clearTimeout(timer);timer=setTimeout(refresh,3000);}}
+    })();
+    return flight;
   }
-  async function run(work){try{await work();}catch(e){status('No se pudo completar la admisión. Revisa la conexión o vuelve a generar el QR.',true);}}
-  async function generate(){
-    const selected=getRoom();if(!selected?.isOwner)throw new Error('FORBIDDEN');
-    roomId=selected.room.id;
-    const value=await api(`/rooms/${roomId}/admission`,{method:'POST',body:{}});
-    const link=invitationLink(location.href,value.admission.token);get('qrLink').value=link;get('qrCanvas').hidden=false;drawQr(get('qrCanvas'),link);await refresh();
+  async function run(work) { try { await work(); } catch { status('No se pudo completar la admisión. Revisa la conexión y los permisos.', true); } }
+  async function generate() {
+    if (!getRoom()?.isOwner || !roomId) throw new Error('FORBIDDEN');
+    const id = roomId, current = epoch;
+    const value = await api(`/rooms/${id}/admission`, { method: 'POST', body: {} });
+    if (current !== epoch) return;
+    const link = invitationLink(location.href, value.admission.token);
+    get('qrLink').value = link; get('qrCanvas').hidden = false; drawQr(get('qrCanvas'), link); await refresh();
   }
-  get('inviteQr').addEventListener('click',()=>void run(async()=>{stop();get('qrDialog').showModal();if(!roomId||roomId!==getRoom()?.room.id)await generate();else await refresh();}));
-  get('qrNew').addEventListener('click',()=>void run(generate));
-  for(const [button,body]of [['qrPause',{open:false}],['qrOpen',{open:true}],['qrRevoke',{open:false,revoke:true}]])get(button).addEventListener('click',()=>void run(async()=>{
-    await api(`/rooms/${roomId}/admission`,{method:'PATCH',body});if(body.revoke){get('qrLink').value='';get('qrCanvas').hidden=true;}await refresh();
+  get('inviteQr').addEventListener('click', () => void run(async () => {
+    if (!getRoom()?.isOwner) return;
+    get('multiplayerDialog').close(); get('playersPanel').hidden = true;
+    get('qrDialog').showModal(); await refresh();
   }));
-  get('qrCopy').addEventListener('click',()=>void run(async()=>{if(get('qrLink').value)await navigator.clipboard.writeText(get('qrLink').value);}));
-  get('qrClose').addEventListener('click',()=>get('qrDialog').close());get('qrDialog').addEventListener('close',stop);
-  window.addEventListener('pagehide',stop);
-  return {reset};
+  get('qrNew').addEventListener('click', () => void run(generate));
+  for (const [button, body] of [['qrPause', {open:false}], ['qrOpen', {open:true}], ['qrRevoke', {open:false, revoke:true}]]) {
+    get(button).addEventListener('click', () => void run(async () => {
+      if (!getRoom()?.isOwner || !roomId) return;
+      await api(`/rooms/${roomId}/admission`, {method:'PATCH', body});
+      if (body.revoke) { get('qrLink').value = ''; get('qrCanvas').hidden = true; }
+      await refresh();
+    }));
+  }
+  get('qrCopy').addEventListener('click', () => void run(async () => { if (get('qrLink').value) await navigator.clipboard.writeText(get('qrLink').value); }));
+  get('qrClose').addEventListener('click', () => get('qrDialog').close());
+  window.addEventListener('pagehide', reset);
+  return { reset, start() { reset(); if (getRoom()?.isOwner) { roomId = getRoom().room.id; void refresh(); } }, refresh };
 }

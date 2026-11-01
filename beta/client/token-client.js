@@ -1,4 +1,4 @@
-import { snapshot, tokenText, checkpointText, claimText, position } from '../shared/token-state.js';
+import { snapshot, tokenText, checkpointText, claimText, position } from '../shared/token-state.js?v=phase10-1f19390';
 
 const encoder = new TextEncoder();
 const clone = value => structuredClone(value);

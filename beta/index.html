@@ -6,9 +6,9 @@
   <meta name="theme-color" content="#f5f7fa">
   <meta name="description" content="Naufragio VTT: un tablero virtual ligero para juegos de rol.">
   <title>Naufragio VTT · Mesa de prueba</title>
-  <link rel="stylesheet" href="./styles.css?v=0.6.0">
-  <script src="./app.js?v=0.6.0" defer></script>
-  <script type="module" src="./frontend/multiplayer.js"></script>
+  <link rel="stylesheet" href="./styles.css?v=phase10-1f19390">
+  <script src="./app.js?v=phase10-1f19390" defer></script>
+  <script type="module" src="./frontend/multiplayer.js?v=phase10-1f19390"></script>
 </head>
 <body>
   <div class="app-shell">
@@ -107,7 +107,12 @@
           <div><span class="topbar-overline">TABLERO DE PRUEBA</span><h1>Mesa sin nombre</h1></div>
         </div>
         <div class="topbar-actions">
-          <button type="button" class="secondary-button" id="openMultiplayer">Multijugador</button>
+          <button type="button" class="primary-button" id="openMap">Cargar mapa</button>
+          <button type="button" class="secondary-button" id="openBounds">Área jugable</button>
+          <button type="button" class="secondary-button" id="openDice" aria-controls="dicePanel" aria-expanded="false">Dados</button>
+          <button type="button" class="secondary-button" id="openPlayers" aria-controls="playersPanel" aria-expanded="false" hidden>Jugadores <span id="pendingCount" aria-label="Solicitudes pendientes">0</span></button>
+          <button type="button" class="secondary-button" id="tableInvite" hidden>Invitar</button>
+          <button type="button" class="secondary-button" id="openMultiplayer">Partida y ajustes</button>
           <span class="local-chip" id="connectionState"><span class="status-dot"></span> Solo este navegador</span>
           <div class="zoom-controls" aria-label="Controles de zoom">
             <button id="zoomOut" type="button" aria-label="Alejar">−</button>
@@ -119,12 +124,85 @@
       </header>
       <div class="workspace" id="workspace">
         <canvas id="boardCanvas" tabindex="0" aria-label="Tablero virtual con rejilla y tokens. Arrastra los tokens para moverlos."></canvas>
+        <button id="editSelected" type="button" class="secondary-button contextual-edit" hidden>Editar ficha</button>
         <div class="board-hint" id="boardHint" aria-hidden="true"><span class="hint-spark">✥</span> Arrastra los tokens para moverlos <span class="hint-separator">·</span> Arrastra el fondo para desplazarte</div>
         <div class="board-footer"><span id="coordinates">X 0 · Y 0</span><span>Rueda para zoom · Flechas para mover un token</span></div>
       </div>
     </main>
   </div>
 
+  <aside id="playersPanel" class="table-panel" aria-labelledby="playersTitle" hidden>
+    <header><h2 id="playersTitle">Jugadores</h2><button type="button" id="closePlayers">Cerrar panel</button></header>
+    <p id="playersConnection" role="status"></p>
+    <div id="connectedPlayers"></div>
+    <section id="playersAdministration" hidden>
+      <h3>Autorizados y permisos</h3><div id="members"></div>
+      <h3>Solicitudes de acceso</h3><p id="admissionNotice" role="status" aria-live="polite"></p><div id="qrRequests"></div>
+      <div id="tableAssignments"></div>
+    </section>
+  </aside>
+  <aside id="dicePanel" class="table-panel" aria-labelledby="diceTitle" hidden>
+    <header><h2 id="diceTitle">Dados</h2><button id="closeDice" type="button">Cerrar bandeja</button></header>
+    <p id="diceMode" role="status">Tirada local · solo este navegador</p>
+    <form id="diceForm" class="mp-form">
+      <label>Dado<select id="dieSides"><option value="4">d4</option><option value="6" selected>d6</option><option value="8">d8</option><option value="10">d10</option><option value="12">d12</option><option value="20">d20</option><option value="100">d100</option></select></label>
+      <label>Cantidad<input id="dieCount" type="number" min="1" max="50" step="1" value="2" required></label>
+      <label>Modificador<input id="dieModifier" type="number" min="-1000" max="1000" step="1" value="3" required></label>
+      <label>Notación<input id="diceNotation" maxlength="32" value="2d6+3" required autocomplete="off" spellcheck="false" aria-describedby="diceHelp"></label>
+      <p id="diceHelp">Ejemplos: 2d6+3, 1d20, 3d10-2. Máximo 50 dados y modificador ±1000.</p>
+      <button type="submit" id="rollDice">Lanzar</button>
+    </form>
+    <p id="diceStatus" role="status" aria-live="polite"></p>
+    <h3>Tiradas recientes</h3><ol id="diceHistory" aria-label="Historial reciente de tiradas"></ol>
+  </aside>
+  <dialog id="mapDialog" class="multiplayer-dialog" aria-labelledby="mapTitle">
+    <header><h2 id="mapTitle">Gestionar mapa</h2><button type="button" id="closeMapManager">Cancelar</button></header>
+    <p>Selecciona y ajusta una imagen. Solo se guardará o compartirá al confirmar.</p>
+    <div id="mapDrop" tabindex="0" role="button" aria-label="Seleccionar imagen o arrastrar un mapa aquí">Arrastra aquí tu mapa<br><button type="button" id="chooseMap">Seleccionar archivo</button></div>
+    <input type="file" id="mapCandidate" accept="image/png,image/jpeg,image/webp" hidden>
+    <img id="mapPreview" alt="Vista previa del mapa" hidden>
+    <p id="mapCandidateInfo" role="status"></p>
+    <form id="mapConfirm" class="mp-form">
+      <label>Anchura en casillas<input id="candidateWidth" type="number" min="1" max="200" step="any" value="20" required></label>
+      <label>Altura en casillas<input id="candidateHeight" type="number" min="1" max="200" step="any" value="15" required></label>
+      <label>Origen X en casillas<input id="candidateX" type="number" min="-1000" max="1000" step="any" value="-10" required></label>
+      <label>Origen Y en casillas<input id="candidateY" type="number" min="-1000" max="1000" step="any" value="-7.5" required></label>
+      <label><input id="candidateFit" type="checkbox" checked> Centrar y encajar la vista al confirmar</label>
+      <button type="submit" id="useMap" disabled>Usar este mapa</button>
+    </form>
+    <p id="mapTransferStatus" role="status" aria-live="polite"></p>
+    <button type="button" id="managerRemoveMap">Quitar mapa actual</button>
+  </dialog>
+  <dialog id="boundsDialog" class="multiplayer-dialog" aria-labelledby="boundsTitle">
+    <header><h2 id="boundsTitle">Área jugable</h2><button type="button" id="closeBounds">Cerrar</button></header>
+    <p>El contorno marca dónde pueden terminar los movimientos. Las fichas mantienen sus posiciones.</p>
+    <form id="boundsForm" class="mp-form">
+      <label>Límites<select id="boundsMode"><option value="map">Ajustar al mapa</option><option value="custom">Rectángulo personalizado</option><option value="free">Desactivados</option></select></label>
+      <label>Origen X<input id="boundsX" type="number" step="any" min="-1000" max="1000" value="-10" required></label>
+      <label>Origen Y<input id="boundsY" type="number" step="any" min="-1000" max="1000" value="-10" required></label>
+      <label>Anchura (casillas)<input id="boundsWidth" type="number" step="any" min="1" max="200" value="20" required></label>
+      <label>Altura (casillas)<input id="boundsHeight" type="number" step="any" min="1" max="200" value="20" required></label>
+      <button type="submit">Guardar límites</button>
+    </form><p id="boundsStatus" role="status"></p>
+  </dialog>
+  <dialog id="tokenDialog" class="multiplayer-dialog" aria-labelledby="tokenTitle">
+    <header><h2 id="tokenTitle">Editar ficha</h2><button type="button" id="cancelToken">Cancelar</button></header>
+    <form id="contextTokenForm" class="mp-form">
+      <label>Código visible<input id="contextCode" readonly></label>
+      <label>Nombre<input id="contextName" maxlength="64" required></label>
+      <label>Color<input id="contextColor" type="color" required></label>
+      <label>Tamaño (casillas)<input id="contextSize" type="number" min="0.25" max="4" step="0.25" required></label>
+      <label>Retrato (PNG, JPEG o WebP, máximo 2 MiB)<input id="contextPortrait" type="file" accept="image/png,image/jpeg,image/webp"></label>
+      <label><input id="contextRemovePortrait" type="checkbox"> Quitar retrato</label>
+      <section id="contextAssignment" hidden>
+        <label>Jugadores asignados (selección múltiple)<select id="contextUsers" multiple size="4"></select></label>
+        <p>Los permisos se aplican a cada participante de la sala y al movimiento de sus fichas asignadas.</p>
+        <div id="contextPermissions"></div>
+      </section>
+      <button type="submit" id="saveContextToken">Guardar ficha</button>
+    </form><p id="tokenEditStatus" role="status"></p>
+    <button id="contextDelete" type="button" class="danger-button">Eliminar ficha local</button>
+  </dialog>
   <dialog id="identityDialog" class="identity-dialog" aria-labelledby="identityTitle">
     <form id="identityForm">
       <div class="identity-emblem" aria-hidden="true">✦</div>
@@ -137,7 +215,7 @@
     </form>
   </dialog>
   <dialog id="multiplayerDialog" class="multiplayer-dialog" aria-labelledby="multiplayerTitle">
-    <header><h2 id="multiplayerTitle">Multijugador</h2><button type="button" id="closeMultiplayer" aria-label="Cerrar multijugador">Cerrar</button></header>
+    <header><h2 id="multiplayerTitle">Partida y ajustes</h2><button type="button" id="closeMultiplayer" aria-label="Cerrar multijugador">Cerrar</button></header>
     <p id="multiplayerStatus" role="status" aria-live="polite">Modo local. Configura el sitio para conectar.</p>
     <button type="button" id="openSettings">Configuración del sitio</button>
     <p id="apiDestination"></p>
@@ -202,7 +280,7 @@
           <label><input id="inviteMovement" type="checkbox"> Autorizar movimiento de tokens que se le asignen</label>
           <button type="submit">Invitar usuario registrado</button>
         </form>
-        <button type="button" id="refreshMembers">Actualizar participantes autorizados</button><div id="members"></div>
+        <button type="button" id="refreshMembers">Actualizar participantes autorizados</button>
         <form id="assignForm" class="mp-form"><h3>Asignar tokens</h3>
           <label>Token <select id="assignedToken"></select></label>
           <label>Participantes (Ctrl/Cmd permite seleccionar varios)<select id="assignedUsers" multiple size="4"></select></label>
@@ -240,10 +318,10 @@
     <p id="qrStatus" role="status" aria-live="polite"></p>
     <canvas id="qrCanvas" aria-label="Código QR de incorporación" role="img" hidden></canvas>
     <label>Enlace de incorporación<input id="qrLink" readonly autocomplete="off"></label>
-    <button type="button" id="qrCopy">Copiar enlace</button><button type="button" id="qrNew">Generar QR nuevo</button>
+    <button type="button" id="qrCopy">Copiar enlace</button><button type="button" id="qrNew">Generar QR nuevo (revoca el anterior)</button>
     <button type="button" id="qrPause">Cerrar admisión</button><button type="button" id="qrOpen">Abrir admisión</button><button type="button" id="qrRevoke">Revocar QR</button>
     <p>El QR no da acceso por sí solo. Comprueba el nombre de cada persona antes de aprobarla. Cerrar esta ventana no cierra la admisión.</p>
-    <div id="qrRequests"></div>
+    
   </dialog>
 </body>
 </html>

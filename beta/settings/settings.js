@@ -1,4 +1,4 @@
-import { validateSiteConfig } from './site-config.js';
+import { validateSiteConfig } from './site-config.js?v=phase10-1f19390';
 
 const get = id => document.getElementById(id);
 const status = message => { get('status').textContent = message; };

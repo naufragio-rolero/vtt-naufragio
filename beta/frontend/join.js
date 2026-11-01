@@ -1,4 +1,4 @@
-import { validateSiteConfig } from '../settings/site-config.js';
+import { validateSiteConfig } from '../settings/site-config.js?v=phase10-1f19390';
 
 const value=new URLSearchParams(location.hash.slice(1)).get('join');
 history.replaceState(null,'',location.pathname+location.search);

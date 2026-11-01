@@ -1,4 +1,4 @@
-import { uuid, MAX_TOKENS } from '../shared/token-state.js';
+import { uuid, MAX_TOKENS } from '../shared/token-state.js?v=phase10-1f19390';
 
 export const COLORS = ['#85dcd2', '#e7c47e', '#dd8e88', '#a6a1e9', '#a8c984', '#90b7e7'];
 // A copy for a new room. Legacy IDs/content are never overwritten or truncated.

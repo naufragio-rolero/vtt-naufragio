@@ -1,6 +1,7 @@
 "use strict";
 
-(() => {
+(async () => {
+  const { insideBounds, validateBounds, mapBounds } = await import('./shared/board-bounds.js?v=phase10-1f19390');
   const STORAGE_KEY = "naufragio-vtt-mvp-v1:phase9-beta";
   const ASSET_DB = "naufragio-vtt-local-assets:phase9-beta";
   const ASSET_STORE = "media";
@@ -32,6 +33,8 @@
       gridOpacity: 0.55,
       theme: "light",
       map: null,
+      bounds: null,
+      boundsMode: 'map',
       showGrid: true,
       snap: true,
       zoom: 1,
@@ -50,8 +53,10 @@
         base.tokens = stored.tokens.slice(0, 100).filter((token) => token && typeof token === "object").map((token, index) => ({
           id: typeof token.id === "string" && token.id.length < 80 ? token.id : "imported-" + index,
           code: typeof token.code === "string" ? token.code.slice(0, 4) : "T" + (index + 1),
-          name: typeof token.name === "string" ? token.name.slice(0, 32) : "Token " + (index + 1),
-          color: PALETTE.includes(token.color) ? token.color : PALETTE[0],
+          name: typeof token.name === "string" ? token.name.slice(0, 64) : "Token " + (index + 1),
+          color: /^#[0-9a-fA-F]{6}$/.test(token.color) ? token.color : PALETTE[0],
+          size: clamp(finiteOr(token.size,1),.25,4),
+          imageId: token.imageId === 'token:' + token.id ? token.imageId : null,
           x: clamp(finiteOr(token.x, 0), -1000, 1000),
           y: clamp(finiteOr(token.y, 0), -1000, 1000)
         }));
@@ -75,6 +80,8 @@
         }
       }
       base.showGrid = stored.showGrid !== false;
+      try { base.bounds = validateBounds(stored.bounds ?? null); } catch { base.bounds = null; }
+      base.boundsMode = ['map','custom','free'].includes(stored.boundsMode) ? stored.boundsMode : stored.map ? 'free' : 'map';
       base.snap = stored.snap !== false;
       base.zoom = clamp(finiteOr(stored.zoom, 1), MIN_ZOOM, 2.5);
       base.cameraX = clamp(finiteOr(stored.cameraX, 0), -20000, 20000);
@@ -158,7 +165,7 @@
   }
 
 
-  function assetRequest(action, value) {
+  function assetRequest(action, value, key = MAP_BLOB_KEY) {
     return new Promise((resolve, reject) => {
       if (!("indexedDB" in window)) {
         reject(new Error("Este navegador no dispone de IndexedDB."));
@@ -183,9 +190,9 @@
         }
         const store = transaction.objectStore(ASSET_STORE);
         let request;
-        if (action === "get") request = store.get(MAP_BLOB_KEY);
-        else if (action === "put") request = store.put(value, MAP_BLOB_KEY);
-        else request = store.delete(MAP_BLOB_KEY);
+        if (action === "get") request = store.get(key);
+        else if (action === "put") request = store.put(value, key);
+        else request = store.delete(key);
         transaction.oncomplete = () => {
           const result = action === "get" ? request.result : undefined;
           db.close();
@@ -333,6 +340,17 @@
       draw();
     } catch {
       showToast("No se pudo recuperar el mapa local.");
+    }
+  }
+  async function restorePortraits() {
+    const tokens = state.tokens;
+    for (const token of tokens) if (token.imageId) {
+      try {
+        const blob = await assetRequest('get',null,token.imageId);
+        if (!blob) continue;
+        const image = await decodeMapImage(blob);
+        if (!sharedMode && state.tokens === tokens) { sharedTokenImages.set(token.id,image); draw(); }
+      } catch { /* Missing optional portraits do not replace local game data. */ }
     }
   }
 
@@ -523,7 +541,7 @@
       context.globalAlpha = 0.55;
     } else context.globalAlpha = 1;
     const point = worldToScreen((token.x + 0.5) * state.cellSize, (token.y + 0.5) * state.cellSize);
-    const radius = state.cellSize * state.zoom * 0.34 * (sharedMode ? clamp(token.size || 1, 0.25, 4) : 1);
+    const radius = state.cellSize * state.zoom * 0.34 * clamp(token.size || 1, 0.25, 4);
     const selected = selectedId === token.id;
     context.save();
     context.shadowColor = "rgba(0,0,0,.5)";
@@ -551,7 +569,7 @@
     context.beginPath();
     context.arc(point.x, point.y, radius, 0, Math.PI * 2);
     context.fill();
-    const tokenImage = sharedMode && sharedTokenImages.get(token.id);
+    const tokenImage = sharedTokenImages.get(token.id);
     if (tokenImage) {
       context.save();
       context.beginPath(); context.arc(point.x, point.y, radius - 1, 0, Math.PI * 2); context.clip();
@@ -601,10 +619,22 @@
     context.fillRect(0, 0, width, height);
 
     drawMap();
+    if (state.bounds) {
+      const p = worldToScreen(state.bounds.x * state.cellSize, state.bounds.y * state.cellSize);
+      context.save(); context.strokeStyle = '#b34828'; context.lineWidth = 2; context.setLineDash([10,6]);
+      context.strokeRect(p.x,p.y,state.bounds.width*state.cellSize*state.zoom,state.bounds.height*state.cellSize*state.zoom); context.restore();
+    }
     drawGrid(width, height);
     for (const token of state.tokens) if (token.id !== selectedId) drawToken(token);
     const selected = selectedToken();
     if (selected) drawToken(selected);
+    const edit = document.getElementById('editSelected');
+    edit.hidden = !selected || sharedMode && !multiplayer?.canEdit?.();
+    if (!edit.hidden) {
+      const p = worldToScreen((selected.x+.5)*state.cellSize,(selected.y+.5)*state.cellSize);
+      edit.style.left = clamp(p.x+24,4,Math.max(4,width-130))+'px';
+      edit.style.top = clamp(p.y-54,4,Math.max(4,height-48))+'px';
+    }
     refs.zoomValue.textContent = Math.round(state.zoom * 100) + " %";
   }
 
@@ -621,7 +651,7 @@
     const radius = state.cellSize * state.zoom * 0.34 + 7;
     for (const token of [...state.tokens].reverse()) {
       const screen = worldToScreen((token.x + .5) * state.cellSize, (token.y + .5) * state.cellSize);
-      if (Math.hypot(screen.x - point.x, screen.y - point.y) <= radius * (sharedMode ? clamp(token.size || 1, 0.25, 4) : 1)) return token;
+      if (Math.hypot(screen.x - point.x, screen.y - point.y) <= radius * clamp(token.size || 1, 0.25, 4)) return token;
     }
     return null;
   }
@@ -794,6 +824,9 @@
       if (token) {
         token.x = state.snap ? Math.round(token.x) : Math.round(token.x * 100) / 100;
         token.y = state.snap ? Math.round(token.y) : Math.round(token.y * 100) / 100;
+        if (event.type !== 'pointerup' || !insideBounds(token,token.size||1,state.bounds)) {
+          token.x = drag.x; token.y = drag.y; showToast('Fuera del área jugable. Se conserva la posición anterior.');
+        }
       }
       refreshTokenList();
     } else if (drag.type === "map" || drag.type === "map-resize") {
@@ -873,6 +906,9 @@
     }
     const token = selectedToken();
     if (!token) return;
+    if (event.key === 'Enter' || event.key.toLowerCase() === 'e') {
+      event.preventDefault(); if (!sharedMode || multiplayer?.canEdit?.()) document.getElementById('editSelected').click(); return;
+    }
     const amount = state.snap ? 1 : .25;
     const movement = { ArrowUp: [0, -amount], ArrowDown: [0, amount], ArrowLeft: [-amount, 0], ArrowRight: [amount, 0] };
     if (movement[event.key]) {
@@ -881,6 +917,9 @@
         if (!canMove(token.id)) showToast("Sin permiso para mover este token, o sala en espera.");
         else if (!event.repeat) void multiplayer.move(token.id, { x: token.x + movement[event.key][0], y: token.y + movement[event.key][1] });
         return;
+      }
+      if (!insideBounds({x:token.x+movement[event.key][0],y:token.y+movement[event.key][1]},token.size||1,state.bounds)) {
+        showToast('Fuera del área jugable. Se conserva la posición anterior.'); return;
       }
       token.x = clamp(Math.round((token.x + movement[event.key][0]) * 100) / 100, -1000, 1000);
       token.y = clamp(Math.round((token.y + movement[event.key][1]) * 100) / 100, -1000, 1000);
@@ -899,15 +938,9 @@
     save();
     draw();
   });
-  refs.mapUpload.addEventListener("change", async (event) => {
-    const file = event.target.files && event.target.files[0];
-    refs.mapUpload.disabled = true;
-    try {
-      await importMap(file);
-    } finally {
-      refs.mapUpload.disabled = false;
-      refs.mapUpload.value = "";
-    }
+  refs.mapUpload.addEventListener("change", () => {
+    window.dispatchEvent(new CustomEvent('naufragio:map:candidate', { detail: refs.mapUpload.files?.[0] }));
+    refs.mapUpload.value = '';
   });
   for (const [id, property] of [["mapColumns", "widthCells"], ["mapRows", "heightCells"], ["mapOffsetX", "xCells"], ["mapOffsetY", "yCells"]]) {
     refs[id].addEventListener("change", (event) => updateMapSetting(property, event.target.value));
@@ -1018,14 +1051,56 @@
   refreshControls();
   resizeCanvas();
   void restoreMapImage();
+  void restorePortraits();
   window.NaufragioBoard = Object.freeze({
+    selected: () => selectedToken() && structuredClone(selectedToken()),
+    async editLocalToken(id, values, portrait, removePortrait) {
+      if (!editable()) throw new Error('FORBIDDEN');
+      const token = state.tokens.find(t=>t.id===id);
+      if (!token) throw new Error('TOKEN_NOT_FOUND');
+      if (!insideBounds(token,values.size,state.bounds)) throw new Error('TOKENS_OUTSIDE_BOARD');
+      let image = null;
+      if (portrait) image = await decodeMapImage(portrait);
+      if (portrait) await assetRequest('put',portrait,'token:'+id);
+      else if (removePortrait) await assetRequest('delete',null,'token:'+id);
+      Object.assign(token,values);
+      if (portrait) { token.imageId = 'token:'+id; sharedTokenImages.set(id,image); }
+      else if (removePortrait) { token.imageId = null; sharedTokenImages.delete(id); }
+      refreshTokenList(); refreshSelectionEditor(); save(); draw();
+    },
+    bounds: () => ({mode:state.boundsMode,bounds:structuredClone(state.bounds)}),
+    setBounds(mode, bounds) {
+      if (sharedMode) throw new Error('FORBIDDEN');
+      bounds = validateBounds(bounds);
+      if (state.tokens.some(t=>!insideBounds(t,t.size||1,bounds))) throw new Error('TOKENS_OUTSIDE_BOARD');
+      state.boundsMode = mode; state.bounds = bounds; save(); draw();
+    },
+    applyBounds(value) { if (sharedMode) { state.boundsMode = value.mode; state.bounds = structuredClone(value.bounds); draw(); } },
+    map: () => state.map && structuredClone(state.map),
+    fitMap: fitMapIntoViewport,
+    async setLocalMap(file, map) {
+      if (!editable()) throw new Error('FORBIDDEN');
+      const bounds = state.boundsMode === 'map' ? mapBounds(map) : state.bounds;
+      if (state.tokens.some(t=>!insideBounds(t,t.size||1,bounds))) throw new Error('TOKENS_OUTSIDE_BOARD');
+      const image = map ? await decodeMapImage(file) : null;
+      if (image && (!imageIsWithinLimits(image) || file.size > MAX_MAP_BYTES)) throw new Error('ASSET_MANIFEST_INVALID');
+      if (map) await assetRequest('put', file); else await assetRequest('delete');
+      state.map = map && structuredClone(map); mapImage = image; mapEditMode = null;
+      state.bounds = bounds;
+      refreshMapControls(); save(); draw();
+    },
     localTokens: () => structuredClone((localBackup || state).tokens),
     async localResources() {
       if (sharedMode) throw new Error("LOCAL_BOARD_REQUIRED");
       const map = state.map ? structuredClone(state.map) : null;
       const blob = map ? await assetRequest("get") : null;
+      const files = {};
+      for (const token of state.tokens) if (token.imageId) {
+        const portrait = await assetRequest('get',null,token.imageId);
+        if (portrait instanceof Blob) files[token.imageId] = portrait;
+      }
       return { map: map && blob instanceof Blob ? map : null, blob: blob instanceof Blob ? blob : null,
-        tokens: structuredClone(state.tokens) };
+        tokens: structuredClone(state.tokens), files };
     },
     tokens: () => structuredClone(state.tokens),
     sharedView: () => sharedMode ? { map: state.map && structuredClone(state.map), portraits: [...sharedTokenImages.keys()] } : null,
@@ -1034,7 +1109,7 @@
       if (!sharedMode) localBackup = structuredClone(state);
       sharedMode = true; multiplayer = callbacks; mapLoadGeneration++; mapEditMode = null;
       mapImage = null; sharedVisuals.clear(); sharedTokenImages.clear();
-      state.map = null; state.tokens = []; selectedId = null; drag = null;
+      state.map = null; state.bounds = null; state.boundsMode = 'map'; state.tokens = []; selectedId = null; drag = null;
       document.body.dataset.mode = "shared"; refreshControls();
     },
     applyShared(tokens) {
@@ -1052,7 +1127,8 @@
       }]) || []);
       sharedVisuals = visuals;
       state.tokens = state.tokens.map(token => ({ ...token, ...(visuals.get(token.id) || {}) }));
-      sharedTokenImages.clear(); state.map = null; mapImage = null;
+      sharedTokenImages.clear();
+      if (data.manifest && !data.manifest.map) { state.map = null; mapImage = null; }
       const blobs = data.blobs || new Map();
       for (const item of data.manifest?.tokens || []) {
         const blob = item.imageId && blobs.get(item.imageId);
@@ -1083,7 +1159,7 @@
       sharedMode = false; multiplayer = null; sharedVisuals.clear(); sharedTokenImages.clear(); mapImage = null;
       Object.assign(state, localBackup); localBackup = null;
       mapLoadGeneration++; selectedId = null; drag = null; document.body.dataset.mode = "local";
-      canvas.classList.remove("dragging"); refreshControls(); void restoreMapImage();
+      canvas.classList.remove("dragging"); refreshControls(); void restoreMapImage(); void restorePortraits();
     }
   });
   window.dispatchEvent(new Event("naufragio:board:ready"));
