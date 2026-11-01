@@ -1,17 +1,25 @@
 // Synthetic local acceptance only. Never connects to the beta.
 import assert from 'node:assert/strict';
-import { randomBytes } from 'node:crypto';
-import { mkdir } from 'node:fs/promises';
+import { randomBytes,createHash } from 'node:crypto';
+import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { createBackend } from '../src/server.js';
 import { loadConfig } from '../src/config.js';
 import { createFrontendServer } from './dev-frontend.js';
+import { buildFrontend } from './build-frontend.js';
+import { createDistServer } from './serve-dist.js';
+import { largePng } from './large-png.js';
 
-const { chromium } = await import(pathToFileURL(resolve(process.env.BROWSER_TOOLS_DIR, 'node_modules/playwright/index.mjs')));
+const { chromium, firefox } = await import(pathToFileURL(resolve(process.env.BROWSER_TOOLS_DIR, 'node_modules/playwright/index.mjs')));
 const browser = await chromium.launch({ channel: 'msedge', headless: true });
+const fox = process.env.PHASE10_FIREFOX ? await firefox.launch({headless:true}) : null;
 const config = {}, contexts = [], errors = [];
-const front = createFrontendServer({ publicConfig: config });
+const basePath = process.env.PHASE10_BASE || '/';
+let artifact = null;
+if (process.env.BROWSER_USE_DIST) { artifact = await mkdtemp(resolve(tmpdir(),'phase10-dist-')); await buildFrontend({outputRoot:artifact}); }
+const front = artifact ? await createDistServer({directory:resolve(artifact,'dist'),basePath,publicConfig:config}) : createFrontendServer({basePath,publicConfig: config });
 let app;
 try {
   await new Promise(r => front.listen(0, '127.0.0.1', r));
@@ -26,11 +34,16 @@ try {
   await app.auth.createUser(admin.token,{username:'test-director',password,role:'director'});
   const owner = await app.auth.login({username:'test-director',password});
   for (const viewport of [{width:1440,height:1000},{width:390,height:844},{width:393,height:852}]) {
-    const context = await browser.newContext({viewport,hasTouch:viewport.width<400}); contexts.push(context);
+    const context = await (fox && viewport.width===390 ? fox : browser).newContext({viewport,hasTouch:viewport.width<400}); contexts.push(context);
+    await context.addInitScript(()=>{
+      window.__mapHashes=[]; if (!crypto.subtle) return; const digest=crypto.subtle.digest.bind(crypto.subtle);
+      crypto.subtle.digest=async function(algorithm,bytes){const value=await digest(algorithm,bytes);if(bytes.byteLength===12582912)window.__mapHashes.push([...new Uint8Array(value)].map(b=>b.toString(16).padStart(2,'0')).join(''));return value;};
+    });
+    if (process.env.PHASE10_TRANSPORT==='polling') await context.addInitScript(()=>{window.WebSocket=class {constructor(){throw new Error('Polling acceptance');}};});
     context.on('page', p => { p.setDefaultTimeout(20000); p.on('pageerror',e=>errors.push(e.message)); });
   }
   const [director, one, two] = await Promise.all(contexts.map(c=>c.newPage()));
-  await director.goto(site); await director.waitForFunction(()=>window.NaufragioBoard);
+  await director.goto(site+basePath); await director.waitForFunction(()=>window.NaufragioBoard);
   const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGPQXRT9HwAEVAIq3G2ZNgAAAABJRU5ErkJggg==','base64');
   const localToken = await director.evaluate(()=>window.NaufragioBoard.tokens()[0]);
   await director.locator(`[data-token-id="${localToken.id}"]`).click(); await director.click('#editSelected');
@@ -39,15 +52,32 @@ try {
   await director.click('#saveContextToken'); await director.waitForFunction(()=>!document.getElementById('tokenDialog').open);
   await director.reload(); await director.waitForFunction(()=>window.NaufragioBoard?.tokens()[0]?.size===1.25);
   const localTokens = await director.evaluate(()=>window.NaufragioBoard.tokens());
+  await director.click('#openMap'); await director.setInputFiles('#mapCandidate',{name:'cancel.png',mimeType:'image/png',buffer:png});
+  await director.waitForFunction(()=>!document.getElementById('useMap').disabled); await director.click('#closeMapManager');
+  assert.equal(await director.evaluate(()=>window.NaufragioBoard.map()),null);
+  await director.click('#openMap');
+  await director.locator('#mapDrop').evaluate((element,bytes)=>{const transfer=new DataTransfer();transfer.items.add(new File([new Uint8Array(bytes)],'local-map.png',{type:'image/png'}));element.dispatchEvent(new DragEvent('drop',{bubbles:true,cancelable:true,dataTransfer:transfer}));},[...png]);
+  await director.waitForFunction(()=>!document.getElementById('useMap').disabled);
+  await mkdir(resolve('../docs/evidencia-fase10'),{recursive:true});
+  await director.screenshot({path:resolve('../docs/evidencia-fase10/mapa-escritorio.png')});
+  await director.setViewportSize({width:390,height:844}); await director.screenshot({path:resolve('../docs/evidencia-fase10/mapa-movil.png')}); await director.setViewportSize({width:1440,height:1000});
+  await director.fill('#candidateHeight','20'); await director.fill('#candidateY','-10'); await director.click('#useMap');
+  await director.waitForFunction(()=>document.getElementById('mapTransferStatus').textContent.includes('Mapa guardado')); await director.click('#closeMapManager');
+  assert.equal(await director.evaluate(()=>window.NaufragioBoard.map()?.name),'local-map.png');
+  await director.click('#openDice'); await director.fill('#diceNotation','1d100-2'); await director.click('#rollDice');
+  await director.waitForFunction(()=>document.querySelectorAll('#diceHistory li').length===1);
+  assert.match(await director.locator('#diceHistory li').innerText(),/Local/); await director.click('#closeDice');
   await director.click('#openMultiplayer'); await director.check('#trustDestination');
   await director.fill('#loginUser','test-director'); await director.fill('#loginPassword',password); await director.locator('#loginForm button').click();
   await director.waitForFunction(()=>!document.getElementById('signedIn').hidden);
   await director.fill('#roomName','Mesa de aceptación'); await director.locator('#createRoomForm button').click();
   await director.waitForFunction(()=>document.getElementById('roomState').textContent.includes('Partida conectada'));
+  await director.waitForFunction(()=>window.NaufragioBoard.map()?.name==='local-map.png');
   await director.click('#openMap');
+  const beforeMap = await director.evaluate(()=>window.NaufragioBoard.map());
   await director.setInputFiles('#mapCandidate',{name:'test-map.png',mimeType:'image/png',buffer:png});
   await director.waitForFunction(()=>!document.getElementById('useMap').disabled);
-  assert.equal(await director.evaluate(()=>window.NaufragioBoard.map()),null,'preview must not publish');
+  assert.deepEqual(await director.evaluate(()=>window.NaufragioBoard.map()),beforeMap,'preview must not publish');
   await director.fill('#candidateWidth','20'); await director.fill('#candidateHeight','20'); await director.fill('#candidateX','-10'); await director.fill('#candidateY','-10');
   await director.click('#useMap'); await director.waitForFunction(()=>document.getElementById('mapTransferStatus').textContent.includes('Mapa publicado'));
   await director.click('#closeMapManager');
@@ -89,18 +119,65 @@ try {
   await director.selectOption('#contextUsers',ana.userId);
   await director.locator('#contextPermissions input[data-permission="moveAssignedTokens"]').check();
   await director.locator('#contextPermissions input[data-permission="diceAllowed"]').check();
+  await director.screenshot({path:resolve('../docs/evidencia-fase10/ficha-escritorio.png')});
+  await director.setViewportSize({width:390,height:844}); await director.screenshot({path:resolve('../docs/evidencia-fase10/ficha-movil.png')}); await director.setViewportSize({width:1440,height:1000});
   await director.click('#saveContextToken'); await director.waitForFunction(()=>!document.getElementById('tokenDialog').open);
   await one.waitForFunction(id=>window.NaufragioBoard.tokens().find(t=>t.id===id)?.name==='Exploradora',first.id);
   const updated = await director.evaluate(id=>window.NaufragioBoard.tokens().find(t=>t.id===id),first.id);
   assert.deepEqual([updated.id,updated.x,updated.y],[first.id,first.x,first.y]);
+  // Tight fractional rectangle around all current visuals. Try to drag the
+  // leftmost piece out with a real mouse, then send the same attempt by keyboard.
+  const currentTokens = await director.evaluate(()=>window.NaufragioBoard.tokens());
+  const leftmost = currentTokens.reduce((a,b)=>a.x+.5-.34*(a.size||1)<b.x+.5-.34*(b.size||1)?a:b);
+  const minX=Math.min(...currentTokens.map(t=>t.x+.5-.34*(t.size||1))), minY=Math.min(...currentTokens.map(t=>t.y+.5-.34*(t.size||1)));
+  const maxX=Math.max(...currentTokens.map(t=>t.x+.5+.34*(t.size||1))), maxY=Math.max(...currentTokens.map(t=>t.y+.5+.34*(t.size||1)));
+  await director.click('#openBounds'); await director.selectOption('#boundsMode','custom');
+  for (const [id,value] of [['boundsX',minX],['boundsY',minY],['boundsWidth',maxX-minX],['boundsHeight',maxY-minY]]) await director.fill('#'+id,String(value));
+  await director.locator('#boundsForm button').click(); await director.waitForFunction(()=>!document.getElementById('boundsDialog').open);
+  await director.click('#resetView'); await director.locator(`[data-token-id="${leftmost.id}"]`).click(); await director.locator('#boardCanvas').focus();
+  await director.keyboard.press('ArrowLeft'); assert.deepEqual(await director.evaluate(()=>window.NaufragioBoard.tokens()),currentTokens);
+  const rect=await director.locator('#boardCanvas').boundingBox(), x=rect.x+rect.width/2+(leftmost.x+.5)*64, y=rect.y+rect.height/2+(leftmost.y+.5)*64;
+  await director.mouse.move(x,y); await director.mouse.down(); await director.mouse.move(x-100,y,{steps:10}); await director.mouse.up();
+  assert.deepEqual(await director.evaluate(()=>window.NaufragioBoard.tokens()),currentTokens);
+  const touch = await contexts[0].newCDPSession(director);
+  await touch.send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1});
+  await touch.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y}]});
+  await touch.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:x-100,y}]});
+  await touch.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+  await touch.send('Emulation.setTouchEmulationEnabled',{enabled:false}); await touch.detach();
+  assert.deepEqual(await director.evaluate(()=>window.NaufragioBoard.tokens()),currentTokens);
   await one.click('#openDice'); await one.fill('#diceNotation','2d6+3'); await one.click('#rollDice');
   await one.waitForFunction(()=>document.querySelectorAll('#diceHistory li').length===1);
   await director.click('#openDice'); await director.waitForFunction(()=>document.querySelectorAll('#diceHistory li').length===1);
   assert.equal(await director.locator('#diceHistory li').getAttribute('data-roll-id'),await one.locator('#diceHistory li').getAttribute('data-roll-id'));
-  assert.equal(await director.locator('#diceHistory li').innerText(),await one.locator('#diceHistory li').innerText());
+  assert.equal(await director.locator('#diceHistory li').getAttribute('data-roll'),await one.locator('#diceHistory li').getAttribute('data-roll'));
   await director.screenshot({path:resolve('../docs/evidencia-fase10/dados-escritorio.png')});
   await one.screenshot({path:resolve('../docs/evidencia-fase10/dados-movil.png')});
   await one.click('#closeDice'); await director.click('#closeDice');
+  if (process.env.PHASE10_LARGE) {
+    const image=largePng(),sha256=createHash('sha256').update(image).digest('hex');
+    const publish=async(name)=>{
+      await director.click('#openMap'); await director.setInputFiles('#mapCandidate',{name,mimeType:'image/png',buffer:image});
+      await director.waitForFunction(()=>!document.getElementById('useMap').disabled);
+      await director.click('#useMap'); await director.waitForFunction(()=>!document.getElementById('closeMapManager').disabled); await director.click('#closeMapManager');
+    };
+    await publish('large-12MiB.png');
+    await one.waitForFunction(hash=>window.__mapHashes.includes(hash)&&window.NaufragioBoard.map()?.name==='large-12MiB.png',sha256,{timeout:150000});
+    const receiver=[...app.io.of('/').sockets.values()].find(s=>s.data.access.actor.id===ana.userId);
+    let interrupted=false,offline;
+    receiver.onAnyOutgoing(event=>{if(event==='assets:chunk'&&!interrupted){interrupted=true;offline=contexts[1].setOffline(true);queueMicrotask(()=>receiver.conn.close(true));}});
+    // Change metadata while retaining image bytes, then interrupt the first chunk.
+    // Use a fresh image hash so the receiver cannot reuse a complete cached Blob.
+    const next=largePng(),nextHash=createHash('sha256').update(next).digest('hex');
+    await director.click('#openMap'); await director.setInputFiles('#mapCandidate',{name:'retry-12MiB.png',mimeType:'image/png',buffer:next});
+    await director.waitForFunction(()=>!document.getElementById('useMap').disabled); await director.click('#useMap');
+    await director.waitForFunction(()=>!document.getElementById('closeMapManager').disabled); await director.click('#closeMapManager');
+    await one.waitForFunction(()=>document.getElementById('roomState').textContent.includes('En espera'),null,{timeout:60000});
+    await offline; assert.equal(interrupted,true);
+    assert.equal(await one.evaluate(()=>window.NaufragioBoard.map()?.name),'large-12MiB.png','failed replacement retains last verified map');
+    await contexts[1].setOffline(false);
+    await one.waitForFunction(hash=>window.__mapHashes.includes(hash)&&window.NaufragioBoard.map()?.name==='retry-12MiB.png',nextHash,{timeout:150000});
+  }
   await director.click('#openPlayers');
   await mkdir(resolve('../docs/evidencia-fase10'),{recursive:true});
   await director.screenshot({path:resolve('../docs/evidencia-fase10/jugadores-escritorio.png')});
@@ -111,9 +188,12 @@ try {
   await director.click('#closePlayers'); await director.click('#openMultiplayer'); await director.click('#leaveRoom');
   assert.deepEqual(await director.evaluate(()=>window.NaufragioBoard.tokens()),localTokens,'shared editing preserves the original local game');
   assert.deepEqual(errors,[]);
-  console.log(JSON.stringify({result:'pass',qrClosedRequests:2,approved:1,rejected:1,guestReload:true,privateAdministration:true,pageErrors:errors.length}));
+  const report={result:'pass',basePath,artifact:artifact?'dist':'source',transport:process.env.PHASE10_TRANSPORT||'default',edge:browser.version(),firefox:fox?.version()||null,firefoxTouch:Boolean(fox),qrClosedRequests:2,approved:1,rejected:1,guestReload:true,directorReload:true,localTokenPersistence:true,contextualSharedEditing:true,mapDropAndCancel:true,mapShared:true,mouseKeyboardAndTouchBounds:true,largeMapRecovery: Boolean(process.env.PHASE10_LARGE),diceExactMatch:true,diceHistoryReload:true,privateAdministration:true,pageErrors:errors.length};
+  await writeFile(resolve(`../docs/evidencia-fase10/browser-${artifact?'dist':'source'}.json`),JSON.stringify(report,null,2));
+  console.log(JSON.stringify(report));
 } finally {
   for (const context of contexts) await context.close();
-  await browser.close(); await app?.close();
+  await browser.close(); await fox?.close(); await app?.close();
   await new Promise(r=>{front.close(r);front.closeAllConnections();});
+  if (artifact) await rm(artifact,{recursive:true,force:true});
 }

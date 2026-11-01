@@ -112,7 +112,7 @@
           <button type="button" class="secondary-button" id="openDice" aria-controls="dicePanel" aria-expanded="false">Dados</button>
           <button type="button" class="secondary-button" id="openPlayers" aria-controls="playersPanel" aria-expanded="false" hidden>Jugadores <span id="pendingCount" aria-label="Solicitudes pendientes">0</span></button>
           <button type="button" class="secondary-button" id="tableInvite" hidden>Invitar</button>
-          <button type="button" class="secondary-button" id="openMultiplayer">Multijugador</button>
+          <button type="button" class="secondary-button" id="openMultiplayer">Partida y ajustes</button>
           <span class="local-chip" id="connectionState"><span class="status-dot"></span> Solo este navegador</span>
           <div class="zoom-controls" aria-label="Controles de zoom">
             <button id="zoomOut" type="button" aria-label="Alejar">−</button>
@@ -201,6 +201,7 @@
       </section>
       <button type="submit" id="saveContextToken">Guardar ficha</button>
     </form><p id="tokenEditStatus" role="status"></p>
+    <button id="contextDelete" type="button" class="danger-button">Eliminar ficha local</button>
   </dialog>
   <dialog id="identityDialog" class="identity-dialog" aria-labelledby="identityTitle">
     <form id="identityForm">
@@ -214,7 +215,7 @@
     </form>
   </dialog>
   <dialog id="multiplayerDialog" class="multiplayer-dialog" aria-labelledby="multiplayerTitle">
-    <header><h2 id="multiplayerTitle">Multijugador</h2><button type="button" id="closeMultiplayer" aria-label="Cerrar multijugador">Cerrar</button></header>
+    <header><h2 id="multiplayerTitle">Partida y ajustes</h2><button type="button" id="closeMultiplayer" aria-label="Cerrar multijugador">Cerrar</button></header>
     <p id="multiplayerStatus" role="status" aria-live="polite">Modo local. Configura el sitio para conectar.</p>
     <button type="button" id="openSettings">Configuración del sitio</button>
     <p id="apiDestination"></p>
@@ -317,7 +318,7 @@
     <p id="qrStatus" role="status" aria-live="polite"></p>
     <canvas id="qrCanvas" aria-label="Código QR de incorporación" role="img" hidden></canvas>
     <label>Enlace de incorporación<input id="qrLink" readonly autocomplete="off"></label>
-    <button type="button" id="qrCopy">Copiar enlace</button><button type="button" id="qrNew">Generar QR nuevo</button>
+    <button type="button" id="qrCopy">Copiar enlace</button><button type="button" id="qrNew">Generar QR nuevo (revoca el anterior)</button>
     <button type="button" id="qrPause">Cerrar admisión</button><button type="button" id="qrOpen">Abrir admisión</button><button type="button" id="qrRevoke">Revocar QR</button>
     <p>El QR no da acceso por sí solo. Comprueba el nombre de cada persona antes de aprobarla. Cerrar esta ventana no cierra la admisión.</p>
     

@@ -155,7 +155,8 @@ test('participants cannot impersonate the director, submit content or route to a
   for (const point of [{ x: null, y: 0 }, { x: 1000001, y: 0 }, { x: 0, y: 0, mapId: 'secret' }]) {
     assert.equal((await send(f.one, 'token:move:request', { ...input, position: point })).error.code, 'INVALID_MESSAGE');
   }
-  for (const event of ['token:move:committed', 'tokens:snapshot', 'image:chunk', 'map:activate', 'dice:roll', 'chat:message']) {
+  assert.equal((await send(f.one,'dice:roll',input)).error.code,'INVALID_MESSAGE');
+  for (const event of ['token:move:committed', 'tokens:snapshot', 'image:chunk', 'map:activate', 'chat:message']) {
     assert.equal((await send(f.one, event, input)).error.code, 'EVENT_NOT_AVAILABLE');
   }
   await send(f.one, 'token:move:request', input);

@@ -13,9 +13,9 @@ export function drawQr(canvas, link) {
 }
 export function initQr({ api, getRoom, refreshMembers, status, notify = () => {} }) {
   const get = id => document.getElementById(id);
-  let timer = null, epoch = 0, roomId = null, flight = null, seen = new Set();
+  let timer = null, epoch = 0, roomId = null, flight = null, seen = new Set(), rendered = '';
   function reset() {
-    epoch++; clearTimeout(timer); timer = null; roomId = null; flight = null; seen = new Set();
+    epoch++; clearTimeout(timer); timer = null; roomId = null; flight = null; seen = new Set(); rendered = '';
     get('qrLink').value = ''; get('qrRequests').replaceChildren(); get('pendingCount').textContent = '0';
     get('qrCanvas').hidden = true;
     if (get('qrDialog').open) get('qrDialog').close();
@@ -34,6 +34,9 @@ export function initQr({ api, getRoom, refreshMembers, status, notify = () => {}
         get('pendingCount').textContent = String(pending.length);
         if (pending.some(entry => !seen.has(entry.id))) { const message = `${pending.length} solicitudes pendientes. Abre Jugadores para revisarlas.`; status(message); notify(message); }
         for (const entry of value.requests) seen.add(entry.id);
+        const signature = JSON.stringify(value.requests.map(entry=>[entry.id,entry.state,Math.floor((Date.now()-(entry.createdAt||0))/60000)]));
+        if (signature === rendered) return;
+        rendered = signature;
         get('qrRequests').replaceChildren();
         for (const entry of value.requests) {
           const row = document.createElement('div'); row.className = 'qr-request'; row.dataset.requestId = entry.id;

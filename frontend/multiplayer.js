@@ -12,6 +12,11 @@ import { parseDice } from '../backend/shared/dice.js';
 if (!window.NaufragioBoard) await new Promise(resolve => window.addEventListener('naufragio:board:ready', resolve, { once: true }));
 const board = window.NaufragioBoard;
 const get = id => document.getElementById(id);
+const toolbar = document.querySelector('.topbar');
+const placePanels = () => document.documentElement.style.setProperty('--table-toolbar-bottom', `${Math.ceil(toolbar.getBoundingClientRect().bottom) + 8}px`);
+if (window.ResizeObserver) new ResizeObserver(placePanels).observe(toolbar);
+else window.addEventListener('resize',placePanels);
+placePanels();
 const CONFIG_KEY = 'naufragio-vtt-public-config-v1';
 const localHost = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
 let config = null, session = null, room = null, socket = null, client = null, storage = null, expiry = null;
@@ -21,6 +26,7 @@ let publishQueue = Promise.resolve();
 let presence = [];
 let scene = {revision:0,mode:'map',bounds:null,sizes:{}};
 let sharedRolls = [], localRolls = [], diceBusy = false;
+let mapToFit = null;
 async function command(event, body = {}) {
   if (!socket?.connected || !room) throw new Error('DIRECTOR_NOT_READY');
   const answer = await socket.timeout(12000).emitWithAck(event,{version:1,roomId:room.room.id,...body});
@@ -96,6 +102,7 @@ function roomView() {
   get('currentRoom').hidden = !room;
   get('openPlayers').hidden = !room;
   get('tableInvite').hidden = !room?.isOwner;
+  get('pendingCount').hidden = !room?.isOwner;
   get('openMap').hidden = Boolean(room && !room.isOwner);
   get('openBounds').hidden = Boolean(room && !room.isOwner);
   get('playersAdministration').hidden = !room?.isOwner;
@@ -127,6 +134,7 @@ async function move(id, point) {
 }
 async function leave() {
   qrControls?.reset();
+  mapToFit = null;
   sharedRolls = [];
   generation++; const old = client, oldStorage = storage;
   assetClient?.close(); assetClient = null; mediaStore = null; mediaSource = null; lastPublishedEpoch = null;
@@ -203,7 +211,14 @@ async function enter(selected, initialTokens, admissionCode, initialMedia) {
     } });
   assetClient = createAssetClient(live, {
     roomId: room.room.id, director: room.isOwner, getSource: async id => mediaSource?.files?.[id] || null,
-    onUpdate: value => { if (current === generation) void board.applySharedResources(value); },
+    onUpdate: value => {
+      if (current !== generation) return;
+      void board.applySharedResources(value).then(() => {
+        if (current !== generation || !mapToFit) return;
+        const map = board.map();
+        if (map && ['name','widthCells','heightCells','xCells','yCells'].every(key=>map[key]===mapToFit[key])) { board.fitMap(); mapToFit = null; }
+      }).catch(error=>status(describe(error),true));
+    },
     onError: error => { if (current === generation) { status(describe(new Error(error)), true); get('mapTransferStatus').textContent = describe(new Error(error)) + ' Se conserva el último mapa verificado; reconecta para reintentar.'; } },
     onProgress: value => { if (current === generation && value.assetId === 'map') get('mapTransferStatus').textContent = `Enviando mapa · ${value.percent}% de una transferencia. Cada participante verifica SHA-256 al finalizar.`; }
   });
@@ -225,7 +240,7 @@ async function enter(selected, initialTokens, admissionCode, initialMedia) {
   live.on('token:move:committed', value => { if (current === generation) { pending.delete(value.eventId); status('Movimiento confirmado.'); } });
   live.on('token:move:rejected', value => { if (current === generation) { pending.delete(value.eventId); status(errors[value.reason] || 'Movimiento rechazado; se conserva la posición confirmada.', true); } });
   live.on('disconnect', reason => { if (current === generation) {
-    pending.clear(); roomView();
+    pending.clear(); renderPeople(); roomView();
     if(session?.user.guest && reason==='io server disconnect') void clearSession(false).then(()=>status('Tu acceso temporal ha terminado o ha sido retirado.',true));
   } });
   live.on('connect_error', error => { if (current === generation) { status(describe(error), true); roomView(); } });
@@ -270,6 +285,13 @@ function fillAssignments() {
 }
 function renderPeople() {
   get('connectedPlayers').replaceChildren();
+  if (!room) return;
+  if (!socket?.connected) {
+    const notice = document.createElement('p'); notice.textContent = 'Reconectando. Presencia pendiente de confirmar.'; get('connectedPlayers').append(notice); return;
+  }
+  if (!presence.some(person=>person.role==='director')) {
+    const notice = document.createElement('p'); notice.textContent = 'Director desconectado · esperando reconexión.'; get('connectedPlayers').append(notice);
+  }
   for (const person of presence) {
     const row = document.createElement('p');
     row.textContent = `${person.username} · ${person.role === 'director' ? 'Director' : 'Jugador'} · conectado`;
@@ -435,7 +457,8 @@ function renderDice() {
   for (const roll of room ? sharedRolls : localRolls) {
     const item = document.createElement('li'); item.dataset.rollId = roll.id;
     const modifier = roll.modifier ? ` ${roll.modifier > 0 ? '+' : '−'} ${Math.abs(roll.modifier)}` : '';
-    item.textContent = `${roll.author.name} · ${roll.notation}: [${roll.results.join(', ')}]${modifier} = ${roll.total} · ${new Date(roll.time).toLocaleTimeString()} · ${roll.verified ? 'Servidor' : 'Local'}`;
+    item.dataset.roll = JSON.stringify(roll);
+    item.textContent = `${roll.author.name} · ${roll.notation}: [${roll.results.join(', ')}]${modifier} = ${roll.total} · ${new Date(roll.time).toLocaleTimeString('es-ES')} · ${roll.verified ? 'Servidor' : 'Local'}`;
     get('diceHistory').append(item);
   }
 }
@@ -485,6 +508,7 @@ get('editSelected').addEventListener('click', async () => {
   get('contextColor').value = token.color; get('contextSize').value = String(token.size || 1);
   get('contextPortrait').value = ''; get('contextRemovePortrait').checked = false;
   get('contextAssignment').hidden = !room;
+  get('contextDelete').hidden = Boolean(room);
   get('tokenEditStatus').textContent = '';
   if (room) {
     try { await refreshMembers(); } catch(error) { status(describe(error),true); return; }
@@ -512,6 +536,10 @@ function renderContextPermissions() {
 }
 get('contextUsers').addEventListener('change',renderContextPermissions);
 get('cancelToken').addEventListener('click', () => get('tokenDialog').close());
+get('contextDelete').addEventListener('click', () => {
+  if (room || get('saveContextToken').disabled) return;
+  get('tokenDialog').close(); get('deleteToken').click();
+});
 get('contextTokenForm').addEventListener('submit', async event => {
   event.preventDefault();
   const id = editingTokenId, current = generation, target = room?.room.id;
@@ -519,6 +547,7 @@ get('contextTokenForm').addEventListener('submit', async event => {
   const name = get('contextName').value.trim(), color = get('contextColor').value, size = Number(get('contextSize').value);
   if (!name || name.length>64 || !/^#[0-9a-fA-F]{6}$/.test(color) || !Number.isFinite(size) || size<.25 || size>4) return;
   get('saveContextToken').disabled = true;
+  get('cancelToken').disabled = true;
   try {
     const portrait = get('contextPortrait').files?.[0], remove = get('contextRemovePortrait').checked;
     if (portrait) await validateImage(portrait,2*1024*1024);
@@ -542,8 +571,9 @@ get('contextTokenForm').addEventListener('submit', async event => {
     }
     get('tokenDialog').close();
   } catch(error) { get('tokenEditStatus').textContent = describe(error); }
-  finally { get('saveContextToken').disabled = false; }
+  finally { get('saveContextToken').disabled = false; get('cancelToken').disabled = false; }
 });
+get('tokenDialog').addEventListener('cancel', event => { if (get('saveContextToken').disabled) event.preventDefault(); });
 
 let candidate = null, candidateUrl = null, candidateVersion = 0, mapBusy = false;
 get('openBounds').addEventListener('click', () => {
@@ -579,7 +609,10 @@ function openMapManager() {
   if (!get('mapDialog').open) get('mapDialog').showModal();
   const existing = room ? mediaSource?.files.map : null;
   if (existing) void stageMap(existing);
-  else if (!room && board.map()) void board.localResources().then(value=>{if (value.blob && get('mapDialog').open) void stageMap(value.blob);});
+  else if (!room && board.map()) {
+    const version = candidateVersion;
+    void board.localResources().then(value=>{if (version === candidateVersion && value.blob && get('mapDialog').open) void stageMap(value.blob);}).catch(error=>{get('mapCandidateInfo').textContent=describe(error);});
+  }
 }
 async function stageMap(file) {
   if (!file || mapBusy || (room && !room.isOwner)) return;
@@ -628,15 +661,16 @@ get('mapConfirm').addEventListener('submit', async event => {
   const fields = ['candidateWidth','candidateHeight','candidateX','candidateY'].map(id => Number(get(id).value));
   if (!fields.every(Number.isFinite) || fields.slice(0,2).some(n => n < 1 || n > 200) || fields.slice(2).some(n => Math.abs(n)>1000)) return;
   const [widthCells,heightCells,xCells,yCells] = fields;
-  const map = {name:candidate.file.name.slice(0,100)||'Mapa', ...candidate.dimensions, widthCells,heightCells,xCells,yCells};
+    const map = {name:(candidate.file.name || board.map()?.name || 'Mapa').slice(0,100), ...candidate.dimensions, widthCells,heightCells,xCells,yCells};
   mapBusy = true; get('useMap').disabled = true; get('closeMapManager').disabled = true;
   get('mapTransferStatus').textContent = room ? 'Calculando SHA-256 y publicando el mapa… Los participantes verifican cada transferencia.' : 'Guardando mapa local…';
   try {
+    if (room && get('candidateFit').checked) mapToFit = map;
     await commitMap(map, candidate.file);
-    if (get('candidateFit').checked) board.fitMap();
+    if (!room && get('candidateFit').checked) board.fitMap();
     get('mapTransferStatus').textContent = room ? 'Mapa publicado. Transferencia verificada en curso para los participantes conectados.' : 'Mapa guardado en este navegador.';
     get('openMap').textContent = 'Gestionar mapa'; clearCandidate();
-  } catch (error) { get('mapTransferStatus').textContent = describe(error) + ' El mapa anterior se conserva.'; get('useMap').disabled = false; }
+  } catch (error) { mapToFit = null; get('mapTransferStatus').textContent = describe(error) + ' El mapa anterior se conserva.'; get('useMap').disabled = false; }
   finally { mapBusy = false; get('closeMapManager').disabled = false; }
 });
 get('managerRemoveMap').addEventListener('click', async () => {

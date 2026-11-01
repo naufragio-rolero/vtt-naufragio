@@ -81,7 +81,7 @@
       }
       base.showGrid = stored.showGrid !== false;
       try { base.bounds = validateBounds(stored.bounds ?? null); } catch { base.bounds = null; }
-      base.boundsMode = ['map','custom','free'].includes(stored.boundsMode) ? stored.boundsMode : 'free';
+      base.boundsMode = ['map','custom','free'].includes(stored.boundsMode) ? stored.boundsMode : stored.map ? 'free' : 'map';
       base.snap = stored.snap !== false;
       base.zoom = clamp(finiteOr(stored.zoom, 1), MIN_ZOOM, 2.5);
       base.cameraX = clamp(finiteOr(stored.cameraX, 0), -20000, 20000);

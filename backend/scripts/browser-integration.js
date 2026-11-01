@@ -29,6 +29,11 @@ async function listen(server) { await new Promise(resolve => server.listen(0, '1
 async function closeServer(server) { await new Promise(resolve => { server.close(resolve); server.closeAllConnections(); }); }
 async function openPanel(page) { if (!await page.locator('#multiplayerDialog').evaluate(dialog => dialog.open)) await page.click('#openMultiplayer'); }
 async function closePanel(page) { if (await page.locator('#multiplayerDialog').evaluate(dialog => dialog.open)) await page.click('#closeMultiplayer'); }
+async function confirmMap(page) {
+  await page.waitForFunction(()=>!document.getElementById('useMap').disabled);
+  await page.click('#useMap'); await page.waitForFunction(()=>!document.getElementById('closeMapManager').disabled);
+  await page.click('#closeMapManager');
+}
 async function configure(page, api, realtime) {
   await openPanel(page); await page.click('#openSettings');
   const frame = page.frameLocator('#settingsFrame');
@@ -51,6 +56,7 @@ async function same(pages, expected) {
 }
 async function moveCanvas(page, tokenId, dx, dy) {
   await closePanel(page);
+  await page.click('#resetView');
   const item = (await tokens(page)).find(token => token.id === tokenId);
   const rect = await page.locator('#boardCanvas').boundingBox();
   const x = rect.x + rect.width / 2 + (item.x + .5) * 64;
@@ -73,9 +79,11 @@ async function localOnly(engine) {
     const zoom = await page.locator('#zoomValue').innerText(); await page.click('#zoomIn');
     assert.notEqual(await page.locator('#zoomValue').innerText(), zoom);
     await page.click('#addToken'); assert.equal((await tokens(page)).length, 5);
-    page.on('dialog', dialog => dialog.accept()); await page.click('#deleteToken'); assert.equal((await tokens(page)).length, 4);
+    page.on('dialog', dialog => dialog.accept()); await page.click('#editSelected'); await page.click('#contextDelete'); assert.equal((await tokens(page)).length, 4);
+    await page.click('#openMap');
     await page.setInputFiles('#mapUpload', { name: 'mapa-local-sintetico.png', mimeType: 'image/png',
       buffer: Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGPQXRT9HwAEVAIq3G2ZNgAAAABJRU5ErkJggg==', 'base64') });
+    await confirmMap(page);
     await page.waitForFunction(() => document.getElementById('mapFilename').textContent === 'mapa-local-sintetico.png');
     await page.reload(); await page.waitForFunction(() => window.NaufragioBoard && document.documentElement.dataset.theme === 'dark');
     assert.equal((await tokens(page)).length, 4);
@@ -183,7 +191,7 @@ async function scenario(directorBrowser, playerBrowser, basePath, prefix) {
       await pages[i].fill('#roomCode', code); await pages[i].locator('#joinRoomForm button').click();
       await pages[i].waitForFunction(() => window.NaufragioBoard.tokens().length === 2 && document.getElementById('roomState').textContent.startsWith('Partida conectada'));
     }
-    await director.click('#refreshMembers'); await director.waitForFunction(() => document.querySelectorAll('.member-row').length === 2);
+    await closePanel(director); await director.click('#openPlayers'); await director.waitForFunction(() => document.querySelectorAll('.member-row').length === 2);
     const starting = await tokens(director);
     for (let i = 0; i < 2; i++) {
       await director.selectOption('#assignedToken', starting[i].id); await director.selectOption('#assignedUsers', accounts[i + 1].id);
@@ -202,6 +210,7 @@ async function scenario(directorBrowser, playerBrowser, basePath, prefix) {
       await page.waitForFunction(id => window.NaufragioBoard.sharedView()?.portraits.includes(id), starting[0].id, { timeout: 30000 });
     }
     await director.setInputFiles('#sharedMapUpload', { name: 'nuevo-mapa.png', mimeType: 'image/png', buffer: image });
+    await confirmMap(director); await director.click('#closePlayers');
     for (const page of pages) {
       await page.waitForFunction(() => window.NaufragioBoard.sharedView()?.map?.name === 'nuevo-mapa.png', null, { timeout: 30000 });
     }

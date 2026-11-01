@@ -19,6 +19,9 @@ const secret=()=>randomBytes(32).toString('base64url');
 async function closeServer(s){await new Promise(r=>{s.close(r);s.closeAllConnections();});}
 async function panel(p){if(!await p.locator('#multiplayerDialog').evaluate(d=>d.open))await p.click('#openMultiplayer');}
 async function shutPanel(p){if(await p.locator('#multiplayerDialog').evaluate(d=>d.open))await p.click('#closeMultiplayer');}
+async function showPlayers(p){await shutPanel(p);if(await p.locator('#playersPanel').evaluate(d=>d.hidden))await p.click('#openPlayers');}
+async function confirmMap(p){await p.waitForFunction(()=>!document.getElementById('useMap').disabled);await p.click('#useMap');await p.waitForFunction(()=>!document.getElementById('closeMapManager').disabled);await p.click('#closeMapManager');}
+
 async function selectToken(p,id){if(await p.locator('#menuToggle').isVisible()&&await p.getAttribute('#menuToggle','aria-expanded')!=='true')await p.click('#menuToggle');await p.locator(`[data-token-id="${id}"]`).click();await p.locator('#boardCanvas').focus();}
 async function scenario(basePath,transport){
  const root=await mkdtemp(resolve(tmpdir(),'naufragio-qr-browser-')),cfg={},contexts=[],errors=[],leaks=[];
@@ -54,9 +57,10 @@ async function scenario(basePath,transport){
   await director.waitForFunction(()=>!document.getElementById('signedIn').hidden);await director.fill('#roomName','Mesa QR');await director.locator('#createRoomForm button').click();
   await director.waitForFunction(()=>document.getElementById('roomState').textContent.includes('Partida conectada'));
   const roomId=await director.getAttribute('#currentRoom','data-room-id');
-  await panel(director);await director.click('#inviteQr');await director.waitForFunction(()=>document.getElementById('qrLink').value.includes('#join='));
+  await panel(director);await director.click('#inviteQr');await director.click('#qrNew');await director.waitForFunction(()=>document.getElementById('qrLink').value.includes('#join='));
   const link=await director.inputValue('#qrLink');const pixels=await director.locator('#qrCanvas').evaluate(c=>({data:[...c.getContext('2d').getImageData(0,0,c.width,c.height).data],width:c.width,height:c.height}));
   assert.ok(jsQR(new Uint8ClampedArray(pixels.data),pixels.width,pixels.height)?.data===link,'generated QR decodes to the exact link');
+  await director.click('#qrClose');await showPlayers(director);
   stage=basePath+' requests';
   for(const [p,name]of [[one,'Ana móvil'],[two,'Bruno móvil']]){stage=basePath+' request '+name;await p.goto(link);await p.waitForFunction(()=>!document.getElementById('guestName').disabled);assert.equal(new URL(p.url()).hash,'');await p.fill('#guestName',name);await p.click('#requestJoin');await p.waitForFunction(()=>document.getElementById('joinStatus').textContent.includes('Esperando'));}
   stage=basePath+' pending request reload';
@@ -80,15 +84,15 @@ async function scenario(basePath,transport){
   assert.equal((await post('/rooms',{name:'Forbidden guest room'},guest.token)).status,403);
   const other=app.rooms.create(owner.token,{name:'Isolated'});
   assert.equal((await fetch(api+'/rooms/'+other.room.id,{headers:{Authorization:'Bearer '+guest.token}})).status,404);
-  await director.click('#qrClose');await director.click('#refreshMembers');
+  if(await director.locator('#qrDialog').evaluate(d=>d.open))await director.click('#qrClose');await showPlayers(director);
   const starting=await director.evaluate(()=>window.NaufragioBoard.tokens());assert.ok(starting.length>=2);
   for(const [i,member]of [[0,ana],[1,bruno]]){
-    await director.locator(`.member-row[data-user-id="${member.userId}"] input`).check();
+    await director.locator(`.member-row[data-user-id="${member.userId}"] input`).first().check();
     await director.locator(`.member-row[data-user-id="${member.userId}"]`).getByRole('button',{name:'Actualizar permiso'}).click();
     await director.selectOption('#assignedToken',starting[i].id);await director.selectOption('#assignedUsers',member.userId);await director.locator('#assignForm button').click();
     await director.waitForFunction(()=>document.getElementById('multiplayerStatus').textContent.startsWith('Asignaci'));
   }
-  await shutPanel(director);
+  await shutPanel(director);await director.click('#closePlayers');
   stage=basePath+' movement';
   await selectToken(one,starting[0].id);await one.keyboard.press('ArrowRight');
   for(const p of pages)await p.waitForFunction(id=>window.NaufragioBoard.tokens().find(t=>t.id===id)?.tokenVersion===1,starting[0].id);
@@ -106,20 +110,20 @@ async function scenario(basePath,transport){
   },{api,roomId,item:confirmed[0]});assert.equal(denial.error.code,'FORBIDDEN');
   stage=basePath+' real PNG 12 MiB to two guests';
   const png=largePng(),sha256=createHash('sha256').update(png).digest('hex'),transferStart=performance.now();
-  await panel(director);await director.setInputFiles('#sharedMapUpload',{name:'map-12MiB.png',mimeType:'image/png',buffer:png});
+  await panel(director);await director.setInputFiles('#sharedMapUpload',{name:'map-12MiB.png',mimeType:'image/png',buffer:png});await confirmMap(director);
   for(const p of pages){await p.waitForFunction(hash=>window.__hashes.includes(hash)&&window.NaufragioBoard.sharedView()?.map?.name==='map-12MiB.png',sha256,{timeout:150000});await p.waitForFunction(()=>window.__longTimers.size===0);}
   const transferMs=Math.round(performance.now()-transferStart);
   const engines=Object.values(app.io.engine.clients).map(c=>c.transport.name);
   assert.equal(engines.length,3);assert.ok(engines.every(name=>name===transport));
   const portrait=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGPQXRT9HwAEVAIq3G2ZNgAAAABJRU5ErkJggg==','base64');
-  await director.selectOption('#assignedToken',starting[0].id);await director.setInputFiles('#sharedTokenUpload',{name:'portrait.png',mimeType:'image/png',buffer:portrait});
+  await showPlayers(director);await director.selectOption('#assignedToken',starting[0].id);await director.setInputFiles('#sharedTokenUpload',{name:'portrait.png',mimeType:'image/png',buffer:portrait});
   for(const p of pages)await p.waitForFunction(id=>window.NaufragioBoard.sharedView()?.portraits.includes(id),starting[0].id,{timeout:150000});
   stage=basePath+' interrupted transfer';
   const interruptedPng=largePng(),interruptedHash=createHash('sha256').update(interruptedPng).digest('hex');
   let interrupted=false,offline;
   const receiver=[...app.io.of('/').sockets.values()].find(s=>s.data.access.actor.id===ana.userId);
   receiver.onAnyOutgoing(event=>{if(event==='assets:chunk'&&!interrupted){interrupted=true;offline=mobileA.setOffline(true);queueMicrotask(()=>receiver.conn.close(true));}});
-  await director.setInputFiles('#sharedMapUpload',{name:'interrupted-12MiB.png',mimeType:'image/png',buffer:interruptedPng});
+  await director.setInputFiles('#sharedMapUpload',{name:'interrupted-12MiB.png',mimeType:'image/png',buffer:interruptedPng});await confirmMap(director);
   await two.waitForFunction(hash=>window.__hashes.includes(hash)&&window.NaufragioBoard.sharedView()?.map?.name==='interrupted-12MiB.png',interruptedHash,{timeout:150000});
   assert.equal(interrupted,true);await offline;assert.match(await director.locator('#roomState').innerText(),/Partida conectada/);
   assert.equal(receiver.connected,false);assert.equal(await one.evaluate(hash=>window.__hashes.includes(hash),interruptedHash),false);
@@ -131,11 +135,11 @@ async function scenario(basePath,transport){
   await one.waitForFunction(hash=>window.__hashes.includes(hash)&&window.NaufragioBoard.sharedView()?.map?.name==='interrupted-12MiB.png',interruptedHash,{timeout:150000});
   await one.reload();await one.waitForFunction(hash=>window.__hashes.includes(hash)&&window.NaufragioBoard.sharedView()?.map?.name==='interrupted-12MiB.png',interruptedHash,{timeout:150000});
   stage=basePath+' revocation expiry expulsion and cleanup';
-  await director.click('#inviteQr');await director.click('#qrRevoke');
+  await director.click('#tableInvite');await director.click('#qrRevoke');
   assert.equal((await post('/guest-requests',{admissionToken:new URL(link).hash.slice(6),displayName:'Revoked'})).status,410);
   const fresh=app.guests.open(owner.token,roomId,{}).admission;now+=61000;
   assert.equal((await post('/guest-requests',{admissionToken:fresh.token,displayName:'Expired'})).status,410);
-  await director.click('#qrClose');await director.click('#refreshMembers');
+  if(await director.locator('#qrDialog').evaluate(d=>d.open))await director.click('#qrClose');await showPlayers(director);
   await director.locator(`.member-row[data-user-id="${ana.userId}"]`).getByRole('button',{name:'Retirar acceso'}).click();
   await one.waitForFunction(()=>!sessionStorage.getItem('naufragio-guest-session-v1'));
   assert.equal((await fetch(api+'/auth/me',{headers:{Authorization:'Bearer '+guest.token}})).status,401);
