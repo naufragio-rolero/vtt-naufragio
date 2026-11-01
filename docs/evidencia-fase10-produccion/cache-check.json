@@ -1,0 +1,127 @@
+{
+  "assetVersion": "phase10-1f19390",
+  "filesMatchPinnedCandidateExceptCacheUrls": true,
+  "assets": [
+    {
+      "path": "/beta/styles.css",
+      "version": "phase10-1f19390",
+      "status": 200
+    },
+    {
+      "path": "/beta/app.js",
+      "version": "phase10-1f19390",
+      "status": 200
+    },
+    {
+      "path": "/beta/frontend/multiplayer.js",
+      "version": "phase10-1f19390",
+      "status": 200
+    },
+    {
+      "path": "/beta/shared/board-bounds.js",
+      "version": "phase10-1f19390",
+      "status": 200
+    },
+    {
+      "path": "/beta/settings/settings.css",
+      "version": "phase10-1f19390",
+      "status": 200
+    },
+    {
+      "path": "/beta/settings/settings.js",
+      "version": "phase10-1f19390",
+      "status": 200
+    },
+    {
+      "path": "/beta/settings/site-config.js",
+      "version": "phase10-1f19390",
+      "status": 200
+    },
+    {
+      "path": "/beta/client/token-client.js",
+      "version": "phase10-1f19390",
+      "status": 200
+    },
+    {
+      "path": "/beta/client/indexeddb-store.js",
+      "version": "phase10-1f19390",
+      "status": 200
+    },
+    {
+      "path": "/beta/frontend/room-media-store.js",
+      "version": "phase10-1f19390",
+      "status": 200
+    },
+    {
+      "path": "/beta/client/asset-client.js",
+      "version": "phase10-1f19390",
+      "status": 200
+    },
+    {
+      "path": "/beta/frontend/vendor/socket.io-4.8.4.esm.min.js",
+      "version": "phase10-1f19390",
+      "status": 200
+    },
+    {
+      "path": "/beta/shared/dice.js",
+      "version": "phase10-1f19390",
+      "status": 200
+    },
+    {
+      "path": "/beta/frontend/qr.js",
+      "version": "phase10-1f19390",
+      "status": 200
+    },
+    {
+      "path": "/beta/frontend/board-model.js",
+      "version": "phase10-1f19390",
+      "status": 200
+    },
+    {
+      "path": "/beta/shared/token-state.js",
+      "version": "phase10-1f19390",
+      "status": 200
+    },
+    {
+      "path": "/beta/settings/site-config.js",
+      "version": "phase10-1f19390",
+      "status": 200
+    },
+    {
+      "path": "/beta/frontend/vendor/qrcode-generator-2.0.4.js",
+      "version": "phase10-1f19390",
+      "status": 200
+    },
+    {
+      "path": "/beta/frontend/join.css",
+      "version": "phase10-1f19390",
+      "status": 200
+    },
+    {
+      "path": "/beta/frontend/join.js",
+      "version": "phase10-1f19390",
+      "status": 200
+    },
+    {
+      "path": "/beta/settings/site-config.js",
+      "version": "phase10-1f19390",
+      "status": 200
+    },
+    {
+      "path": "/beta/settings/settings.css",
+      "version": "phase10-1f19390",
+      "status": 200
+    },
+    {
+      "path": "/beta/settings/settings.js",
+      "version": "phase10-1f19390",
+      "status": 200
+    },
+    {
+      "path": "/beta/settings/site-config.js",
+      "version": "phase10-1f19390",
+      "status": 200
+    }
+  ],
+  "browserErrors": []
+}

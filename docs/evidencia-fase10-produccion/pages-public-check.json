@@ -1,0 +1,390 @@
+{
+  "at": "2026-11-01T14:59:44.116Z",
+  "commit": "56f96e82c21923ddafdc5f97f23135a2d927de3d",
+  "assetVersion": "phase10-1f19390",
+  "files": [
+    {
+      "path": ".nojekyll",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "README.md",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "app.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/app.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/client/asset-client.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/client/indexeddb-store.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/client/token-client.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/frontend/board-model.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/frontend/join.css",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/frontend/join.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/frontend/multiplayer.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/frontend/qr.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/frontend/room-media-store.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/frontend/vendor/qrcode-LICENSE.txt",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/frontend/vendor/qrcode-generator-2.0.4.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/frontend/vendor/socket.io-4.8.4.esm.min.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/frontend/vendor/socket.io-LICENSE.txt",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/index.html",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/join.html",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/manifest.json",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/network-check.html",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/settings/settings.css",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/settings/settings.html",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/settings/settings.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/settings/site-config.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/settings/site.config.example.json",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/settings/site.config.schema.json",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/shared/board-bounds.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/shared/dice.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/shared/token-state.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/site.config.json",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/styles.css",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "docs/BACKEND-RASPBERRY.md",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "docs/PLAN-MAPAS.md",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "docs/REFERENCIAS-OWLBEAR.md",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "docs/REQUISITOS.md",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "index.html",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "styles.css",
+      "status": 200,
+      "matches": true
+    }
+  ],
+  "barePaths": [
+    {
+      "path": ".nojekyll",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "README.md",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "app.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/app.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/client/asset-client.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/client/indexeddb-store.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/client/token-client.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/frontend/board-model.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/frontend/join.css",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/frontend/join.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/frontend/multiplayer.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/frontend/qr.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/frontend/room-media-store.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/frontend/vendor/qrcode-LICENSE.txt",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/frontend/vendor/qrcode-generator-2.0.4.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/frontend/vendor/socket.io-4.8.4.esm.min.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/frontend/vendor/socket.io-LICENSE.txt",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/index.html",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/join.html",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/manifest.json",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/network-check.html",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/settings/settings.css",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/settings/settings.html",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/settings/settings.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/settings/site-config.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/settings/site.config.example.json",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/settings/site.config.schema.json",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/shared/board-bounds.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/shared/dice.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/shared/token-state.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/site.config.json",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "beta/styles.css",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "docs/BACKEND-RASPBERRY.md",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "docs/PLAN-MAPAS.md",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "docs/REFERENCIAS-OWLBEAR.md",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "docs/REQUISITOS.md",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "index.html",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "styles.css",
+      "status": 200,
+      "matches": true
+    }
+  ],
+  "apiStatus": 403
+}

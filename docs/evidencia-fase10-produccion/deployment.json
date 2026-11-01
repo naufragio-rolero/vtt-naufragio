@@ -1,0 +1,22 @@
+{
+  "candidate": "1f19390afd0671e4bf4dd719e1c4a1522101475a",
+  "validationCommits": ["a83f0f9", "0d84617"],
+  "frontendCommit": "56f96e82c21923ddafdc5f97f23135a2d927de3d",
+  "pagesBuild": "built",
+  "cacheBuildCommit": "0456503",
+  "privateBackupDirectory": "/mnt/ssd/naufragio-vtt/backups/production-phase10-20261101T143623Z",
+  "newDatabase": "/mnt/ssd/naufragio-vtt/data/phase10-20261101T143623Z.sqlite",
+  "freshOnlineV4BackupVerified": true,
+  "migrationAllOriginalTablesCompared": true,
+  "rollbackCopyV4VerifiedBeforeSwitch": true,
+  "postTestOnlineV7BackupVerified": true,
+  "originalV4Sha256": "3eea59095b33b7374c62bd70c98cfd20ee4f4be35262be9873af3e6a3cdc60d5",
+  "syntheticDirectorsDisabled": 2,
+  "syntheticSessionsRevoked": true,
+  "syntheticRoomAdmissionsRevoked": true,
+  "syntheticRecordsRetained": true,
+  "noEstablishedBackendConnectionsBeforeClose": true,
+  "controllerReportedClosedAndOriginalApiRestored": true,
+  "effectiveWatchdogWhileRunning": "10s",
+  "mainUnchanged": "37edf0d691cc807335f3020eb12182b643634312"
+}

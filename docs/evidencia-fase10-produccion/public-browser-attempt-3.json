@@ -1,0 +1,14 @@
+{
+  "started": "2026-11-01T14:55:23.187Z",
+  "network": "Windows on Raspberry LAN, public HTTPS hostnames",
+  "checks": [
+    "Isolated synthetic director and test room on production v7",
+    "Two QR requests with closed dialog and visible pending notification",
+    "Approve/reject requests and connected players list",
+    "Contextual token editor, shared appearance, assignment and permissions",
+    "Map upload, preview without publication, explicit publication and guest rendering"
+  ],
+  "realLoginEvidence": "public-browser-attempt-2.json",
+  "result": "fail",
+  "error": "page.evaluate: Error: SYNC_REQUEST_REJECTED\n    at eval (eval at evaluate (:290:30), <anonymous>:8:22)\n    at async <anonymous>:316:30"
+}

@@ -1,0 +1,11 @@
+{
+  "at": "2026-11-01T14:48:18.069Z",
+  "publicUrl": true,
+  "tlsValidation": true,
+  "network": "Windows on Raspberry LAN via public hostnames",
+  "results": [
+    "HTTPS: OK",
+    "WebSocket: OK",
+    "Polling: OK"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "started": "2026-11-01T14:52:01.700Z",
+  "network": "Windows on Raspberry LAN, public HTTPS hostnames",
+  "checks": [
+    "Real administrative account login through published frontend; credentials entered by owner",
+    "Isolated synthetic director and test room on production v7",
+    "Two QR requests with closed dialog and visible pending notification",
+    "Approve/reject requests and connected players list",
+    "Contextual token editor, shared appearance, assignment and permissions",
+    "Map upload, preview without publication, explicit publication and guest rendering"
+  ],
+  "result": "fail",
+  "error": "page.evaluate: Error: NO_PUBLIC_SNAPSHOT\n    at eval (eval at evaluate (:290:30), <anonymous>:8:23)\n    at async <anonymous>:316:30"
+}

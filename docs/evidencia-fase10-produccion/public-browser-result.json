@@ -1,0 +1,20 @@
+{
+  "started": "2026-11-01T14:56:39.455Z",
+  "network": "Windows on Raspberry LAN, public HTTPS hostnames",
+  "checks": [
+    "Isolated synthetic director and test room on production v7",
+    "Two QR requests with closed dialog and visible pending notification",
+    "Approve/reject requests and connected players list",
+    "Contextual token editor, shared appearance, assignment and permissions",
+    "Map upload, preview without publication, explicit publication and guest rendering",
+    "Backend rejects forged out-of-bounds movement over public WSS",
+    "Shared 2d6+3 result and matching roll identity",
+    "Guest offline reconnection and reload recover map and dice history",
+    "Authenticated public polling and server-side dice permission denial",
+    "Published connectivity diagnostic: HTTPS, WSS and polling all OK"
+  ],
+  "realLoginEvidence": "public-browser-attempt-2.json",
+  "result": "pass",
+  "pageErrors": 0,
+  "cleanup": "Test admission/code revoked; guest removed; synthetic director logged out; isolated test records retained"
+}

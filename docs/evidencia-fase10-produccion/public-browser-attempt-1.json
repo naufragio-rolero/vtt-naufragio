@@ -1,0 +1,10 @@
+{
+  "started": "2026-11-01T14:42:30.826Z",
+  "network": "Windows on Raspberry LAN, public HTTPS hostnames",
+  "checks": [
+    "Real administrative account login through published frontend; credentials entered by owner",
+    "Isolated synthetic director and test room on production v7"
+  ],
+  "result": "fail",
+  "error": "page.goto: Target page, context or browser has been closed"
+}
