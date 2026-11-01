@@ -83,7 +83,7 @@ export function createGuestService(store, auth, rooms, config, { clock = Date.no
         const count=db.prepare("SELECT count(*) AS n FROM guest_requests WHERE admission_id=? AND state IN ('pending','approved')").get(a.id).n;
         if (count>=config.guestLimit || db.prepare('SELECT count(*) AS n FROM guest_requests').get().n>=1000) throw new HttpError(429, 'ADMISSION_LIMIT');
         const value=token('request'), requestId=randomUUID(), expiresAt=Math.min(a.expires_at,clock()+config.guestRequestTtlSeconds*1000);
-        db.prepare("INSERT INTO guest_requests VALUES (?,?,?,?,?,'pending',NULL)").run(requestId,a.id,hash(value),input.displayName.trim(),expiresAt);
+        db.prepare("INSERT INTO guest_requests(id,admission_id,claim_hash,display_name,expires_at,state,user_id,created_at) VALUES (?,?,?,?,?,'pending',NULL,?)").run(requestId,a.id,hash(value),input.displayName.trim(),expiresAt,clock());
         return { requestToken:value,expiresAt,state:'pending' };
       });
     },
@@ -95,7 +95,7 @@ export function createGuestService(store, auth, rooms, config, { clock = Date.no
     list(session,roomId) {
       owner(session,roomId);cleanup();
       const a=db.prepare('SELECT id,expires_at AS expiresAt,open FROM room_admissions WHERE room_id=? AND revoked_at IS NULL').get(roomId);
-      return { admission:a ? {...a,open:Boolean(a.open)} : null,requests:db.prepare(`SELECT q.id,q.display_name AS displayName,q.state,q.expires_at AS expiresAt
+      return { admission:a ? {...a,open:Boolean(a.open)} : null,requests:db.prepare(`SELECT q.id,q.display_name AS displayName,q.state,q.expires_at AS expiresAt,q.created_at AS createdAt
         FROM guest_requests q JOIN room_admissions a ON a.id=q.admission_id WHERE a.room_id=? AND q.expires_at>? ORDER BY q.rowid LIMIT 1000`).all(roomId,clock()) };
     },
     decide(session,roomId,requestId,input) {

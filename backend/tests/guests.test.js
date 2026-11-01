@@ -12,6 +12,8 @@ test('QR approval/rejection, single claim, normal membership and no elevation or
   assert.throws(()=>g.claim({requestToken:a.requestToken}),/ADMISSION_NOT_APPROVED/);
   assert.throws(()=>g.list(f.member.token,id),/ROOM_ACCESS_DENIED|FORBIDDEN/);
   const list=g.list(f.director.token,id);assert.equal(list.requests.length,2);
+  assert.ok(list.requests.every(row=>Number.isSafeInteger(row.createdAt)&&row.createdAt<=Date.now()));
+  assert.deepEqual(g.list(f.director.token,id).requests,list.requests,'read-only refresh preserves pending admissions');
   g.decide(f.director.token,id,list.requests[0].id,{approve:true});g.decide(f.director.token,id,list.requests[1].id,{approve:false});
   const guest=g.claim({requestToken:a.requestToken});assert.equal(guest.user.username,'Ana');assert.equal(guest.user.role,'user');assert.equal(guest.user.guest,true);
   assert.deepEqual(guest.selected.permissions,{diceAllowed:false,moveAssignedTokens:false});

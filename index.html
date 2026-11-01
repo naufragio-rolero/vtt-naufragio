@@ -107,6 +107,8 @@
           <div><span class="topbar-overline">TABLERO DE PRUEBA</span><h1>Mesa sin nombre</h1></div>
         </div>
         <div class="topbar-actions">
+          <button type="button" class="secondary-button" id="openPlayers" aria-controls="playersPanel" aria-expanded="false" hidden>Jugadores <span id="pendingCount" aria-label="Solicitudes pendientes">0</span></button>
+          <button type="button" class="secondary-button" id="tableInvite" hidden>Invitar</button>
           <button type="button" class="secondary-button" id="openMultiplayer">Multijugador</button>
           <span class="local-chip" id="connectionState"><span class="status-dot"></span> Solo este navegador</span>
           <div class="zoom-controls" aria-label="Controles de zoom">
@@ -125,6 +127,16 @@
     </main>
   </div>
 
+  <aside id="playersPanel" class="table-panel" aria-labelledby="playersTitle" hidden>
+    <header><h2 id="playersTitle">Jugadores</h2><button type="button" id="closePlayers">Cerrar panel</button></header>
+    <p id="playersConnection" role="status"></p>
+    <div id="connectedPlayers"></div>
+    <section id="playersAdministration" hidden>
+      <h3>Autorizados y permisos</h3><div id="members"></div>
+      <h3>Solicitudes de acceso</h3><p id="admissionNotice" role="status" aria-live="polite"></p><div id="qrRequests"></div>
+      <div id="tableAssignments"></div>
+    </section>
+  </aside>
   <dialog id="identityDialog" class="identity-dialog" aria-labelledby="identityTitle">
     <form id="identityForm">
       <div class="identity-emblem" aria-hidden="true">✦</div>
@@ -202,7 +214,7 @@
           <label><input id="inviteMovement" type="checkbox"> Autorizar movimiento de tokens que se le asignen</label>
           <button type="submit">Invitar usuario registrado</button>
         </form>
-        <button type="button" id="refreshMembers">Actualizar participantes autorizados</button><div id="members"></div>
+        <button type="button" id="refreshMembers">Actualizar participantes autorizados</button>
         <form id="assignForm" class="mp-form"><h3>Asignar tokens</h3>
           <label>Token <select id="assignedToken"></select></label>
           <label>Participantes (Ctrl/Cmd permite seleccionar varios)<select id="assignedUsers" multiple size="4"></select></label>
@@ -243,7 +255,7 @@
     <button type="button" id="qrCopy">Copiar enlace</button><button type="button" id="qrNew">Generar QR nuevo</button>
     <button type="button" id="qrPause">Cerrar admisión</button><button type="button" id="qrOpen">Abrir admisión</button><button type="button" id="qrRevoke">Revocar QR</button>
     <p>El QR no da acceso por sí solo. Comprueba el nombre de cada persona antes de aprobarla. Cerrar esta ventana no cierra la admisión.</p>
-    <div id="qrRequests"></div>
+    
   </dialog>
 </body>
 </html>

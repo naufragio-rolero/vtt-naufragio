@@ -16,6 +16,7 @@ let config = null, session = null, room = null, socket = null, client = null, st
 let rights = null, members = [], pending = new Map(), generation = 0, validatedSignup = null;
 let assetClient = null, mediaStore = null, mediaSource = null, lastPublishedEpoch = null;
 let publishQueue = Promise.resolve();
+let presence = [];
 const errors = {
   INVALID_CREDENTIALS: 'Usuario o contraseña incorrectos.', INVALID_INVITATION: 'Invitación de alta caducada, usada, revocada o inválida.',
   ROOM_ACCESS_DENIED: 'No tienes autorización o el código de sala no es válido.', FORBIDDEN: 'No tienes permiso para esta operación.',
@@ -32,6 +33,7 @@ const errors = {
 function status(message, error = false) {
   get('multiplayerStatus').textContent = message; get('multiplayerStatus').dataset.error = String(error);
   if (error) board.notify(message);
+  get('admissionNotice').textContent = message;
 }
 const describe = error => errors[error?.message] || 'No se pudo completar la operación. Revisa la conexión, los permisos y los campos.';
 function action(element, event, work) {
@@ -74,6 +76,11 @@ function roomView() {
   get('tableModeLabel').textContent = room ? 'COMPARTIDA' : 'LOCAL';
   get('tableModeHelp').textContent = room ? 'Solo las posiciones confirmadas son oficiales. Los ajustes de vista son personales.' : 'Tu propio tablero de pruebas. Los cambios se guardan en este navegador.';
   get('currentRoom').hidden = !room;
+  get('openPlayers').hidden = !room;
+  get('tableInvite').hidden = !room?.isOwner;
+  get('playersAdministration').hidden = !room?.isOwner;
+  get('playersConnection').textContent = room ? (socket?.connected ? 'Conectado a la sala' : 'Desconectado ? reconectando?') : 'Sin sala';
+  if (!room) get('playersPanel').hidden = true;
   get('roomAdministration').hidden = !room?.isOwner;
   if (!room) { get('connectionState').textContent = 'Solo este navegador'; return; }
   const ready = Boolean(client?.state.ready && client.state.snapshot && socket?.connected);
@@ -101,7 +108,7 @@ async function leave() {
   qrControls?.reset();
   generation++; const old = client, oldStorage = storage;
   assetClient?.close(); assetClient = null; mediaStore = null; mediaSource = null; lastPublishedEpoch = null;
-  client = null; socket?.disconnect(); socket = null; storage = null; room = null; rights = null; pending.clear(); members = [];
+  client = null; socket?.disconnect(); socket = null; storage = null; room = null; rights = null; pending.clear(); members = []; presence = []; renderPeople();
   if (old) { old.close(); await old.settled(); }
   oldStorage?.close(); board.exitShared();
   get('admissionCode').value = ''; get('presence').textContent = ''; get('members').replaceChildren(); roomView();
@@ -185,6 +192,8 @@ async function enter(selected, initialTokens, admissionCode, initialMedia) {
   live.on('room:presence', value => {
     if (current !== generation) return;
     get('presence').textContent = value.participants.map(person => `${person.username} (${person.role === 'director' ? config.roleLabels.director : config.roleLabels.user})`).join(' · ') || 'Sin participantes conectados';
+    presence = value.participants; renderPeople();
+    if (room?.isOwner) void refreshMembers().catch(error => status(describe(error), true));
     roomView();
   });
   live.on('token:move:committed', value => { if (current === generation) { pending.delete(value.eventId); status('Movimiento confirmado.'); } });
@@ -195,6 +204,7 @@ async function enter(selected, initialTokens, admissionCode, initialMedia) {
   } });
   live.on('connect_error', error => { if (current === generation) { status(describe(error), true); roomView(); } });
   live.io.on('reconnect_attempt', () => { if (current === generation) get('roomState').textContent = 'Reconectando…'; });
+  qrControls.start();
   get('admissionCode').value = admissionCode?.code || '';
   get('multiplayerDialog').close(); live.connect(); roomView();
   if (room.isOwner) await refreshMembers();
@@ -232,6 +242,14 @@ function fillAssignments() {
     return option;
   }));
 }
+function renderPeople() {
+  get('connectedPlayers').replaceChildren();
+  for (const person of presence) {
+    const row = document.createElement('p');
+    row.textContent = `${person.username} ? ${person.role === 'director' ? 'Director' : 'Jugador'} ? conectado`;
+    get('connectedPlayers').append(row);
+  }
+}
 async function refreshMembers() {
   if (!room?.isOwner) return;
   const id = room.room.id;
@@ -240,16 +258,31 @@ async function refreshMembers() {
   members = value.members; get('members').replaceChildren();
   for (const member of members.filter(member => member.userId !== session.user.id)) {
     const row = document.createElement('div'); row.className = 'member-row'; row.dataset.userId = member.userId;
-    const label = document.createElement('label'); label.textContent = `${member.username}: permitir movimiento asignado `;
-    const checkbox = document.createElement('input'); checkbox.type = 'checkbox'; checkbox.checked = member.permissions.moveAssignedTokens; label.append(checkbox); row.append(label);
+    const name = document.createElement('strong'); name.textContent = `${member.username} ? ${presence.some(p => p.id === member.userId) ? 'conectado' : 'autorizado, desconectado'}`; row.append(name);
+    const controls = {};
+    for (const [key, text] of [['moveAssignedTokens', 'Permitir movimiento asignado'], ['diceAllowed', 'Permitir tiradas']]) {
+      const label = document.createElement('label'); label.textContent = text;
+      const checkbox = document.createElement('input'); checkbox.type = 'checkbox'; checkbox.checked = member.permissions[key];
+      label.prepend(checkbox); row.append(label); controls[key] = checkbox;
+    }
     appendButton(row, 'Actualizar permiso', async () => {
-      await api(`/rooms/${id}/members/${member.userId}`, { method: 'PATCH', body: { permissions: { moveAssignedTokens: checkbox.checked } } }); status('Permiso actualizado.'); await refreshMembers();
+      await api(`/rooms/${id}/members/${member.userId}`, { method:'PATCH', body:{permissions:Object.fromEntries(Object.entries(controls).map(([key, checkbox]) => [key, checkbox.checked]))} });
+      status('Permisos actualizados.'); await refreshMembers();
     });
-    appendButton(row, 'Retirar acceso', async () => { await api(`/rooms/${id}/members/${member.userId}/revoke`, { method: 'POST', body: {} }); await refreshMembers(); });
+    appendButton(row, 'Retirar acceso', async () => { await api(`/rooms/${id}/members/${member.userId}/revoke`, {method:'POST', body:{}}); await refreshMembers(); });
     get('members').append(row);
   }
   fillAssignments();
 }
+get('tableAssignments').append(get('assignForm'));
+function togglePlayers(open) {
+  get('playersPanel').hidden = !open; get('openPlayers').setAttribute('aria-expanded', String(open));
+  if (open) get('closePlayers').focus(); else get('openPlayers').focus();
+}
+get('openPlayers').addEventListener('click', () => togglePlayers(get('playersPanel').hidden));
+get('closePlayers').addEventListener('click', () => togglePlayers(false));
+get('playersPanel').addEventListener('keydown', event => { if (event.key === 'Escape') togglePlayers(false); });
+get('tableInvite').addEventListener('click', () => get('inviteQr').click());
 get('openMultiplayer').addEventListener('click', () => get('multiplayerDialog').showModal());
 get('closeMultiplayer').addEventListener('click', () => get('multiplayerDialog').close());
 get('openSettings').addEventListener('click', () => {
@@ -383,7 +416,7 @@ get('assignedToken').addEventListener('change', () => {
   get('sharedTokenSize').value = String(token.size);
 });
 
-const qrControls = initQr({ api, getRoom: () => room, refreshMembers, status });
+const qrControls = initQr({ api, getRoom: () => room, refreshMembers, status, notify: board.notify });
 window.addEventListener('pagehide', () => clearTimeout(expiry));
 try {
   const saved = localStorage.getItem(CONFIG_KEY);

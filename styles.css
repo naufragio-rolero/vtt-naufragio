@@ -254,3 +254,12 @@ body[data-mode=shared] #changeIdentity { display: none; }
 .qr-dialog button{min-height:44px;margin:4px}
 .qr-request{display:flex;gap:8px;flex-wrap:wrap;align-items:center;border-top:1px solid #7895;padding:12px 0}
 .qr-request span{flex:1;min-width:160px;overflow-wrap:anywhere}
+
+.table-panel { position: fixed; z-index: 20; right: 12px; top: 84px; width: min(420px, calc(100vw - 24px)); max-height: calc(100dvh - 100px); overflow: auto; padding: 20px; background: var(--panel-bg, #fff); color: var(--text, #17242b); border: 1px solid #839ca7; border-radius: 16px; box-shadow: 0 12px 40px #0003; }
+.table-panel[hidden] { display: none; }
+.table-panel header { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.table-panel button { min-height: 44px; padding: 8px 12px; margin: 4px; }
+.table-panel label { display: block; padding: 6px 0; }
+.member-row, .qr-request { border-bottom: 1px solid #839ca766; padding: 12px 0; }
+#pendingCount { border-radius: 20px; background: #873e21; color: white; padding: 2px 7px; }
+.topbar-actions { flex-wrap: wrap; }
