@@ -167,7 +167,7 @@ async function enter(selected, initialTokens, admissionCode, initialMedia) {
   await leave(); room = selected;
   await prepareMedia(selected, initialMedia);
   const current = ++generation;
-  board.enterShared({ canMove, move, identityName: session.user.username, roleLabel: config.roleLabels[session.user.role] });
+  board.enterShared({ canMove, move, canEdit: () => Boolean(room?.isOwner && client?.state.ready), identityName: session.user.username, roleLabel: config.roleLabels[session.user.role] });
   const destination = socketDestination(config);
   socket = io(destination.origin, { path: destination.path, autoConnect: false, forceNew: true, reconnection: true,
     auth: { token: session.token, roomId: room.room.id } });
@@ -351,9 +351,10 @@ action('createRoomForm', 'submit', async () => {
     tokens: local.tokens.map((token, index) => ({
       id: tokens[index].id, name: (token.name || token.code || ('Token ' + (index + 1))).slice(0, 64),
       color: /^#[0-9a-fA-F]{6}$/.test(token.color) ? token.color : '#85dcd2',
-      size: 1, imageId: null
+      size: token.size || 1, imageId: local.files[token.imageId] ? 'token:'+tokens[index].id : null
     })),
-    files: local.map && local.blob ? { map: local.blob } : {}
+    files: { ...(local.map && local.blob ? { map: local.blob } : {}),
+      ...Object.fromEntries(local.tokens.flatMap((token,index)=>local.files[token.imageId] ? [['token:'+tokens[index].id,local.files[token.imageId]]] : [])) }
   };
   const created = await api('/rooms', { method: 'POST', body: { name: get('roomName').value } });
   const selected = await api('/rooms/' + created.room.id);
@@ -413,6 +414,75 @@ get('assignedToken').addEventListener('change', () => {
   get('sharedTokenName').value = token.name;
   get('sharedTokenColor').value = token.color;
   get('sharedTokenSize').value = String(token.size);
+});
+
+let editingTokenId = null;
+get('editSelected').addEventListener('click', async () => {
+  const token = board.selected();
+  if (!token || room && (!room.isOwner || !client?.state.ready)) return;
+  editingTokenId = token.id;
+  get('contextCode').value = token.code; get('contextName').value = token.name;
+  get('contextColor').value = token.color; get('contextSize').value = String(token.size || 1);
+  get('contextPortrait').value = ''; get('contextRemovePortrait').checked = false;
+  get('contextAssignment').hidden = !room;
+  get('tokenEditStatus').textContent = '';
+  if (room) {
+    try { await refreshMembers(); } catch(error) { status(describe(error),true); return; }
+    get('contextUsers').replaceChildren(...members.filter(m=>m.userId!==session.user.id).map(member=>{
+      const option = new Option(member.username,member.userId);
+      option.selected = rights?.assignments?.some(a=>a.tokenId===token.id && a.userId===member.userId) || false;
+      return option;
+    }));
+    renderContextPermissions();
+  }
+  get('tokenDialog').showModal();
+});
+function renderContextPermissions() {
+  get('contextPermissions').replaceChildren();
+  for (const option of get('contextUsers').selectedOptions) {
+    const member = members.find(m=>m.userId===option.value); if (!member) continue;
+    const section = document.createElement('fieldset'); const legend = document.createElement('legend'); legend.textContent = member.username; section.append(legend);
+    for (const [key,text] of [['moveAssignedTokens','Movimiento de fichas asignadas'],['diceAllowed','Tiradas públicas']]) {
+      const label = document.createElement('label'), checkbox = document.createElement('input');
+      checkbox.type = 'checkbox'; checkbox.dataset.userId = member.userId; checkbox.dataset.permission = key; checkbox.checked = member.permissions[key];
+      label.append(checkbox,document.createTextNode(text)); section.append(label);
+    }
+    get('contextPermissions').append(section);
+  }
+}
+get('contextUsers').addEventListener('change',renderContextPermissions);
+get('cancelToken').addEventListener('click', () => get('tokenDialog').close());
+get('contextTokenForm').addEventListener('submit', async event => {
+  event.preventDefault();
+  const id = editingTokenId, current = generation, target = room?.room.id;
+  if (!id || room && !room.isOwner) return;
+  const name = get('contextName').value.trim(), color = get('contextColor').value, size = Number(get('contextSize').value);
+  if (!name || name.length>64 || !/^#[0-9a-fA-F]{6}$/.test(color) || !Number.isFinite(size) || size<.25 || size>4) return;
+  get('saveContextToken').disabled = true;
+  try {
+    const portrait = get('contextPortrait').files?.[0], remove = get('contextRemovePortrait').checked;
+    if (portrait) await validateImage(portrait,2*1024*1024);
+    if (current !== generation || target !== room?.room.id) throw new Error('DIRECTOR_NOT_READY');
+    if (!room) await board.editLocalToken(id,{name,color,size},portrait,remove);
+    else {
+      const token = mediaSource?.tokens.find(t=>t.id===id); if (!token) throw new Error('TOKEN_NOT_FOUND');
+      const previous = structuredClone(mediaSource);
+      Object.assign(token,{name,color,size});
+      if (portrait) { token.imageId = 'token:'+id; mediaSource.files[token.imageId] = portrait; }
+      else if (remove && token.imageId) { delete mediaSource.files[token.imageId]; token.imageId = null; }
+      try { await saveMedia(); } catch(error) { mediaSource = previous; await mediaStore.save(previous); throw error; }
+      await client.assign(id,[...get('contextUsers').selectedOptions].map(o=>o.value));
+      const updates = new Map();
+      for (const checkbox of get('contextPermissions').querySelectorAll('input')) {
+        if (!updates.has(checkbox.dataset.userId)) updates.set(checkbox.dataset.userId,{});
+        updates.get(checkbox.dataset.userId)[checkbox.dataset.permission] = checkbox.checked;
+      }
+      for (const [userId,permissions] of updates) await api(`/rooms/${target}/members/${userId}`,{method:'PATCH',body:{permissions}});
+      await refreshMembers();
+    }
+    get('tokenDialog').close();
+  } catch(error) { get('tokenEditStatus').textContent = describe(error); }
+  finally { get('saveContextToken').disabled = false; }
 });
 
 let candidate = null, candidateUrl = null, candidateVersion = 0, mapBusy = false;

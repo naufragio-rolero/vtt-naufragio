@@ -123,6 +123,7 @@
       </header>
       <div class="workspace" id="workspace">
         <canvas id="boardCanvas" tabindex="0" aria-label="Tablero virtual con rejilla y tokens. Arrastra los tokens para moverlos."></canvas>
+        <button id="editSelected" type="button" class="secondary-button contextual-edit" hidden>Editar ficha</button>
         <div class="board-hint" id="boardHint" aria-hidden="true"><span class="hint-spark">✥</span> Arrastra los tokens para moverlos <span class="hint-separator">·</span> Arrastra el fondo para desplazarte</div>
         <div class="board-footer"><span id="coordinates">X 0 · Y 0</span><span>Rueda para zoom · Flechas para mover un token</span></div>
       </div>
@@ -168,6 +169,23 @@
       <label>Altura (casillas)<input id="boundsHeight" type="number" step="any" min="1" max="200" value="20" required></label>
       <button type="submit">Guardar límites</button>
     </form><p id="boundsStatus" role="status"></p>
+  </dialog>
+  <dialog id="tokenDialog" class="multiplayer-dialog" aria-labelledby="tokenTitle">
+    <header><h2 id="tokenTitle">Editar ficha</h2><button type="button" id="cancelToken">Cancelar</button></header>
+    <form id="contextTokenForm" class="mp-form">
+      <label>Código visible<input id="contextCode" readonly></label>
+      <label>Nombre<input id="contextName" maxlength="64" required></label>
+      <label>Color<input id="contextColor" type="color" required></label>
+      <label>Tamaño (casillas)<input id="contextSize" type="number" min="0.25" max="4" step="0.25" required></label>
+      <label>Retrato (PNG, JPEG o WebP, máximo 2 MiB)<input id="contextPortrait" type="file" accept="image/png,image/jpeg,image/webp"></label>
+      <label><input id="contextRemovePortrait" type="checkbox"> Quitar retrato</label>
+      <section id="contextAssignment" hidden>
+        <label>Jugadores asignados (selección múltiple)<select id="contextUsers" multiple size="4"></select></label>
+        <p>Los permisos se aplican a cada participante de la sala y al movimiento de sus fichas asignadas.</p>
+        <div id="contextPermissions"></div>
+      </section>
+      <button type="submit" id="saveContextToken">Guardar ficha</button>
+    </form><p id="tokenEditStatus" role="status"></p>
   </dialog>
   <dialog id="identityDialog" class="identity-dialog" aria-labelledby="identityTitle">
     <form id="identityForm">

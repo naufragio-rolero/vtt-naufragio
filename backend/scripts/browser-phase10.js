@@ -31,12 +31,19 @@ try {
   }
   const [director, one, two] = await Promise.all(contexts.map(c=>c.newPage()));
   await director.goto(site); await director.waitForFunction(()=>window.NaufragioBoard);
+  const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGPQXRT9HwAEVAIq3G2ZNgAAAABJRU5ErkJggg==','base64');
+  const localToken = await director.evaluate(()=>window.NaufragioBoard.tokens()[0]);
+  await director.locator(`[data-token-id="${localToken.id}"]`).click(); await director.click('#editSelected');
+  await director.fill('#contextName','Ficha local'); await director.fill('#contextSize','1.25');
+  await director.setInputFiles('#contextPortrait',{name:'local-portrait.png',mimeType:'image/png',buffer:png});
+  await director.click('#saveContextToken'); await director.waitForFunction(()=>!document.getElementById('tokenDialog').open);
+  await director.reload(); await director.waitForFunction(()=>window.NaufragioBoard?.tokens()[0]?.size===1.25);
+  const localTokens = await director.evaluate(()=>window.NaufragioBoard.tokens());
   await director.click('#openMultiplayer'); await director.check('#trustDestination');
   await director.fill('#loginUser','test-director'); await director.fill('#loginPassword',password); await director.locator('#loginForm button').click();
   await director.waitForFunction(()=>!document.getElementById('signedIn').hidden);
   await director.fill('#roomName','Mesa de aceptación'); await director.locator('#createRoomForm button').click();
   await director.waitForFunction(()=>document.getElementById('roomState').textContent.includes('Partida conectada'));
-  const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGPQXRT9HwAEVAIq3G2ZNgAAAABJRU5ErkJggg==','base64');
   await director.click('#openMap');
   await director.setInputFiles('#mapCandidate',{name:'test-map.png',mimeType:'image/png',buffer:png});
   await director.waitForFunction(()=>!document.getElementById('useMap').disabled);
@@ -71,12 +78,29 @@ try {
   await director.waitForFunction(()=>document.getElementById('pendingCount').textContent==='0');
   assert.equal(app.rooms.members(owner.token,roomId).length,2);
   assert.match(await director.locator('#connectedPlayers').innerText(),/Ana/);
-
+  await director.click('#closePlayers');
+  const first = await director.evaluate(()=>window.NaufragioBoard.tokens()[0]);
+  await director.locator(`[data-token-id="${first.id}"]`).click();
+  await director.locator('#boardCanvas').focus(); await director.keyboard.press('Enter');
+  await director.waitForFunction(()=>document.getElementById('tokenDialog').open);
+  await director.fill('#contextName','Exploradora'); await director.fill('#contextSize','1.5');
+  await director.setInputFiles('#contextPortrait',{name:'portrait.png',mimeType:'image/png',buffer:png});
+  const ana = app.rooms.members(owner.token,roomId).find(m=>m.username==='Ana');
+  await director.selectOption('#contextUsers',ana.userId);
+  await director.locator('#contextPermissions input[data-permission="moveAssignedTokens"]').check();
+  await director.locator('#contextPermissions input[data-permission="diceAllowed"]').check();
+  await director.click('#saveContextToken'); await director.waitForFunction(()=>!document.getElementById('tokenDialog').open);
+  await one.waitForFunction(id=>window.NaufragioBoard.tokens().find(t=>t.id===id)?.name==='Exploradora',first.id);
+  const updated = await director.evaluate(id=>window.NaufragioBoard.tokens().find(t=>t.id===id),first.id);
+  assert.deepEqual([updated.id,updated.x,updated.y],[first.id,first.x,first.y]);
+  await director.click('#openPlayers');
   await mkdir(resolve('../docs/evidencia-fase10'),{recursive:true});
   await director.screenshot({path:resolve('../docs/evidencia-fase10/jugadores-escritorio.png')});
   await one.click('#openPlayers'); await one.screenshot({path:resolve('../docs/evidencia-fase10/jugadores-movil.png')});
   assert.equal(await one.locator('#playersAdministration').isVisible(),false);
   await one.reload(); await one.waitForFunction(()=>document.getElementById('roomState').textContent.includes('Partida conectada'));
+  await director.click('#closePlayers'); await director.click('#openMultiplayer'); await director.click('#leaveRoom');
+  assert.deepEqual(await director.evaluate(()=>window.NaufragioBoard.tokens()),localTokens,'shared editing preserves the original local game');
   assert.deepEqual(errors,[]);
   console.log(JSON.stringify({result:'pass',qrClosedRequests:2,approved:1,rejected:1,guestReload:true,privateAdministration:true,pageErrors:errors.length}));
 } finally {
